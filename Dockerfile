@@ -8,6 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Npm veya yarn dependency'lerini yükleyin
+RUN npm install -g react-scripts
 RUN npm install
 
 # Copy the project files
