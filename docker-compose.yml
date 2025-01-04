@@ -1,5 +1,7 @@
 services:
   web:
+    container_name: marswide_frontend
+    image: marswide_frontend
     build: .
     ports:
       - "3000:3000"
@@ -7,3 +9,4 @@ services:
       - .:/app
     working_dir: /app
     command: ["npm", "start"]
+    restart: always
