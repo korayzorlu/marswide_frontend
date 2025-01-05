@@ -2,9 +2,17 @@ services:
   web:
     container_name: marswide_frontend
     image: marswide_frontend
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - .:/app
+    command: ["npm", "start"]
     restart: always
+    networks:
+      - marswide_network
+networks:
+  marswide_network:
+    external: true

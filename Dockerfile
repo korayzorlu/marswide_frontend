@@ -11,7 +11,9 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the project files
-COPY . /app/
+COPY . .
+
+RUN npm run build
 
 # Uygulamayı çalıştır
 CMD ["npm", "start"]
