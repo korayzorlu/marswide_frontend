@@ -14,10 +14,13 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+#RUN npm install -g server
 
 # Uygulamayı çalıştır
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
 
 # Expose the port
-EXPOSE 3000
+# EXPOSE 3000
+
+
 
