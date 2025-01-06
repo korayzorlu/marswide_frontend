@@ -59,7 +59,7 @@ function App() {
   useEffect(() => {
     console.log("rendered");
   },[count]);
-  //reducer-end
+  //reducer-ends
 
   //hook
 
