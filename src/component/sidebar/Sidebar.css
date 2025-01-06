@@ -1,0 +1,20 @@
+
+
+.ps-sidebar-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebarContent .ps-sidebar-root.ps-broken{
+    top: 40px;
+    height: calc(100% - 40px);
+}
+
+.sidebarContent a{
+    color: inherit;
+}
+
+.sidebarContent a.active{
+   font-weight: bold;
+}
