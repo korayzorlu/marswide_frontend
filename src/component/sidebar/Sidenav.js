@@ -4,7 +4,8 @@ import { Link, NavLink } from "react-router-dom";
 import "./Sidebar.css";
 import SidebarContext from "../../context/sidebar";
 
-import cardIcon from "../../images/icons/sidebar/fill/bank.svg";
+import { ReactComponent as CardIcon } from '../../images/icons/sidebar/light/badge-filled.svg';
+import { ReactComponent as DataIcon } from '../../images/icons/sidebar/light/database-filled.svg';
 
 function Sidenav() {
     const {collapse, toggle, mobile,handleOpenTab} = useContext(SidebarContext);
@@ -30,13 +31,13 @@ function Sidenav() {
     };
 
     return ( 
-        <Sidebar collapsed={collapsed} toggled={toggle} breakPoint="lg" width={sideBarWidth} collapsedWidth="60px"
+        <Sidebar collapsed={collapsed} toggled={toggle} breakPoint="lg" width={sideBarWidth} collapsedWidth="78px"
         rootStyles={{"height":"100%","backgroundColor":"white"}}>
             <Menu>
-                <SubMenu label="Card" icon={<i className="fa-solid fa-clipboard"></i>}>
+                <SubMenu label="Card" icon={<CardIcon class="sidebariconh" height="24" alt=""/>}>
                     
                 </SubMenu>
-                <SubMenu label="Data" icon={<i className="fa-solid fa-database"></i>}>
+                <SubMenu label="Data" icon={<DataIcon class="sidebariconh" height="24" alt=""/>}>
                     <MenuItem name="maker" onClick={handleClick} icon={<i className="fa-solid fa-bookmark"></i>}> Makers </MenuItem>
                     <MenuItem name="part" onClick={handleClick} icon={<i className="fa-solid fa-screwdriver-wrench"></i>}> Parts </MenuItem>
                 </SubMenu>
@@ -45,7 +46,7 @@ function Sidenav() {
             </Menu>
             <div className="row p-2" style={{ textAlign: 'center', borderTop: '1px solid #ccc' }}>
                 <div className="col-md-12">
-                    <img src={require("../../images/landing/ntg-logo.png")} height="25" alt="MichoApp" loading="lazy" />
+                    <img src={require("../../images/logo/light/marswide-icon.png")} height="20" alt="MichoApp" loading="lazy" />
                 </div>
             </div>
         </Sidebar>

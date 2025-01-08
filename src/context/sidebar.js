@@ -28,7 +28,7 @@ function SidebarProvider(props){
         } else {
             setMobile(false);
             if (collapseTerm){
-                setContentWidth({sidebar:"60px",page:"calc(100% - 60px)"});
+                setContentWidth({sidebar:"78px",page:"calc(100% - 78px)"});
             }else{
                 setContentWidth({sidebar:"200px",page:"calc(100% - 200px)"});
             };

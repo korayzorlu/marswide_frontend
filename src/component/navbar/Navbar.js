@@ -7,6 +7,8 @@ import { height } from '@fortawesome/free-brands-svg-icons/fa42Group';
 import NavbarContext from '../../context/navbar';
 import AuthContext from '../../context/auth';
 import SidebarContext from '../../context/sidebar';
+import { ReactComponent as NavbarLogo } from '../../images/logo/light/marswide-logo.svg';
+
 
 function Navbar() {
     const {handleCollapse} = useContext(SidebarContext);
@@ -45,7 +47,7 @@ function Navbar() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <a className="navbar-brand mt-2 mt-lg-0" href="/">
-                        <img src={require("../../images/landing/esms-logo.png")} height="25" alt="MichoApp" loading="lazy" />
+                        <img src={require("../../images/logo/light/marswide-logo-full.png")} height="18" alt="Marswide" loading="lazy" />
                     </a>
                 </div>
                 <div className="d-flex align-items-center">

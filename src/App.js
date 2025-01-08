@@ -80,7 +80,7 @@ function App() {
         <div className='col p-0 m-0 h-100 pageContent overflow-scroll' style={{"maxWidth":contentWidth.page}}>
 
           <div className="row p-2 m-0">
-            <div className="col-md-12 p-0 m-0">
+            <div className="col-md-12">
 
 
 

@@ -18,3 +18,7 @@
 .sidebarContent a.active{
    font-weight: bold;
 }
+
+.sidebarContent .ps-toggled .ps-submenu-expand-icon{
+    display: none;
+}
