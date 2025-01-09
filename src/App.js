@@ -9,12 +9,12 @@ import SidebarContext from './context/sidebar.js';
 
 import AuthContext from './context/auth.js';
 import Dashboard from './component/dashboard/Dashboard.js';
+import axios from 'axios';
 
 export const NumberContext = React.createContext();
 
-
-
 function App() {
+  //axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
   //get user from api
   const {sourceCompanyId,fetchUser,user} = useContext(AuthContext);

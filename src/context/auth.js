@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import { useState } from "react";
+
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -12,9 +13,11 @@ function AuthProvider(props){
     const [sourceCompanyId, setSourceCompanyId] = useState(0)
     const [userSourceCompanies, setUserSourceCompanies] = useState([]);
     const [status, setStatus] = useState(false)
-  
+    
+    
+
     const fetchUser = async () => {
-        const responseUser = await axios.get(`${process.env.REACT_APP_API_URL}/users/api/users/type_current/`, {withCredentials: true});
+        const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
         setUser(responseUser.data[0]);
         //setSourceCompanyName(responseUser.data[0]["sourceCompany"]);
         //setSourceCompanyId(responseUser.data[0]["sourceCompanyId"]);
