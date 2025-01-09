@@ -14,7 +14,7 @@ import axios from 'axios';
 export const NumberContext = React.createContext();
 
 function App() {
-  //axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
   //get user from api
   const {sourceCompanyId,fetchUser,user} = useContext(AuthContext);
