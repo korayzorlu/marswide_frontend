@@ -11,7 +11,7 @@ import { ReactComponent as NavbarLogo } from '../../images/logo/light/marswide-l
 
 
 function Navbar() {
-    const {handleCollapse} = useContext(SidebarContext);
+    const {handleCollapse,handleSideBarBackgroundColor} = useContext(SidebarContext);
     const {user,sourceCompanyName,sourceCompanyId,userSourceCompanies,changeSourceCompany} = useContext(AuthContext);
 
     useEffect(() => {
@@ -20,6 +20,35 @@ function Navbar() {
             new Dropdown(dropdown); // Her dropdown öğesini başlat
         });
     }, []);
+
+    //theme
+    
+    const [dark, setTheme] = useState(false);
+    const [logo, setLogo] = useState(require(`../../images/logo/light/marswide-logo-full.png`));
+    useEffect(() => {
+        if(dark){
+            document.documentElement.setAttribute("data-mdb-theme", "dark");
+        }else{
+            document.documentElement.setAttribute("data-mdb-theme", "light");
+        };
+        
+    }, [dark]);
+
+    const handleChangeTheme = (event) => {
+        event.preventDefault();
+        console.log(dark);
+        setTheme(!dark);
+
+        if(!dark){
+            setLogo(require(`../../images/logo/dark/marswide-logo-full.png`));
+        }else{
+            setLogo(require(`../../images/logo/light/marswide-logo-full.png`));
+        };
+
+        handleSideBarBackgroundColor(!dark);
+    };
+
+    //theme-end
 
     const [collapse, setCollapse] = useState(false)
     const [toggle, setToggle] = useState(false)
@@ -37,6 +66,7 @@ function Navbar() {
         changeSourceCompany(event.target.value);
     };
 
+    
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
         
@@ -47,7 +77,7 @@ function Navbar() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <a className="navbar-brand mt-2 mt-lg-0" href="/">
-                        <img src={require("../../images/logo/light/marswide-logo-full.png")} height="18" alt="Marswide" loading="lazy" />
+                        <img src={logo} height="18" alt="Marswide" loading="lazy" />
                     </a>
                 </div>
                 <div className="d-flex align-items-center">
@@ -83,6 +113,9 @@ function Navbar() {
                             </li>
                             <li>
                                 <a className="dropdown-item" href="#/">Something else here</a>
+                            </li>
+                            <li>
+                                <button className='btn btn-light w-100' onClick={handleChangeTheme}>Change Theme</button>
                             </li>
                         </ul>
                     </div>

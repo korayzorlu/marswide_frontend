@@ -1,9 +1,10 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 const NavbarContext = createContext();
 
 function NavbarProvider(props) {
     const {children} = props;
+
 
     const sharedValuesAndMethods = {
         

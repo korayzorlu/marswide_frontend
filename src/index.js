@@ -9,7 +9,8 @@ import { NavbarProvider } from './context/navbar';
 import { SidebarProvider } from './context/sidebar';
 
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
-import '../node_modules/mdb-ui-kit/css/mdb.min.css';
+//import '../node_modules/mdb-ui-kit/css/mdb.min.css';
+import '../src/static/lib/mdb-ui-kit-8.1.0/mdb-custom.min.css';
 
 // import jszip from 'jszip';
 // import pdfmake from 'pdfmake';

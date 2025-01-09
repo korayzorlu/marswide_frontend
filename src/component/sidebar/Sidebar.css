@@ -1,9 +1,31 @@
 
+:root {
+    --sidebar-icon-color: #000;
+    --sidebar-background-color: rgb(249, 249, 249, 0.7);
+    --sidebar-submenu-background-color: #fff;
+    --sidebar-menu-button-background-color: #f3f3f3;
+}
+  
+[data-mdb-theme="dark"] {
+    --sidebar-icon-color: #fff;
+    --sidebar-background-color: #111;
+    --sidebar-submenu-background-color: #000;
+    --sidebar-menu-button-background-color: #44474B;
+}
 
-.ps-sidebar-container{
+.sidebarContent .ps-sidebar-container{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: var(--sidebar-background-color);
+}
+
+.sidebarContent .ps-submenu-content{
+    background-color: var(--sidebar-submenu-background-color);
+}
+
+.sidebarContent .ps-menuitem-root .ps-menu-button:hover{
+    background-color: var(--sidebar-menu-button-background-color);
 }
 
 .sidebarContent .ps-sidebar-root.ps-broken{
@@ -21,4 +43,10 @@
 
 .sidebarContent .ps-toggled .ps-submenu-expand-icon{
     display: none;
+}
+
+
+  
+.sideBarIcon {
+    fill: var(--sidebar-icon-color);
 }
