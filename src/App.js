@@ -17,7 +17,7 @@ export const NumberContext = React.createContext();
 function App() {
 
   //get user from api
-  const {sourceCompanyId,fetchUser} = useContext(AuthContext);
+  const {sourceCompanyId,fetchUser,user} = useContext(AuthContext);
 
   useEffect(() => {
     fetchUser();
@@ -83,7 +83,7 @@ function App() {
 
           <div className="row p-2 m-0">
             <div className="col-md-12">
-
+              {user["username"]}
               <Routes>
                 <Route path='/' element={<Home></Home>}></Route>
              

@@ -12,10 +12,10 @@ function AuthProvider(props){
     const [sourceCompanyId, setSourceCompanyId] = useState(0)
     const [userSourceCompanies, setUserSourceCompanies] = useState([]);
     const [status, setStatus] = useState(false)
-
+  
     const fetchUser = async () => {
-        //const responseUser = await axios.get("/administration/api/users/type_current", {withCredentials: true});
-        //setUser(responseUser.data[0]);
+        const responseUser = await axios.get(`${process.env.REACT_APP_API_URL}/users/api/users/type_current/`, {withCredentials: true});
+        setUser(responseUser.data[0]);
         //setSourceCompanyName(responseUser.data[0]["sourceCompany"]);
         //setSourceCompanyId(responseUser.data[0]["sourceCompanyId"]);
         //const responseCompany = await axios.get(`/administration/api/user_source_companies?userId=${responseUser.data[0]["id"]}`, {withCredentials: true});
@@ -23,9 +23,9 @@ function AuthProvider(props){
     };
 
     const changeSourceCompany = async (term) =>{
-        const response = await axios.get(`/source/api/companies?id=${term}`, {withCredentials: true});
-        setSourceCompanyName(response.data[0]["name"]);
-        setSourceCompanyId(response.data[0]["id"]);
+        //const response = await axios.get(`/source/api/companies?id=${term}`, {withCredentials: true});
+        //setSourceCompanyName(response.data[0]["name"]);
+        //setSourceCompanyId(response.data[0]["id"]);
     };
     
     const loginAuth = () => {
