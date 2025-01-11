@@ -11,12 +11,10 @@ import SidebarContext from '../../context/sidebar';
 import { ReactComponent as NavbarLogo } from '../../images/logo/light/marswide-logo.svg';
 import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
 import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
-import ThemeContext from '../../context/theme';
 
 function Navbar() {
-    const {dark,logo,handleChangeTheme} = useContext(ThemeContext)
     const {handleCollapse} = useContext(SidebarContext);
-    const {user,sourceCompanyName,sourceCompanyId,userSourceCompanies,changeSourceCompany} = useContext(AuthContext);
+    const {dark,logo,handleChangeTheme,user,sourceCompanyName,userSourceCompanies,changeSourceCompany,logoutAuth} = useContext(AuthContext);
 
     const navigate = useNavigate();
 
@@ -53,6 +51,11 @@ function Navbar() {
         changeSourceCompany(event.target.value);
     };
     
+    const handleLogoutAuth = (event) => {
+        event.preventDefault();
+        
+        logoutAuth();
+    };
 
     
     
@@ -129,7 +132,7 @@ function Navbar() {
                             </li>
                             <li><hr class="dropdown-divider m-0"/></li>
                             <li>
-                                <button className="dropdown-item" onClick={()=>navigate("/login")}>Logout</button>
+                                <button className="dropdown-item" type="button" onClick={handleLogoutAuth}>Logout</button>
                             </li>
                         </ul>
                     </div>

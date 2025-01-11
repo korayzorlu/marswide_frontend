@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/auth';
-import { ThemeProvider } from './context/theme';
 import { NavbarProvider } from './context/navbar';
 import { SidebarProvider } from './context/sidebar';
+import { LoadingProvider } from './context/loading/loading';
 
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 //import '../node_modules/mdb-ui-kit/css/mdb.min.css';
@@ -39,7 +39,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   //<React.StrictMode>
     <BrowserRouter>
-      <ThemeProvider>
+      <LoadingProvider>
+        
         <AuthProvider>
             <NavbarProvider>
               <SidebarProvider>
@@ -47,7 +48,8 @@ root.render(
               </SidebarProvider>
             </NavbarProvider>
         </AuthProvider>
-      </ThemeProvider>
+        
+      </LoadingProvider>
     </BrowserRouter>
   //</React.StrictMode>
 );

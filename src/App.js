@@ -8,29 +8,37 @@ import Home from './component/Home.js';
 import Landing from './component/landing/Landing.js';
 import Login from './component/auth/Login.js';
 
-import ThemeContext from './context/theme.js';
 import SidebarContext from './context/sidebar.js';
+import LoadingContext from './context/loading/loading.js';
 
 import AuthContext from './context/auth.js';
 import Dashboard from './component/dashboard/Dashboard.js';
 import axios from 'axios';
+import Loading from './component/loading/Loading.js';
 
 export const NumberContext = React.createContext();
 
 function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-
+  const {loading,handleLoading} = useContext(LoadingContext)
+  
   //get user from api
-  const {sourceCompanyId,fetchUser,user,fetchCSRFToken} = useContext(AuthContext);
+  const {fetchTheme,fetchUser,user,theme,dark,fetchCSRFToken,status} = useContext(AuthContext);
 
+  useEffect(() => {
+    fetchTheme();
+  }, [dark]);
+  
   useEffect(() => {
     fetchUser();
   },[]);
 
   useEffect(() => {
     fetchCSRFToken();
-}, []);
+  }, []);
 
+  
+  
   //get user from api-end
 
   //sidebar collapse
@@ -75,14 +83,14 @@ function App() {
 
   //hook-end
 
-
+  if (loading) return <Loading></Loading>;
 
   return (
     <div className="App" id='MichoApp'>
 
       
 
-      { user ? 
+      { user && status ? 
 
         <>
           <Navbar></Navbar>

@@ -1,12 +1,11 @@
 import { useEffect, useContext, useState } from "react";
 import { Input, initMDB } from "mdb-ui-kit";
-import ThemeContext from "../../context/theme";
 import AuthContext from "../../context/auth";
 
 
 function Login() {
-    const {theme} = useContext(ThemeContext)
-    const {fetchCSRFToken,loginAuth} = useContext(AuthContext)
+    const {theme,fetchCSRFToken,loginAuth} = useContext(AuthContext)
+    
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -33,7 +32,7 @@ function Login() {
                 <div className="card">
                     <div className="row">
                         <div className="col-md-6 login-img-">
-                            <img src={require("../../images/landing/login-img-1.jpg")} className="img-fluid" alt="Marswide"/>
+                            <img src={require("../../images/landing/login-img-1.jpg")} className="img-fluid" alt="Marswide" loading="lazy"/>
                         </div>
                         <div className="col-md-6 login-col-">
                             
