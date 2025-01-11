@@ -11,16 +11,8 @@ function SidebarProvider(props){
     const [contentWidth, setContentWidth] = useState({sidebar:"200px",page:"calc(100% - 200px)"});
     const [tabNavItems, setTabNavItems] = useState([]);
     const [tabNavContents, setTabNavContents] = useState([]);
-    const [sideBarBackgroundColor, setSideBarBackgroundColor] = useState("rgb(249, 249, 249, 0.7)")
 
-    const handleSideBarBackgroundColor = (darkTerm) => {
-        if (darkTerm){
-            setSideBarBackgroundColor("rgb(38, 38, 38, 0.7)")
-        }else{
-            setSideBarBackgroundColor("rgb(249, 249, 249, 0.7)")
-        };
-        
-    };
+ 
 
     //open&close sidebar with button
     const handleCollapse = (collapseTerm,toggleTerm) => {
@@ -114,12 +106,10 @@ function SidebarProvider(props){
         contentWidth,
         tabNavItems,
         tabNavContents,
-        sideBarBackgroundColor,
         handleCollapse,
         checkMobile,
         handleResize,
-        handleOpenTab,
-        handleSideBarBackgroundColor
+        handleOpenTab
     };
 
     return (

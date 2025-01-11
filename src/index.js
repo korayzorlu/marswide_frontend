@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/auth';
+import { ThemeProvider } from './context/theme';
 import { NavbarProvider } from './context/navbar';
 import { SidebarProvider } from './context/sidebar';
 
@@ -36,17 +37,19 @@ import 'datatables.net-staterestore-bs5';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <NavbarProvider>
-          <SidebarProvider>
-                      <App />
-          </SidebarProvider>
-        </NavbarProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+            <NavbarProvider>
+              <SidebarProvider>
+                          <App />
+              </SidebarProvider>
+            </NavbarProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  //</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

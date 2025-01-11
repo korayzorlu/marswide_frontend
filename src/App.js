@@ -2,9 +2,13 @@ import './App.css';
 import React, {useEffect, useContext, useState, useReducer, useMemo, useRef} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './component/navbar/Navbar.js';
+import NavbarLanding from './component/navbar/NavbarLanding.js';
 import Sidenav from './component/sidebar/Sidenav.js';
 import Home from './component/Home.js';
+import Landing from './component/landing/Landing.js';
+import Login from './component/auth/Login.js';
 
+import ThemeContext from './context/theme.js';
 import SidebarContext from './context/sidebar.js';
 
 import AuthContext from './context/auth.js';
@@ -17,11 +21,16 @@ function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
   //get user from api
-  const {sourceCompanyId,fetchUser,user} = useContext(AuthContext);
+  const {sourceCompanyId,fetchUser,user,fetchCSRFToken} = useContext(AuthContext);
 
   useEffect(() => {
     fetchUser();
   },[]);
+
+  useEffect(() => {
+    fetchCSRFToken();
+}, []);
+
   //get user from api-end
 
   //sidebar collapse
@@ -71,59 +80,93 @@ function App() {
   return (
     <div className="App" id='MichoApp'>
 
-      <Navbar></Navbar>
+      
 
-      <div className='row homeContent p-0 m-0 w-100'>
+      { user ? 
 
-        <div className='col sidebarContent p-0 m-0 h-100' style={{"maxWidth":contentWidth.sidebar}}>
-          <Sidenav></Sidenav>
-        </div>
+        <>
+          <Navbar></Navbar>
+          <div className='row homeContent p-0 m-0 w-100'>
 
-        <div className='col p-0 m-0 h-100 pageContent overflow-scroll' style={{"maxWidth":contentWidth.page}}>
+            <div className='col sidebarContent p-0 m-0 h-100' style={{"maxWidth":contentWidth.sidebar}}>
+              <Sidenav></Sidenav>
+            </div>
 
-          <div className="row p-2 m-0">
-            <div className="col-md-12">
-              {user["username"]}
-              <Routes>
-                <Route path='/' element={<Home></Home>}></Route>
-             
+            <div className='col p-0 m-0 h-100 pageContent overflow-scroll' style={{"maxWidth":contentWidth.page}}>
 
-                <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
-               
-               
-              </Routes>
+              <div className="row p-2 m-0">
+                <div className="col-md-12">
+                  {user["username"]}
+                  <Routes>
+                    <Route path='/' element={<Home></Home>}></Route>
+                  
+
+                    <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
+                    
+                    
+                  </Routes>
 
 
-              {/* {loading ? (<Loading></Loading>) : (
-                <>
-                {courses.length === 0 ? (
+                  {/* {loading ? (<Loading></Loading>) : (
+                    <>
+                    {courses.length === 0 ? (
+                      <div className="row">
+                        <div className="col-md-12">
+
+                          <div className="row">
+                            <div className="col-md-12 text-center">
+                              <h2>All courses deleted!</h2>
+                            </div>
+                          </div>
+
+                          <div className="row">
+                            <div className="col-md-12 text-center">
+                            <button className="btn btn-sm btn-primary" data-mdb-ripple-init onClick={() => {fetchCourses()}}>Refresh</button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      
+                      
+                      ) : (
+                      <Courses courses={courses} removeCourse={deleteCourse}></Courses>
+                      )
+                    }
+                    </>
+                  )
+                  }
+                    */}
+
+
+
+
+
+
+
+                  {/* <div className="row">
+                    <div className="col-md-12">
+                      <TaskCreate></TaskCreate>
+                    </div>
+                  </div>
+
                   <div className="row">
                     <div className="col-md-12">
 
                       <div className="row">
                         <div className="col-md-12 text-center">
-                          <h2>All courses deleted!</h2>
+                          <h1>Tasks</h1>
                         </div>
                       </div>
 
                       <div className="row">
-                        <div className="col-md-12 text-center">
-                        <button className="btn btn-sm btn-primary" data-mdb-ripple-init onClick={() => {fetchCourses()}}>Refresh</button>
+                        <div className="col-md-12">
+                          <TaskList></TaskList>
                         </div>
                       </div>
-
+                      
                     </div>
-                  </div>
-                  
-                  
-                  ) : (
-                  <Courses courses={courses} removeCourse={deleteCourse}></Courses>
-                  )
-                }
-                </>
-              )
-             }
-               */}
+                  </div> */}
 
 
 
@@ -131,42 +174,38 @@ function App() {
 
 
 
-              {/* <div className="row">
-                <div className="col-md-12">
-                  <TaskCreate></TaskCreate>
                 </div>
               </div>
+              
+            </div>
 
-              <div className="row">
+          </div>
+        </>
+
+        :
+        
+        <>
+          <NavbarLanding></NavbarLanding>
+
+          <div className='row homeContent p-0 m-0 w-100'>
+            <div className='col p-0 m-0 h-100 pageContent overflow-scroll'>
+              <div className="row p-2 m-0">
                 <div className="col-md-12">
 
-                  <div className="row">
-                    <div className="col-md-12 text-center">
-                      <h1>Tasks</h1>
-                    </div>
-                  </div>
+                  <Routes>
+                    <Route path='/' element={<Landing></Landing>}></Route>
+                    
+                    <Route path='/login' element={<Login></Login>}></Route>
+                  </Routes>
 
-                  <div className="row">
-                    <div className="col-md-12">
-                      <TaskList></TaskList>
-                    </div>
-                  </div>
-                  
                 </div>
-              </div> */}
-
-
-
-
-
-
-
+              </div>
             </div>
           </div>
-          
-        </div>
+        </>
+      }
 
-      </div>
+      
           
 
 

@@ -1,4 +1,8 @@
 @charset "UTF-8";
+.dropdown-divider {
+  border-top-width: 1px !important;
+}
+
 :root,
 [data-mdb-theme=light] {
   --mdb-red: #f44336;
@@ -4366,9 +4370,9 @@ textarea.form-control-lg {
   --mdb-card-subtitle-color: ;
   --mdb-card-border-width: var(--mdb-border-width);
   --mdb-card-border-color: rgba(0, 0, 0, 0.175);
-  --mdb-card-border-radius: 0.5rem;
+  --mdb-card-border-radius: 0;
   --mdb-card-box-shadow: 0 2px 15px -3px rgba(var(--mdb-box-shadow-color-rgb), 0.07), 0 10px 20px -2px rgba(var(--mdb-box-shadow-color-rgb), 0.04);
-  --mdb-card-inner-border-radius: calc(0.5rem - (var(--mdb-border-width)));
+  --mdb-card-inner-border-radius: calc(0 - (var(--mdb-border-width)));
   --mdb-card-cap-padding-y: 0.75rem;
   --mdb-card-cap-padding-x: 1.5rem;
   --mdb-card-cap-bg: rgba(255, 255, 255, 0);
@@ -13154,7 +13158,7 @@ textarea.form-control-lg {
   color-scheme: dark;
   --mdb-surface-color: #fff;
   --mdb-surface-color-rgb: 255, 255, 255;
-  --mdb-surface-bg: #121212;
+  --mdb-surface-bg: #1b1f23;
   --mdb-surface-inverted-color: #fff;
   --mdb-surface-inverted-color-rgb: 255, 255, 255;
   --mdb-surface-inverted-bg: #757575;
@@ -16700,7 +16704,7 @@ fieldset:disabled .btn-group-vertical > .btn {
 }
 
 .card-header {
-  --mdb-card-header-border-width: 2px;
+  --mdb-card-header-border-width: 1px;
   --mdb-card-header-border-color: var(--mdb-divider-color);
   border-bottom: var(--mdb-card-header-border-width) solid var(--mdb-card-header-border-color);
 }
