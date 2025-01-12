@@ -103,7 +103,7 @@ function AuthProvider(props){
             const responseLogin = await axios.post('/users/login/', { 
                 username:username,
                 password:password,
-            },{ withCredentials: true });
+            },{ withCredentials: true, headers: { "X-CSRFToken": csrfToken } });
             if (responseLogin.data.success) {
                 //alert('Giriş başarılı!');
                 fetchCSRFToken();
