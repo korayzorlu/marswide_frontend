@@ -1,12 +1,13 @@
 import { createContext, useState } from "react";
+import Cookies from "js-cookie";
 
 const SidebarContext = createContext();
 
 function SidebarProvider(props){
     const {children} = props;
-
+    console.log(Cookies.get("collapse"))
     const [mobile, setMobile] = useState(false);
-    const [collapse, setCollapse] = useState(false);
+    const [collapse, setCollapse] = useState(Cookies.get("collapse") === "true" ? true : false);
     const [toggle, setToggle] = useState(false);
     const [contentWidth, setContentWidth] = useState({sidebar:"200px",page:"calc(100% - 200px)"});
     const [tabNavItems, setTabNavItems] = useState([]);
@@ -20,7 +21,8 @@ function SidebarProvider(props){
         setToggle(toggleTerm);
         var element = document.querySelector('.ps-sidebar-root');
 
-        if (element && element.classList.contains('ps-broken')) {
+        //if (element && element.classList.contains('ps-broken')) {
+        if(window.innerWidth <= 1024) {
             setMobile(true);
             if (collapseTerm){
                 setContentWidth({sidebar:"0",page:"100%"});
@@ -29,6 +31,7 @@ function SidebarProvider(props){
             };
         } else {
             setMobile(false);
+            document.cookie = `collapse=${collapseTerm}; path=/;`
             if (collapseTerm){
                 setContentWidth({sidebar:"78px",page:"calc(100% - 78px)"});
             }else{
@@ -42,12 +45,13 @@ function SidebarProvider(props){
     const checkMobile = () => {
         const element = document.querySelector('.ps-sidebar-root');
 
-        if (element && element.classList.contains('ps-broken')) {
+        //if (element && element.classList.contains('ps-broken')) {
+        if(window.innerWidth <= 1024) {
             setMobile(true);
             setContentWidth({sidebar:"0",page:"100%"});
         }else{
             setMobile(false);
-            setContentWidth({sidebar:"200px",page:"calc(100% - 200px)"});
+            setContentWidth(Cookies.get("collapse") === "true" ? {sidebar:"78px",page:"calc(100% - 78px)"} : {sidebar:"200px",page:"calc(100% - 200px)"});
         };
     };
 
@@ -55,7 +59,8 @@ function SidebarProvider(props){
     const handleResize = () => {
         const element = document.querySelector('.ps-sidebar-root');
 
-        if (element && element.classList.contains('ps-broken')) {
+        //if (element && element.classList.contains('ps-broken')) {
+        if(window.innerWidth <= 1024) {
             setMobile(true);
             setContentWidth({sidebar:"0",page:"100%"});
         } else {
@@ -98,6 +103,7 @@ function SidebarProvider(props){
         setTabNavItems(openedTabNavItems);
         setTabNavContents(openedTabNavContents);
     };
+    
 
     const sharedValuesAndMethods = {
         mobile,

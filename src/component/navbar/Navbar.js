@@ -118,7 +118,7 @@ function Navbar() {
                             <li>
                                 <div className="dropdown-header text-center p-3">{user["username"]}</div>
                             </li>
-                            <li><hr class="dropdown-divider m-0"/></li>
+                            <li><hr className="dropdown-divider m-0"/></li>
                             <li>
                                 <a className="dropdown-item" href="#/">Profile</a>
                             </li>
@@ -130,7 +130,7 @@ function Navbar() {
                                     {dark ? <><LightModeIcon/> Light</>: <><DarkModeIcon/> Dark</>}
                                 </a>
                             </li>
-                            <li><hr class="dropdown-divider m-0"/></li>
+                            <li><hr className="dropdown-divider m-0"/></li>
                             <li>
                                 <button className="dropdown-item" type="button" onClick={handleLogoutAuth}>Logout</button>
                             </li>

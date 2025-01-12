@@ -44,13 +44,13 @@ function Sidenav() {
             */
 
     return ( 
-        <Sidebar collapsed={collapsed} toggled={toggle} breakPoint="lg" width={sideBarWidth} collapsedWidth="78px"
+        <Sidebar collapsed={collapsed} toggled={toggle} customBreakPoint="1024px" width={sideBarWidth} collapsedWidth="78px"
         rootStyles={{"height":"100%","border":"none"}} backgroundColor={sideBarBackgroundColor}>
             <Menu>
-                <SubMenu label="Card" icon={<CardIcon class="sideBarIcon" height="24" alt=""/>}>
+                <SubMenu label="Card" icon={<CardIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
                     
                 </SubMenu>
-                <SubMenu label="Data" icon={<DataIcon class="sideBarIcon" height="24" alt=""/>}>
+                <SubMenu label="Data" icon={<DataIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
                     <MenuItem name="maker" onClick={handleClick} icon={<i className="fa-solid fa-bookmark"></i>}> Makers </MenuItem>
                     <MenuItem name="part" onClick={handleClick} icon={<i className="fa-solid fa-screwdriver-wrench"></i>}> Parts </MenuItem>
                 </SubMenu>

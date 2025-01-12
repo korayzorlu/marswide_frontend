@@ -69,7 +69,6 @@ function AuthProvider(props){
         if(user){
             try {
                 const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
-                console.log(responseUser)
                 setUser(responseUser.data[0]);
                 setStatus(true);
                 setDark(responseUser.data[0]["theme"] === "light" ? false : true);
@@ -92,7 +91,6 @@ function AuthProvider(props){
             axios.defaults.headers['X-CSRFToken'] = responseToken.data.csrfToken;
             axios.defaults.withCredentials = true
             //document.cookie = `csrftoken=${responseToken.data.csrfToken}; path=/;`;
-            console.log(axios.defaults.headers)
         } catch (error) {
             console.log(error);
         };

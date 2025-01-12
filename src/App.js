@@ -50,7 +50,6 @@ function App() {
 
     // Temizlik işlevi
     return () => {
-      checkMobile();
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -107,80 +106,8 @@ function App() {
                   {user["username"]}
                   <Routes>
                     <Route path='/' element={<Home></Home>}></Route>
-                  
-
                     <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
-                    
-                    
                   </Routes>
-
-
-                  {/* {loading ? (<Loading></Loading>) : (
-                    <>
-                    {courses.length === 0 ? (
-                      <div className="row">
-                        <div className="col-md-12">
-
-                          <div className="row">
-                            <div className="col-md-12 text-center">
-                              <h2>All courses deleted!</h2>
-                            </div>
-                          </div>
-
-                          <div className="row">
-                            <div className="col-md-12 text-center">
-                            <button className="btn btn-sm btn-primary" data-mdb-ripple-init onClick={() => {fetchCourses()}}>Refresh</button>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                      
-                      
-                      ) : (
-                      <Courses courses={courses} removeCourse={deleteCourse}></Courses>
-                      )
-                    }
-                    </>
-                  )
-                  }
-                    */}
-
-
-
-
-
-
-
-                  {/* <div className="row">
-                    <div className="col-md-12">
-                      <TaskCreate></TaskCreate>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-12">
-
-                      <div className="row">
-                        <div className="col-md-12 text-center">
-                          <h1>Tasks</h1>
-                        </div>
-                      </div>
-
-                      <div className="row">
-                        <div className="col-md-12">
-                          <TaskList></TaskList>
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div> */}
-
-
-
-
-
-
 
                 </div>
               </div>
