@@ -26,25 +26,24 @@ function AuthProvider(props){
     const [logo, setLogo] = useState(require(`../images/logo/light/marswide-logo-full.png`));
 
     const fetchTheme = () => {
-
+        
         document.documentElement.setAttribute("data-mdb-theme", theme);
         setTheme(theme);
         setLogo(require(`../images/logo/${theme}/marswide-logo-full.png`));
-        document.cookie = `theme=${theme}; path=/;`
+        document.cookie = `theme=${theme}; path=/; ${process.env.REACT_APP_SAME_SITE}`
     };
 
     const handleChangeTheme = async (darkTerm) => {
-        console.log(darkTerm);
         setDark(darkTerm);
 
         if(darkTerm){
             setTheme("dark");
             setLogo(require(`../images/logo/dark/marswide-logo-full.png`));
-            document.cookie = `theme=dark; path=/;`
+            document.cookie = `theme=dark; path=/; ${process.env.REACT_APP_SAME_SITE}`
         }else{
             setTheme("light");
             setLogo(require(`../images/logo/light/marswide-logo-full.png`));
-            document.cookie = `theme=light; path=/;`
+            document.cookie = `theme=light; path=/; ${process.env.REACT_APP_SAME_SITE}`
         };
 
         if(user){
@@ -73,13 +72,14 @@ function AuthProvider(props){
                 setStatus(true);
                 setDark(responseUser.data[0]["theme"] === "light" ? false : true);
                 setTheme(responseUser.data[0]["theme"]);
-                document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/;`
+                document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE}`
             } catch (error) {
     
             } finally {
-                handleLoading(false);
+                
             }
         };
+        handleLoading(false);
         
     };
 

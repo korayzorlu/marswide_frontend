@@ -31,7 +31,7 @@ function SidebarProvider(props){
             };
         } else {
             setMobile(false);
-            document.cookie = `collapse=${collapseTerm}; path=/;`
+            document.cookie = `collapse=${collapseTerm}; path=/; ${process.env.REACT_APP_SAME_SITE}`
             if (collapseTerm){
                 setContentWidth({sidebar:"78px",page:"calc(100% - 78px)"});
             }else{
