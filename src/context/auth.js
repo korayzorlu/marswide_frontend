@@ -97,12 +97,13 @@ function AuthProvider(props){
         
     };
 
-    const loginAuth = async (username, password) => {
+    const loginAuth = async (email, password, remember) => {
         handleLoading(true);
         try {
             const responseLogin = await axios.post('/users/login/', { 
-                username:username,
+                email:email,
                 password:password,
+                remember:remember
             },{ withCredentials: true, });
             if (responseLogin.data.success) {
                 //alert('Giriş başarılı!');
@@ -144,6 +145,42 @@ function AuthProvider(props){
         };
     };
 
+    const registerAuth = async (email, password, passwordConfirmation, firstName, lastName, refCode) => {
+        handleLoading(true);
+        try {
+            const responseLogin = await axios.post('/users/register/', { 
+                email:email,
+                password:password,
+                passwordConfirmation:passwordConfirmation,
+                firstName:firstName,
+                lastName:lastName,
+                refCode:refCode
+            },{ withCredentials: true, });
+            if (responseLogin.data.success) {
+                //alert('Giriş başarılı!');
+                fetchCSRFToken();
+                fetchUser();
+                setStatus(true);
+                navigate('/');
+
+            };
+        } catch (error) {
+            //alert('Giriş başarısız: ' + error.response.data.message);
+            console.log(error.response.data.error);
+            if(error.status === 400){
+                fetchUser();
+                setStatus(false);
+                setAuthMessage({color:"text-red-500",icon:"",text:error.response.data.error})
+            }else {
+                fetchUser();
+                setStatus(false);
+                setAuthMessage({color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"})
+            };
+        } finally {
+            handleLoading(false);
+        };
+    };
+
     const clearAuthMessage = () => {
         setAuthMessage({color:"",icon:"",text:""})
     };
@@ -166,6 +203,7 @@ function AuthProvider(props){
         fetchCSRFToken,
         loginAuth,
         logoutAuth,
+        registerAuth,
         clearAuthMessage
     }
 
