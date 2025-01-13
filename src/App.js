@@ -7,6 +7,7 @@ import Sidenav from './component/sidebar/Sidenav.js';
 import Home from './component/Home.js';
 import Landing from './component/landing/Landing.js';
 import Login from './component/auth/Login.js';
+import Register from './component/auth/Register.js';
 
 import SidebarContext from './context/sidebar.js';
 import LoadingContext from './context/loading/loading.js';
@@ -15,6 +16,7 @@ import AuthContext from './context/auth.js';
 import Dashboard from './component/dashboard/Dashboard.js';
 import axios from 'axios';
 import Loading from './component/loading/Loading.js';
+import Auth from './component/auth/Auth.js';
 
 export const NumberContext = React.createContext();
 
@@ -130,7 +132,10 @@ function App() {
                   <Routes>
                     <Route path='/' element={<Landing></Landing>}></Route>
                     
-                    <Route path='/login' element={<Login></Login>}></Route>
+                    <Route path='/auth' element={<Auth></Auth>}>
+                      <Route path='login' element={<Login></Login>}></Route>
+                      <Route path='register' element={<Register></Register>}></Route>
+                    </Route>
                   </Routes>
 
                 </div>

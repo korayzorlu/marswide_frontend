@@ -1,10 +1,11 @@
 import { useEffect, useContext, useState } from "react";
-import { Input, initMDB } from "mdb-ui-kit";
+import { Input } from "mdb-ui-kit";
 import AuthContext from "../../context/auth";
+import { Link } from "react-router-dom";
 
 
 function Login() {
-    const {theme,fetchCSRFToken,loginAuth} = useContext(AuthContext)
+    const {theme,loginAuth,authMessage,clearAuthMessage} = useContext(AuthContext)
     
 
     const [username, setUsername] = useState("");
@@ -12,10 +13,14 @@ function Login() {
     
 
     useEffect(() => {
-            const inputs = document.querySelectorAll('.form-outline');
-            inputs.forEach((input) => {
-                new Input(input); // Her dropdown öğesini başlat
-            });
+        //mdb input
+        const inputs = document.querySelectorAll('.form-outline');
+        inputs.forEach((input) => {
+            new Input(input); // Her dropdown öğesini başlat
+        });
+
+        //clear message
+        clearAuthMessage();
     }, []);
 
     
@@ -26,56 +31,37 @@ function Login() {
     };
 
     return ( 
-        <div className="row">
-            <div className="col-md-6 ms-auto me-auto">
-
-                <div className="card">
-                    <div className="row">
-                        <div className="col-md-6 login-img-">
-                            <img src={require("../../images/landing/login-img-1.jpg")} className="img-fluid" alt="Marswide" loading="lazy"/>
-                        </div>
-                        <div className="col-md-6 login-col-">
-                            
-                            <div className="card-header">
-                                <div className="row justify-content-center">
-                                    <div className="col-md-4 text-center">
-                                        <img src={require(`../../images/logo/${theme}/marswide-icon.png`)} className="" height="60" alt="Marswide"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-body text-center">
-                                <h5 className="card-title">Login</h5>
-                                <div data-mdb-input-init className="form-outline mb-4">
-                                    <input type="email" value={username} onChange={(e) => setUsername(e.target.value)} id="formOutline-user-email" className="form-control" />
-                                    <label className="form-label" for="formOutline-user-email-">Email address</label>
-                                </div>
-                                <div data-mdb-input-init className="form-outline mb-4">
-                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="formOutline-user-password" className="form-control" />
-                                    <label className="form-label" for="formOutline-user-password-">Password</label>
-                                </div>
-                                <div className="row mb-4">
-                                    <div className="col d-flex justify-content-center">
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" value="" id="form-remember"/>
-                                        <label className="form-check-label" for="form-remember"> Remember me </label>
-                                    </div>
-                                    </div>
-
-                                    <div className="col">
-                                    <a href="#!">Forgot password?</a>
-                                    </div>
-                                </div>
-                                <button data-mdb-ripple-init type="submit" className="btn btn-primary btn-block" onClick={handleLoginAuth}>Sign in</button>
-                            </div>
-
-                        </div>
-                    </div>
-                    
+        <>
+            <form className="card-body text-center"onSubmit={handleLoginAuth}>
+                <h5 className="card-title mb-3">Log in</h5>
+                <div data-mdb-input-init className="form-outline mb-3">
+                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} id="formOutline-user-login-email" className="form-control" required />
+                    <label className="form-label" for="formOutline-user-login-email-">Email address</label>
                 </div>
+                <div data-mdb-input-init className="form-outline mb-3">
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="formOutline-user-login-password" className="form-control" required />
+                    <label className="form-label" for="formOutline-user-login-password-">Password</label>
+                </div>
+                <div className="row mb-3">
+                    <div className="col d-flex justify-content-center">
+                    <div className="form-check">
+                        <input className="form-check-input" type="checkbox" value="" id="form-remember"/>
+                        <label className="form-check-label" for="form-remember"> Remember me </label>
+                    </div>
+                    </div>
 
+                    <div className="col">
+                    <Link to="/dashboard" className="text-blue-500 fw-bold">Forgot password?</Link>
+                    </div>
+                </div>
+                <button data-mdb-ripple-init type="submit" className="btn btn-primary btn-block">Sign in</button>
+                <span className={`text-start btn-block ${authMessage.color}`}><i className={authMessage.icon}></i> {authMessage.text}</span>
+            </form>
+            <div className="card-footer">
+            Don't have an account? <Link to="/auth/register" className="text-blue-500 fw-bold">Sign up</Link>
             </div>
-        </div>
-     );
+        </>
+    );
 }
 
 export default Login;

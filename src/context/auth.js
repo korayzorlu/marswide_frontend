@@ -19,6 +19,7 @@ function AuthProvider(props){
     const [userSourceCompanies, setUserSourceCompanies] = useState([]);
     const [status, setStatus] = useState(false)
     const [csrfToken, setCSRFToken] = useState("");
+    const [authMessage, setAuthMessage] = useState({color:"",icon:"",text:""});
     const navigate = useNavigate();
 
     const [dark, setDark] = useState(false);
@@ -47,7 +48,6 @@ function AuthProvider(props){
         };
 
         if(user){
-            console.log(user["profile"])
             try {
                 await axios.put(`/users/api/user_profiles/${user["profile"]}/`, 
                     {
@@ -58,7 +58,7 @@ function AuthProvider(props){
 
                 );
             } catch (error) {
-                console.log(error);
+                
             };
         };
        
@@ -92,7 +92,7 @@ function AuthProvider(props){
             axios.defaults.withCredentials = true
             //document.cookie = `csrftoken=${responseToken.data.csrfToken}; path=/;`;
         } catch (error) {
-            console.log(error);
+            
         };
         
     };
@@ -110,13 +110,16 @@ function AuthProvider(props){
                 fetchUser();
                 setStatus(true);
                 navigate('/');
-            } else {
-                //alert('Hatalı kullanıcı adı veya şifre.');
+            };
+        } catch (error) {
+            //alert('Giriş başarısız: ' + error.response.data.message);
+            if(error.status === 401){
                 fetchUser();
                 setStatus(false);
-            }
-        } catch (error) {
-            alert('Giriş başarısız: ' + error.response.data.message);
+                setAuthMessage({color:"text-red-500",icon:"",text:"Login failed! Invalid username or password."})
+            }else {
+                setAuthMessage({color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"})
+            };
         } finally {
             handleLoading(false);
         };
@@ -126,21 +129,24 @@ function AuthProvider(props){
         handleLoading(true);
         try {
             const responseLogout = await axios.post('/users/logout/', { withCredentials: true, headers: { "X-CSRFToken": csrfToken } });
-            console.log(responseLogout)
             if (responseLogout.data.success) {
                 //alert('Çıkış yapıldı.');
                 fetchUser();
                 setStatus(false);
                 navigate('/');
-                navigate('/login');
+                navigate('/auth/login');
             };
         } catch (error) {
             alert('Çıkış yapılamadı: ' + error.message);
         } finally {
+            setAuthMessage({color:"",icon:"",text:""})
             handleLoading(false);
         };
     };
 
+    const clearAuthMessage = () => {
+        setAuthMessage({color:"",icon:"",text:""})
+    };
  
 
     const sharedValuesAndMethods = {
@@ -153,12 +159,14 @@ function AuthProvider(props){
         dark,
         theme,
         logo,
+        authMessage,
         fetchTheme,
         handleChangeTheme,
         fetchUser,
         fetchCSRFToken,
         loginAuth,
-        logoutAuth
+        logoutAuth,
+        clearAuthMessage
     }
 
     return (

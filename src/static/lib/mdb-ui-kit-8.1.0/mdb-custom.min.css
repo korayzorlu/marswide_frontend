@@ -16716,7 +16716,7 @@ fieldset:disabled .btn-group-vertical > .btn {
 
 .card-footer {
   --mdb-card-footer-border-color: var(--mdb-divider-color);
-  --mdb-card-footer-border-width: 2px;
+  --mdb-card-footer-border-width: 1px;
   border-top: var(--mdb-card-footer-border-width) solid var(--mdb-card-footer-border-color);
 }
 

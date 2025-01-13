@@ -30,7 +30,7 @@ function NavbarLanding() {
                 </a>
                 <div className="d-flex align-items-center">
                     <button className="nav-link me-3" onClick={handleToggleTheme}>{theme === "dark" ? <><LightModeIcon/></>: <><DarkModeIcon/></>}</button>
-                    <button className="nav-link" onClick={()=>navigate("/login")}>Login</button>
+                    <button className="nav-link" onClick={()=>navigate("/auth/login")}>Login</button>
                 </div>
             </div>
                 

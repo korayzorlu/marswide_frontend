@@ -5,7 +5,7 @@ const SidebarContext = createContext();
 
 function SidebarProvider(props){
     const {children} = props;
-    console.log(Cookies.get("collapse"))
+    
     const [mobile, setMobile] = useState(false);
     const [collapse, setCollapse] = useState(Cookies.get("collapse") === "true" ? true : false);
     const [toggle, setToggle] = useState(false);
