@@ -13,7 +13,7 @@ function AuthProvider(props){
     const {children} = props;
     const {loading,handleLoading} = useContext(LoadingContext)
     
-    const [user, setUser] = useState({"theme" : "light"});
+    const [user, setUser] = useState({theme:"light"});
     const [sourceCompanyName, setSourceCompanyName] = useState("");
     const [sourceCompanyId, setSourceCompanyId] = useState(0)
     const [userSourceCompanies, setUserSourceCompanies] = useState([]);
@@ -74,7 +74,7 @@ function AuthProvider(props){
                 setTheme(responseUser.data[0]["theme"]);
                 document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE}`
             } catch (error) {
-    
+                
             } finally {
                 
             }
@@ -105,19 +105,17 @@ function AuthProvider(props){
                 password:password,
                 remember:remember
             },{ withCredentials: true, });
-            if (responseLogin.data.success) {
-                //alert('Giriş başarılı!');
+            if (responseLogin.status === 200) {
                 fetchCSRFToken();
                 fetchUser();
                 setStatus(true);
                 navigate('/');
             };
         } catch (error) {
-            //alert('Giriş başarısız: ' + error.response.data.message);
             if(error.status === 401){
                 fetchUser();
                 setStatus(false);
-                setAuthMessage({color:"text-red-500",icon:"",text:"Login failed! Invalid username or password."})
+                setAuthMessage({color:"text-red-500",icon:"",text:error.response.data.message})
             }else {
                 setAuthMessage({color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"})
             };
@@ -130,15 +128,14 @@ function AuthProvider(props){
         handleLoading(true);
         try {
             const responseLogout = await axios.post('/users/logout/', { withCredentials: true, headers: { "X-CSRFToken": csrfToken } });
-            if (responseLogout.data.success) {
-                //alert('Çıkış yapıldı.');
+            if (responseLogout.status === 200) {
                 fetchUser();
                 setStatus(false);
                 navigate('/');
                 navigate('/auth/login');
             };
         } catch (error) {
-            alert('Çıkış yapılamadı: ' + error.message);
+
         } finally {
             setAuthMessage({color:"",icon:"",text:""})
             handleLoading(false);
@@ -157,7 +154,6 @@ function AuthProvider(props){
                 refCode:refCode
             },{ withCredentials: true, });
             if (responseLogin.data.success) {
-                //alert('Giriş başarılı!');
                 fetchCSRFToken();
                 fetchUser();
                 setStatus(true);
@@ -165,12 +161,10 @@ function AuthProvider(props){
 
             };
         } catch (error) {
-            //alert('Giriş başarısız: ' + error.response.data.message);
-            console.log(error.response.data.error);
             if(error.status === 400){
                 fetchUser();
                 setStatus(false);
-                setAuthMessage({color:"text-red-500",icon:"",text:error.response.data.error})
+                setAuthMessage({color:"text-red-500",icon:"",text:error.response.data.message})
             }else {
                 fetchUser();
                 setStatus(false);

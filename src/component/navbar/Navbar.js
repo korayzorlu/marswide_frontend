@@ -16,8 +16,6 @@ function Navbar() {
     const {handleCollapse} = useContext(SidebarContext);
     const {dark,logo,handleChangeTheme,user,sourceCompanyName,userSourceCompanies,changeSourceCompany,logoutAuth} = useContext(AuthContext);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
         dropdowns.forEach((dropdown) => {
@@ -116,7 +114,7 @@ function Navbar() {
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                             <li>
-                                <div className="dropdown-header text-center p-3">{user["username"]}</div>
+                                <div className="dropdown-header text-center p-3">{user["name"]}</div>
                             </li>
                             <li><hr className="dropdown-divider m-0"/></li>
                             <li>

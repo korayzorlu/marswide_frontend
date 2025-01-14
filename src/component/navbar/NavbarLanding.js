@@ -1,14 +1,11 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
 import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
 import AuthContext from "../../context/auth";
 
 function NavbarLanding() {
-    const {dark,theme,logo,handleChangeTheme} = useContext(AuthContext)
-
-    const navigate = useNavigate();
-    
+    const {dark,theme,logo,handleChangeTheme,clearAuthMessage} = useContext(AuthContext)
 
      //theme
 
@@ -30,7 +27,7 @@ function NavbarLanding() {
                 </a>
                 <div className="d-flex align-items-center">
                     <button className="nav-link me-3" onClick={handleToggleTheme}>{theme === "dark" ? <><LightModeIcon/></>: <><DarkModeIcon/></>}</button>
-                    <button className="nav-link" onClick={()=>navigate("/auth/login")}>Login</button>
+                    <Link className="nav-link" to="/auth/login" onClick={() => clearAuthMessage()}>Log in</Link>
                 </div>
             </div>
                 

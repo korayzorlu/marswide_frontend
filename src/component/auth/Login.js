@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 
 function Login() {
-    const {theme,loginAuth,authMessage,clearAuthMessage} = useContext(AuthContext)
+    const {loginAuth,authMessage,clearAuthMessage} = useContext(AuthContext)
     
 
     const [email, setEmail] = useState("");
