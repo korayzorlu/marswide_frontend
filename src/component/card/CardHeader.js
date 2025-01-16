@@ -1,7 +1,8 @@
-function CardHeader() {
+function CardHeader(props) {
+    const {children} = props;
     return ( 
         <div className="card-header">
-            <h5>Profile</h5>
+            {children}
         </div>
     );
 }

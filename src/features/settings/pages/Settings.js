@@ -33,7 +33,7 @@ function Settings() {
 
                 <TabContent>
                     <TabPane tabPane={{id:"esk1",label:"test1",active:"show active"}}>
-                        <Auth auth={{test:"test"}}></Auth>
+                        <Auth auth={{input:{id:"settings-auth-email",label:"Email"},email:user.email}}></Auth>
                     </TabPane>
                     <TabPane tabPane={{id:"esk2",label:"test2",active:""}}>
                         Company settings
