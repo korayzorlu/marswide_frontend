@@ -13,13 +13,14 @@ function AuthProvider(props){
     const {children} = props;
     const {loading,handleLoading} = useContext(LoadingContext)
     
-    const [user, setUser] = useState({theme:"light"});
+    const [user, setUser] = useState();
     const [sourceCompanyName, setSourceCompanyName] = useState("");
     const [sourceCompanyId, setSourceCompanyId] = useState(0)
     const [userSourceCompanies, setUserSourceCompanies] = useState([]);
     const [status, setStatus] = useState(false)
     const [csrfToken, setCSRFToken] = useState("");
     const [authMessage, setAuthMessage] = useState({color:"",icon:"",text:""});
+    const [wrongPath, setWrongPath] = useState(false)
     const navigate = useNavigate();
 
     const [dark, setDark] = useState(false);
@@ -55,7 +56,6 @@ function AuthProvider(props){
                         theme : darkTerm ? "dark" : "light"
                     },
                     {withCredentials: true},
-
                 );
             } catch (error) {
                 
@@ -65,20 +65,18 @@ function AuthProvider(props){
     };
 
     const fetchUser = async () => {
-        if(user){
-            try {
-                const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
-                setUser(responseUser.data[0]);
-                setStatus(true);
-                setDark(responseUser.data[0]["theme"] === "light" ? false : true);
-                setTheme(responseUser.data[0]["theme"]);
-                document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE}`
-            } catch (error) {
-                
-            } finally {
-                
-            }
-        };
+        try {
+            const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
+            setUser(responseUser.data[0]);
+            setStatus(true);
+            setDark(responseUser.data[0]["theme"] === "light" ? false : true);
+            setTheme(responseUser.data[0]["theme"]);
+            document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE}`
+        } catch (error) {
+
+        } finally {
+            
+        }
         handleLoading(false);
         
     };
@@ -109,6 +107,8 @@ function AuthProvider(props){
                 fetchCSRFToken();
                 fetchUser();
                 setStatus(true);
+                setTheme(responseLogin.data.theme);
+                handleChangeTheme(theme === "dark" ? true : false);
                 navigate('/');
             };
         } catch (error) {
@@ -131,7 +131,6 @@ function AuthProvider(props){
             if (responseLogout.status === 200) {
                 fetchUser();
                 setStatus(false);
-                navigate('/');
                 navigate('/auth/login');
             };
         } catch (error) {
@@ -178,6 +177,10 @@ function AuthProvider(props){
     const clearAuthMessage = () => {
         setAuthMessage({color:"",icon:"",text:""})
     };
+
+    const handleWrongPath = () => {
+        setWrongPath();
+    };
  
 
     const sharedValuesAndMethods = {
@@ -191,6 +194,7 @@ function AuthProvider(props){
         theme,
         logo,
         authMessage,
+        wrongPath,
         fetchTheme,
         handleChangeTheme,
         fetchUser,
@@ -198,7 +202,8 @@ function AuthProvider(props){
         loginAuth,
         logoutAuth,
         registerAuth,
-        clearAuthMessage
+        clearAuthMessage,
+        handleWrongPath
     }
 
     return (

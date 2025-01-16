@@ -1,9 +1,9 @@
 
 :root {
     --sidebar-icon-color: #000;
-    --sidebar-background-color: rgb(249, 249, 249, 0.7);
-    --sidebar-submenu-background-color: #fff;
-    --sidebar-menu-button-background-color: #f3f3f3;
+    --sidebar-background-color: #fff;
+    --sidebar-submenu-background-color: #f7f7f7;
+    --sidebar-menu-button-background-color: #EBEBEB;
 }
   
 [data-mdb-theme="dark"] {

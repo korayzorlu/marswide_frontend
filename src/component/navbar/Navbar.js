@@ -118,10 +118,10 @@ function Navbar() {
                             </li>
                             <li><hr className="dropdown-divider m-0"/></li>
                             <li>
-                                <a className="dropdown-item" href="#/">Profile</a>
+                                <Link className="dropdown-item" to={`/profile/${user["username"]}`}>Profile</Link>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="#/">Settings</a>
+                            <Link className="dropdown-item" to={`/settings`}>Settings</Link>
                             </li>
                             <li>
                                 <a className='dropdown-item' href="#/" onClick={handleToggleTheme} style={{"cursor":"pointer"}}>

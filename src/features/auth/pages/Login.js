@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import { Input } from "mdb-ui-kit";
-import AuthContext from "../../context/auth";
 import { Link } from "react-router-dom";
+import AuthContext from "../../../context/auth";
 
 
 function Login() {

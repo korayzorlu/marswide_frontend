@@ -1,13 +1,10 @@
 import './App.css';
 import React, {useEffect, useContext, useState, useReducer, useMemo, useRef} from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './component/navbar/Navbar.js';
-import NavbarLanding from './component/navbar/NavbarLanding.js';
-import Sidenav from './component/sidebar/Sidenav.js';
-import Home from './component/Home.js';
-import Landing from './component/landing/Landing.js';
-import Login from './component/auth/Login.js';
-import Register from './component/auth/Register.js';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Landing from './features/layout/pages/Landing.js';
+import Panel from './features/layout/pages/Panel.js';
+import WrongPath from './features/layout/pages/WrongPath.js';
+import Home from './features/layout/pages/Home.js';
 
 import SidebarContext from './context/sidebar.js';
 import LoadingContext from './context/loading/loading.js';
@@ -16,16 +13,20 @@ import AuthContext from './context/auth.js';
 import Dashboard from './component/dashboard/Dashboard.js';
 import axios from 'axios';
 import Loading from './component/loading/Loading.js';
-import Auth from './component/auth/Auth.js';
+import Settings from './features/settings/pages/Settings.js';
+import Profile from './features/auth/pages/Profile.js'
+import Auth from './features/auth/pages/Auth.js';
+import Login from './features/auth/pages/Login';
+import Register from './features/auth/pages/Register';
 
 export const NumberContext = React.createContext();
 
 function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-  const {loading,handleLoading} = useContext(LoadingContext)
+  const {loading} = useContext(LoadingContext)
   
   //get user from api
-  const {fetchTheme,fetchUser,user,theme,dark,fetchCSRFToken,status} = useContext(AuthContext);
+  const {fetchTheme,fetchUser,user,dark,fetchCSRFToken,status} = useContext(AuthContext);
 
   useEffect(() => {
     fetchTheme();
@@ -39,12 +40,12 @@ function App() {
     fetchCSRFToken();
   }, []);
 
-  
-  
+  const location = useLocation();
+  console.log(location.pathname);
   //get user from api-end
 
   //sidebar collapse
-  const {contentWidth,checkMobile,handleResize} = useContext(SidebarContext);
+  const {checkMobile,handleResize} = useContext(SidebarContext);
   
   useEffect(() => {
     checkMobile();
@@ -86,74 +87,46 @@ function App() {
 
   if (loading) return <Loading></Loading>;
 
-  return (
-    <div className="App" id='MichoApp'>
 
-      
+
+  return (
+    
+    <div className="App" id='Marswide'>
 
       { user && status ? 
 
         <>
-          <Navbar></Navbar>
-          <div className='row homeContent p-0 m-0 w-100'>
+          <Routes>
 
-            <div className='col sidebarContent p-0 m-0 h-100' style={{"maxWidth":contentWidth.sidebar}}>
-              <Sidenav></Sidenav>
-            </div>
+            <Route exact path='/' element={<Panel></Panel>}>
+              <Route index element={<Dashboard></Dashboard>}></Route>
+              <Route path='profile/:username' element={<Profile></Profile>}></Route>
+              <Route path='/settings' element={<Settings></Settings>}></Route>
+            </Route>
 
-            <div className='col p-0 m-0 h-100 pageContent overflow-scroll' style={{"maxWidth":contentWidth.page}}>
+            <Route path='*' element={<WrongPath></WrongPath>}></Route>
 
-              <div className="row p-2 m-0">
-                <div className="col-md-12">
-                  {user["username"]}
-                  <Routes>
-                    <Route path='/' element={<Home></Home>}></Route>
-                    <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
-                  </Routes>
-
-                </div>
-              </div>
-              
-            </div>
-
-          </div>
+          </Routes>
         </>
 
         :
         
         <>
-          <NavbarLanding></NavbarLanding>
+          <Routes>
 
-          <div className='row homeContent p-0 m-0 w-100'>
-            <div className='col p-0 m-0 h-100 pageContent overflow-scroll'>
-              <div className="row p-2 m-0">
-                <div className="col-md-12">
+            <Route path='/' element={<Landing></Landing>}>
+              <Route index element={<Home></Home>}></Route>
+              <Route path='auth' element={<Auth></Auth>}>
+                <Route path='login' element={<Login></Login>}></Route>
+                <Route path='register' element={<Register></Register>}></Route>
+              </Route>
+            </Route>
 
-                  <Routes>
-                    <Route path='/' element={<Landing></Landing>}></Route>
-                    
-                    <Route path='/auth' element={<Auth></Auth>}>
-                      <Route path='login' element={<Login></Login>}></Route>
-                      <Route path='register' element={<Register></Register>}></Route>
-                    </Route>
-                  </Routes>
+            <Route path='*' element={<WrongPath></WrongPath>}></Route>
 
-                </div>
-              </div>
-            </div>
-          </div>
+          </Routes>
         </>
       }
-
-      
-          
-
-
-      
- 
-      
-
-      
 
     </div>
   );

@@ -1,7 +1,7 @@
-function Landing() {
+function Home() {
     return ( 
         <div>Landing</div>
      );
 }
 
-export default Landing;
+export default Home;

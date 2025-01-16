@@ -8,6 +8,7 @@ import { AuthProvider } from './context/auth';
 import { NavbarProvider } from './context/navbar';
 import { SidebarProvider } from './context/sidebar';
 import { LoadingProvider } from './context/loading/loading';
+import { SettingsProvider } from './context/settings/settings';
 
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 //import '../node_modules/mdb-ui-kit/css/mdb.min.css';
@@ -42,11 +43,13 @@ root.render(
       <LoadingProvider>
         
         <AuthProvider>
+          <SettingsProvider>
             <NavbarProvider>
               <SidebarProvider>
                           <App />
               </SidebarProvider>
             </NavbarProvider>
+          </SettingsProvider>
         </AuthProvider>
         
       </LoadingProvider>
