@@ -1,12 +1,19 @@
 import React from 'react'
 import { useContext } from 'react';
 import { Outlet } from 'react-router-dom'
-import SidebarContext from '../../../context/sidebar';
 import Navbar from '../../../component/navbar/Navbar';
 import Sidenav from '../../../component/sidebar/Sidenav';
+import Alert from '../../../component/alert/Alert';
+import { useSelector } from 'react-redux';
+//import Alert from '@mui/joy/Alert';
+import IconButton from '@mui/joy/IconButton';
+import Typography from '@mui/joy/Typography';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import Box from '@mui/joy/Box';
 
 function Panel() {
-  const {contentWidth} = useContext(SidebarContext);
+  const {alert} = useSelector((store) => store.notification);
+  const {contentWidth} = useSelector((store) => store.sidebar);
 
   return (
     <>
@@ -30,6 +37,29 @@ function Panel() {
         </div>
 
       </div>
+      {/* <Box sx={{ display: 'flex', gap: 2, width: '100%', flexDirection: 'column' }}>
+        <Alert
+            key="save"
+            sx={{ alignItems: 'flex-start' }}
+            startDecorator={alert.icon}
+            variant="soft"
+            color={alert.color}
+            endDecorator={
+              <IconButton variant="soft" color={alert.color}>
+                <CloseRoundedIcon />
+              </IconButton>
+            }
+          >
+            <div>
+              <div>Saved</div>
+              <Typography level="body-sm" color={alert.color}>
+                alert.text
+              </Typography>
+            </div>
+          </Alert>
+      </Box> */}
+     
+      <Alert color={alert.color} text={alert.text} icon={alert.icon}></Alert>
     </>
   )
 }

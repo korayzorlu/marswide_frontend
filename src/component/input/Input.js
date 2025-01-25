@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Input as MDBInput } from "mdb-ui-kit";
 
 function Input(props) {
-    const {children,input} = props;
+    const {children,type,id,name,required,disabled,label,addClass,onChange,size,autoComplete} = props;
 
     useEffect(() => {
         //mdb input
@@ -14,9 +14,19 @@ function Input(props) {
     }, []);
 
     return ( 
-        <div className="form-outline" data-mdb-input-init>
-            <input type={input.type} id={input.id} className="form-control" value={children} required={input.required} disabled={input.disabled}/>
-            <label className="form-label" for={input.id}>{input.label}</label>
+        <div className={`form-outline mb-3 ${addClass}`} data-mdb-input-init>
+            <input
+            className={`form-control ${size ? "form-control-" + size : ""}`}
+                type={type}
+                id={id}
+                name={name}
+                value={children}
+                onChange={onChange}
+                autoComplete={autoComplete}
+                required={required}
+                disabled={disabled}
+            />
+            <label className="form-label" htmlFor={id}>{label}</label>
         </div>
     );
 }

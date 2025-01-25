@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Outlet } from "react-router-dom";
-import AuthContext from "../../../context/auth";
+import { useSelector } from "react-redux";
 
 
 function Auth({children}) {
-    const {theme} = useContext(AuthContext)
+    const {theme} = useSelector((store) => store.auth);
 
     return ( 
         <div className="row">

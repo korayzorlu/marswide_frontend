@@ -6,14 +6,13 @@ import Nav from "../../../component/tab/Nav";
 import NavItem from "../../../component/tab/NavItem";
 import TabContent from "../../../component/tab/TabContent";
 import TabPane from "../../../component/tab/TabPane";
-import AuthContext from "../../../context/auth";
 import SettingsContext from "../../../context/settings/settings";
-import Auth from "../components/Auth";
+import AuthSettings from "../auth/components/AuthSettings";
+import { useSelector } from "react-redux";
 
 
 function Settings() {
-    const {user} = useContext(AuthContext)
-    const {tabs,handleItem} = useContext(SettingsContext)
+    const {user} = useSelector((store) => store.auth);
 
     useEffect(() => {
         //mdb input
@@ -25,20 +24,20 @@ function Settings() {
 
     return ( 
         <PanelContent>
+            <Nav>
+                <NavItem navItem={{id:"authSettingsNav",target:"authSettingsTab",active:"active"}}>Auth</NavItem>
+                <NavItem navItem={{id:"test2",target:"esk2",active:""}}>Company</NavItem>
+                <NavItem navItem={{id:"test2",target:"esk2",active:""}}>Plan</NavItem>
+            </Nav>
 
-                <Nav>
-                    <NavItem navItem={{id:"test1",target:"esk1",active:"active"}}>Auth</NavItem>
-                    <NavItem navItem={{id:"test2",target:"esk2",active:""}}>Company</NavItem>
-                </Nav>
-
-                <TabContent>
-                    <TabPane tabPane={{id:"esk1",label:"test1",active:"show active"}}>
-                        <Auth auth={{input:{id:"settings-auth-email",label:"Email"},email:user.email}}></Auth>
-                    </TabPane>
-                    <TabPane tabPane={{id:"esk2",label:"test2",active:""}}>
-                        Company settings
-                    </TabPane>
-                </TabContent>
+            <TabContent>
+                <TabPane tabPane={{id:"authSettingsTab",label:"authSettingsNav",active:"show active"}}>
+                    <AuthSettings user={user}></AuthSettings>
+                </TabPane>
+                <TabPane tabPane={{id:"esk2",label:"test2",active:""}}>
+                    Company settings
+                </TabPane>
+            </TabContent>
 
         </PanelContent>
     );

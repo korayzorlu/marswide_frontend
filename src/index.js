@@ -4,11 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/auth';
 import { NavbarProvider } from './context/navbar';
 import { SidebarProvider } from './context/sidebar';
 import { LoadingProvider } from './context/loading/loading';
 import { SettingsProvider } from './context/settings/settings';
+
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 //import '../node_modules/mdb-ui-kit/css/mdb.min.css';
@@ -35,25 +37,18 @@ import 'datatables.net-searchbuilder-bs5';
 import 'datatables.net-searchpanes-bs5';
 import 'datatables.net-select-bs5';
 import 'datatables.net-staterestore-bs5';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   //<React.StrictMode>
-    <BrowserRouter>
-      <LoadingProvider>
-        
-        <AuthProvider>
-          <SettingsProvider>
-            <NavbarProvider>
-              <SidebarProvider>
-                          <App />
-              </SidebarProvider>
-            </NavbarProvider>
-          </SettingsProvider>
-        </AuthProvider>
-        
-      </LoadingProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <StyledEngineProvider injectFirst>
+          <App />
+        </StyledEngineProvider>
+      </BrowserRouter>
+    </Provider>
   //</React.StrictMode>
 );
 

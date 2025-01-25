@@ -1,20 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "bootstrap/js/dist/dropdown.js";
-import { Dropdown, Collapse, initMDB } from "mdb-ui-kit";
+import { Dropdown } from "mdb-ui-kit";
 import { Link } from 'react-router-dom';
-import esmsLogo from "../../images/landing/esms-logo.png";
-import { height, width } from '@fortawesome/free-brands-svg-icons/fa42Group';
-import NavbarContext from '../../context/navbar';
-import AuthContext from '../../context/auth';
-import SidebarContext from '../../context/sidebar';
 import { ReactComponent as NavbarLogo } from '../../images/logo/light/marswide-logo.svg';
 import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
 import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
+import ProgressBar from '../progress/ProgressBar';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeTheme, logoutAuth } from '../../store/slices/authSlice';
+import { setSidebar } from '../../store/slices/sidebarSlice';
 
 function Navbar() {
-    const {handleCollapse} = useContext(SidebarContext);
-    const {dark,logo,handleChangeTheme,user,sourceCompanyName,userSourceCompanies,changeSourceCompany,logoutAuth} = useContext(AuthContext);
+    const {user,dark,logo} = useSelector((store) => store.auth);
+    const {collapse,toggle} = useSelector((store) => store.sidebar);
+    const {progress} = useSelector((store) => store.process);
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
@@ -28,37 +31,43 @@ function Navbar() {
     const handleToggleTheme = (event) => {
         event.preventDefault();
 
-        handleChangeTheme(!dark)
+        dispatch(changeTheme(!dark))
     };
 
     //theme-end
 
-    const [collapse, setCollapse] = useState(false)
-    const [toggle, setToggle] = useState(false)
+    //const [collapse, setCollapse] = useState(false)
+    //const [toggle, setToggle] = useState(false)
     
     const handleToggle = (event) => {
         event.preventDefault();
-        setCollapse(!collapse);
-        setToggle(!toggle);
+        //setCollapse(!collapse);
+        //setToggle(!toggle);
         
-        handleCollapse(collapse,toggle);
+        dispatch(setSidebar({collapseTerm:!collapse,toggleTerm:!toggle}));
     };
 
     const handleChaneSourceCompany = (event) => {
         event.preventDefault();
-        changeSourceCompany(event.target.value);
+        //changeSourceCompany(event.target.value);
     };
     
-    const handleLogoutAuth = (event) => {
+    const handleLogoutAuth = async (event) => {
         event.preventDefault();
         
-        logoutAuth();
+        try {
+            await dispatch(logoutAuth()).unwrap();
+            navigate('/auth/login');
+        } catch (error) {
+
+        };
     };
 
     
     
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
+            <ProgressBar value={progress.value} display={progress.display}></ProgressBar>
         
             <div className="container-fluid">
                 <button data-mdb-collapse-init className="navbar-toggler d-block" type="button" data-mdb-target="#navbarSupportedContent"
@@ -74,11 +83,11 @@ function Navbar() {
                     <div className="dropdown d-none">
                         <a data-mdb-dropdown-init data-mdb-ripple-init className="link-secondary me-3 dropdown-toggle"
                         href="/"id="navbarDropdownMenuLink" role="button" aria-expanded="false">
-                            {sourceCompanyName + " "}
+                            {user.sourceCompanyName + " "}
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             {
-                                userSourceCompanies.map((userSourceCompany,index) => {
+                                user.userSourceCompanies.map((userSourceCompany,index) => {
                                     return (
                                         <li key={index}>
                                             <button className="dropdown-item" onClick={handleChaneSourceCompany} value={userSourceCompany.id}>{userSourceCompany.name}</button>
@@ -114,14 +123,14 @@ function Navbar() {
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                             <li>
-                                <div className="dropdown-header text-center p-3">{user["name"]}</div>
+                                <div className="dropdown-header text-center p-3">{user.name}</div>
                             </li>
                             <li><hr className="dropdown-divider m-0"/></li>
                             <li>
                                 <Link className="dropdown-item" to={`/profile/${user["username"]}`}>Profile</Link>
                             </li>
                             <li>
-                            <Link className="dropdown-item" to={`/settings`}>Settings</Link>
+                            <Link className="dropdown-item" to={`/settings/auth`}>Settings</Link>
                             </li>
                             <li>
                                 <a className='dropdown-item' href="#/" onClick={handleToggleTheme} style={{"cursor":"pointer"}}>

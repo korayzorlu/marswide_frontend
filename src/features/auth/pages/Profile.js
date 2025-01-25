@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { Input } from "mdb-ui-kit";
-import AuthContext from "../../../context/auth";
+import { useSelector } from "react-redux";
 
 function Profile() {
-    const {user} = useContext(AuthContext)
+    const {user} = useSelector((store) => store.auth);
 
     useEffect(() => {
             //mdb input

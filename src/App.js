@@ -1,15 +1,11 @@
 import './App.css';
 import React, {useEffect, useContext, useState, useReducer, useMemo, useRef} from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import Landing from './features/layout/pages/Landing.js';
 import Panel from './features/layout/pages/Panel.js';
 import WrongPath from './features/layout/pages/WrongPath.js';
 import Home from './features/layout/pages/Home.js';
 
-import SidebarContext from './context/sidebar.js';
-import LoadingContext from './context/loading/loading.js';
-
-import AuthContext from './context/auth.js';
 import Dashboard from './component/dashboard/Dashboard.js';
 import axios from 'axios';
 import Loading from './component/loading/Loading.js';
@@ -18,37 +14,55 @@ import Profile from './features/auth/pages/Profile.js'
 import Auth from './features/auth/pages/Auth.js';
 import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
+import Company from './features/card/company/pages/Companies.js';
+import Data from './features/card/data/pages/Data.js';
+import PasswordReset from './features/settings/auth/pages/PasswordReset.js';
+import AuthSettingsLinks from './features/settings/auth/pages/AuthSettingsLinks.js';
+import PersonalSettings from './features/settings/auth/pages/PersonalSettings.js';
+import EmailSettings from './features/settings/auth/pages/EmailSettings.js';
+import ForgotPassword from './features/auth/pages/ForgotPassword.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser, fetchTheme, fetchCSRFToken } from './store/slices/authSlice.js';
+import { checkMobile, setResize } from './store/slices/sidebarSlice.js';
 
 export const NumberContext = React.createContext();
 
 function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-  const {loading} = useContext(LoadingContext)
+  const {user,status,theme,dark,loading} = useSelector((store) => store.auth);
+
+  const dispatch = useDispatch();
   
   //get user from api
-  const {fetchTheme,fetchUser,user,dark,fetchCSRFToken,status} = useContext(AuthContext);
+
 
   useEffect(() => {
-    fetchTheme();
+    //fetchTheme();
+    dispatch(fetchTheme(theme));
   }, [dark]);
   
   useEffect(() => {
-    fetchUser();
-  },[]);
+    dispatch(fetchUser());
+    dispatch(fetchCSRFToken());
+  },[dispatch]);
 
   useEffect(() => {
-    fetchCSRFToken();
-  }, []);
+    //fetchUser();
+    //fetchCSRFToken();
+  },[]);
 
-  const location = useLocation();
-  console.log(location.pathname);
+
+
   //get user from api-end
 
   //sidebar collapse
-  const {checkMobile,handleResize} = useContext(SidebarContext);
   
   useEffect(() => {
-    checkMobile();
+    const handleResize = () => {
+      dispatch(setResize());
+    };
+
+    dispatch(checkMobile());
     window.addEventListener('resize', handleResize);
 
     // Temizlik işlevi
@@ -61,33 +75,31 @@ function App() {
 
   //reducer
   
-  const initialValue = 0;
-  const reducer = (state,action) => {
-    switch(action){
-      case "increment" : 
-        return state + 1;
-      case "decrement" :
-        return state - 1;
-      case "reset" :
-          return initialValue;
-      default:
-        return state;
-    };
-  };
-  const [count, dispatch] = useReducer(reducer,initialValue);
+  // const initialValue = 0;
+  // const reducer = (state,action) => {
+  //   switch(action){
+  //     case "increment" : 
+  //       return state + 1;
+  //     case "decrement" :
+  //       return state - 1;
+  //     case "reset" :
+  //         return initialValue;
+  //     default:
+  //       return state;
+  //   };
+  // };
+  // const [count, dispatch] = useReducer(reducer,initialValue);
 
-  useEffect(() => {
-    console.log("rendered");
-  },[count]);
+  // useEffect(() => {
+  //   console.log("rendered");
+  // },[count]);
   //reducer-ends
 
   //hook
 
   //hook-end
-
+  console.log(user);
   if (loading) return <Loading></Loading>;
-
-
 
   return (
     
@@ -101,7 +113,19 @@ function App() {
             <Route exact path='/' element={<Panel></Panel>}>
               <Route index element={<Dashboard></Dashboard>}></Route>
               <Route path='profile/:username' element={<Profile></Profile>}></Route>
-              <Route path='/settings' element={<Settings></Settings>}></Route>
+              <Route path='settings' element={<Settings></Settings>}>
+                <Route path='auth' element={<AuthSettingsLinks></AuthSettingsLinks>}></Route>
+                <Route path='auth/personal' element={<PersonalSettings></PersonalSettings>}></Route>
+                <Route path='auth/email' element={<EmailSettings></EmailSettings>}></Route>
+                <Route path='auth/password-reset' element={<PasswordReset></PasswordReset>}></Route>
+              </Route>
+              <Route path='/companies' element={<Company></Company>}></Route>
+              <Route path='/data' element={<Data></Data>}></Route>
+
+              <Route path='auth' element={<Dashboard></Dashboard>}>
+                <Route path='login'></Route>
+                <Route path='register'></Route>
+              </Route>
             </Route>
 
             <Route path='*' element={<WrongPath></WrongPath>}></Route>
@@ -119,6 +143,7 @@ function App() {
               <Route path='auth' element={<Auth></Auth>}>
                 <Route path='login' element={<Login></Login>}></Route>
                 <Route path='register' element={<Register></Register>}></Route>
+                <Route path='forgot-password' element={<ForgotPassword></ForgotPassword>}></Route>
               </Route>
             </Route>
 

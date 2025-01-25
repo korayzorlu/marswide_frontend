@@ -1,18 +1,19 @@
-import { useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
 import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
-import AuthContext from "../../context/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { changeTheme, clearAuthMessage } from "../../store/slices/authSlice";
 
 function NavbarLanding() {
-    const {dark,theme,logo,handleChangeTheme,clearAuthMessage} = useContext(AuthContext)
+    const {dark,theme,logo} = useSelector((store) => store.auth);
+    const dispatch = useDispatch();
 
      //theme
 
      const handleToggleTheme = (event) => {
         event.preventDefault();
 
-        handleChangeTheme(!dark)
+        dispatch(changeTheme(!dark));
     };
 
     //theme-end
@@ -27,7 +28,7 @@ function NavbarLanding() {
                 </a>
                 <div className="d-flex align-items-center">
                     <button className="nav-link me-3" onClick={handleToggleTheme}>{theme === "dark" ? <><LightModeIcon/></>: <><DarkModeIcon/></>}</button>
-                    <Link className="nav-link" to="/auth/login" onClick={() => clearAuthMessage()}>Log in</Link>
+                    <Link className="nav-link" to="/auth/login" onClick={() => dispatch(clearAuthMessage())}>Log in</Link>
                 </div>
             </div>
                 

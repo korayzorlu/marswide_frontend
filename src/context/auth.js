@@ -1,7 +1,8 @@
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { Alert as MDBAlert, initMDB} from 'mdb-ui-kit';
 
 import LoadingContext from "./loading/loading";
 
@@ -20,12 +21,42 @@ function AuthProvider(props){
     const [status, setStatus] = useState(false)
     const [csrfToken, setCSRFToken] = useState("");
     const [authMessage, setAuthMessage] = useState({color:"",icon:"",text:""});
-    const [wrongPath, setWrongPath] = useState(false)
+    const [wrongPath, setWrongPath] = useState(false);
+    const [progress, setProgress] = useState({display:false,value:0});
+    const [alert, setAlert] = useState({color:"",text:"",icon:""});
     const navigate = useNavigate();
 
     const [dark, setDark] = useState(false);
     const [theme, setTheme] = useState(Cookies.get("theme") ? Cookies.get("theme") : "light");
     const [logo, setLogo] = useState(require(`../images/logo/light/marswide-logo-full.png`));
+
+    // useEffect(() => {
+    //     const handleStorageChange = (event) => {
+    //       // Eğer `logout` anahtarı değiştiyse oturumu kapat
+    //       console.log(event)
+    //       if (event.key === "login") {
+    //         fetchCSRFToken();
+    //         fetchUser();
+    //         setStatus(true);
+    //         setTheme(user.theme);
+    //         handleChangeTheme(theme === "dark" ? true : false);
+    //         navigate('/');
+    //       } else if (event.key === "logout") {
+    //         fetchUser();
+    //         setStatus(false);
+    //         navigate('/auth/login');
+    //         console.log("oturum kapandı");
+    //       };
+    //     };
+    
+    //     // Storage olayını dinle
+    //     window.addEventListener("storage", handleStorageChange);
+    
+    //     // Temizlik işlemi (component unmount olduğunda kaldır)
+    //     return () => {
+    //       window.removeEventListener("storage", handleStorageChange);
+    //     };
+    // }, [navigate]);
 
     const fetchTheme = () => {
         
@@ -48,7 +79,7 @@ function AuthProvider(props){
             document.cookie = `theme=light; path=/; ${process.env.REACT_APP_SAME_SITE}`
         };
 
-        if(user){
+        if(user && status){
             try {
                 await axios.put(`/users/api/user_profiles/${user["profile"]}/`, 
                     {
@@ -66,24 +97,36 @@ function AuthProvider(props){
 
     const fetchUser = async () => {
         try {
-            const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
-            setUser(responseUser.data[0]);
-            setStatus(true);
-            setDark(responseUser.data[0]["theme"] === "light" ? false : true);
-            setTheme(responseUser.data[0]["theme"]);
-            document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE}`
+            const responseSession = await axios.get(`/users/session/`, {withCredentials: true});
+            if(responseSession.data.authenticated){
+                try {
+                    const responseUser = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
+                    if(responseUser.data.length > 0){
+                        const userData = responseUser.data[0];
+                        setUser(userData);
+                        setStatus(true);
+                        setDark(responseUser.data[0]["theme"] === "light" ? false : true);
+                        setTheme(responseUser.data[0]["theme"]);
+                        document.cookie = `theme=${responseUser.data[0]["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE || "Lax"}`
+                    }else{
+                        setStatus(false);
+                    };
+                } catch (error) {
+                    setStatus(false);
+                } finally {
+                    handleLoading(false);
+                };
+            };
         } catch (error) {
-
+            setStatus(false);
         } finally {
-            
-        }
-        handleLoading(false);
-        
+            handleLoading(false);
+        };
     };
 
     const fetchCSRFToken = async () => {
         try {
-            const responseToken = await axios.get(`/users/csrf_token_get`, {withCredentials: true});
+            const responseToken = await axios.get(`/users/csrf_token_get/`, {withCredentials: true});
             setCSRFToken(responseToken.data.csrfToken);
             //axios.defaults.xsrfHeaderName = "X-CSRFToken";
             axios.defaults.headers['X-CSRFToken'] = responseToken.data.csrfToken;
@@ -92,7 +135,6 @@ function AuthProvider(props){
         } catch (error) {
             
         };
-        
     };
 
     const loginAuth = async (email, password, remember) => {
@@ -110,6 +152,7 @@ function AuthProvider(props){
                 setTheme(responseLogin.data.theme);
                 handleChangeTheme(theme === "dark" ? true : false);
                 navigate('/');
+                localStorage.setItem("login", Date.now());
             };
         } catch (error) {
             if(error.status === 401){
@@ -132,6 +175,7 @@ function AuthProvider(props){
                 fetchUser();
                 setStatus(false);
                 navigate('/auth/login');
+                localStorage.setItem("logout", Date.now());
             };
         } catch (error) {
 
@@ -174,12 +218,48 @@ function AuthProvider(props){
         };
     };
 
+    const forgotPasswordAuth = async (email) => {
+        handleLoading(true);
+        try {
+            const responseLogin = await axios.post('/users/password_reset/', { 
+                email:email
+            },{ withCredentials: true, });
+            if (responseLogin.status === 200) {
+                fetchCSRFToken();
+                navigate('/auth/login');
+            };
+        } catch (error) {
+            if(error.status === 400){
+                fetchUser();
+                setStatus(false);
+                setAuthMessage({color:"text-red-500",icon:"",text:error.response.data.message})
+            }else {
+                fetchUser();
+                setStatus(false);
+                setAuthMessage({color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"})
+            };
+        } finally {
+            handleLoading(false);
+        };
+    };
+
     const clearAuthMessage = () => {
         setAuthMessage({color:"",icon:"",text:""})
     };
 
     const handleWrongPath = () => {
         setWrongPath();
+    };
+
+    const handleProgress = () => {
+        setProgress();
+    };
+
+    const handleAlert = (alertTerm) => {
+        setAlert(alertTerm);
+        let basicInstance = MDBAlert.getInstance(document.getElementById("mainAlert"));
+        basicInstance.update({color:alertTerm.color})
+        basicInstance.show();
     };
  
 
@@ -195,6 +275,8 @@ function AuthProvider(props){
         logo,
         authMessage,
         wrongPath,
+        progress,
+        alert,
         fetchTheme,
         handleChangeTheme,
         fetchUser,
@@ -203,7 +285,10 @@ function AuthProvider(props){
         logoutAuth,
         registerAuth,
         clearAuthMessage,
-        handleWrongPath
+        handleWrongPath,
+        handleProgress,
+        handleAlert,
+        forgotPasswordAuth
     }
 
     return (

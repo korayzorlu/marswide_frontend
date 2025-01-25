@@ -4848,7 +4848,7 @@ textarea.form-control-lg {
   --mdb-alert-color: inherit;
   --mdb-alert-border-color: transparent;
   --mdb-alert-border: var(--mdb-border-width) solid var(--mdb-alert-border-color);
-  --mdb-alert-border-radius: 0.5rem;
+  --mdb-alert-border-radius: 0px;
   --mdb-alert-link-color: inherit;
   position: relative;
   padding: var(--mdb-alert-padding-y) var(--mdb-alert-padding-x);

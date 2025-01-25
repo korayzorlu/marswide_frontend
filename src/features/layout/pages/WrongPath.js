@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import AuthContext from "../../../context/auth";
+import { useSelector } from "react-redux";
 
 function WrongPath() {
-    const {theme} = useContext(AuthContext)
+    const {theme} = useSelector((store) => store.auth);
 
     return ( 
         <div className="row w-100 vh-100 g-0">

@@ -1,77 +1,123 @@
-import { useEffect, useContext, useState } from "react";
-import { Input } from "mdb-ui-kit";
-import { Link } from "react-router-dom";
-import AuthContext from "../../../context/auth";
+import { useEffect, useState } from "react";
+import { Input as MDBInput} from "mdb-ui-kit";
+import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from 'formik';
+import { basicSchema } from "../../../schemas";
+import { useDispatch, useSelector } from "react-redux";
+import { changeTheme, clearAuthMessage, fetchCSRFToken, registerAuth } from "../../../store/slices/authSlice";
+import Input from "../../../component/input/Input";
+import Button from "../../../component/button/Button";
 
 function Register() {
-    const {registerAuth,authMessage,clearAuthMessage} = useContext(AuthContext)
-    
+    const {authMessage,dark} = useSelector((store) => store.auth);
+    const dispatch = useDispatch();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [refCode, setRefCode] = useState("");
+    const navigate = useNavigate();
+
+    const [form, setForm] = useState({
+        email:"",
+        password:"",
+        passwordConfirmation:"",
+        firstName:"",
+        lastName:"",
+        refCode:""
+    });
 
     useEffect(() => {
         //mdb input
         const inputs = document.querySelectorAll('.form-outline');
         inputs.forEach((input) => {
-            new Input(input); // Her dropdown öğesini başlat
+            new MDBInput(input); // Her dropdown öğesini başlat
         });
 
+        (() => {
+            'use strict';
+        
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation');
+        
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms).forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+            });
+        })();
+
         //clear input
-        setEmail("");
-        setPassword("");
-        setFirstName("");
+        setForm({
+            email:"",
+            password:"",
+            passwordConfirmation:"",
+            firstName:"",
+            lastName:"",
+            refCode:""
+        })
     }, []);
 
-    const handleRegisterAuth = (event) => {
+    const formik = useFormik({
+        initialValues: {
+            firstName:'',
+            email: '',
+        },
+        validationSchema:basicSchema,
+   
+        onSubmit: values => {
+          alert(JSON.stringify(values, null, 2));
+        },
+   
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prevForm) => ({
+            ...prevForm,
+            [name]: value
+        }));
+    };
+
+    const handleRegisterAuth = async (event) => {
         event.preventDefault();
         
-        registerAuth(email, password, passwordConfirmation, firstName, lastName, refCode);
+        try {
+            await dispatch(registerAuth(form)).unwrap();
+            await dispatch(fetchCSRFToken()).unwrap();
+            dispatch(changeTheme(!dark));
+            navigate('/');
+        } catch (error) {
+
+        };
     };
+
+    
+
+
 
     return ( 
         <>
-            <form className="card-body text-center"onSubmit={handleRegisterAuth}>
+            <form className="card-body text-center needs-validation" onSubmit={handleRegisterAuth} novalidate>
                 <h5 className="card-title mb-3">Sign up to Marswide</h5>
                 <div className="row">
                     <div className="col-md-6">
-                        <div data-mdb-input-init className="form-outline mb-3">
-                            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} id="formOutline-user-register-firstName" className="form-control" required />
-                            <label className="form-label" for="formOutline-user-register-firstName">First Name</label>
-                        </div>
+                        <Input type="text" name="firstName" label={"First Name"} onChange={handleChange} id="formOutline-user-register-firstName" required={true}>{form.firstName}</Input>
                     </div>
                     <div className="col-md-6">
-                        <div data-mdb-input-init className="form-outline mb-3">
-                            <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} id="formOutline-user-register-lastName" className="form-control" required />
-                            <label className="form-label" for="formOutline-user-register-lastName">Last Name</label>
-                        </div>
+                        <Input type="text" name="lastName" label={"Last Name"} onChange={handleChange} id="formOutline-user-register-lastName" required={true}>{form.lastName}</Input>
                     </div>
                 </div>
-                <div data-mdb-input-init className="form-outline mb-3">
-                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} id="formOutline-user-register-email" className="form-control" required />
-                    <label className="form-label" for="formOutline-user-register-email-">Email address</label>
-                </div>
-                <div data-mdb-input-init className="form-outline mb-3">
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="formOutline-user-register-password" className="form-control" autocomplete="new-password" required />
-                    <label className="form-label" for="formOutline-user-register-password-">Password</label>
-                </div>
-                <div data-mdb-input-init className="form-outline mb-3">
-                    <input type="password" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} id="formOutline-user-register-passwordConfirmation" className="form-control" autocomplete="new-password" required />
-                    <label className="form-label" for="formOutline-user-register-passwordConfirmation-">Confirm Password</label>
-                </div>
-                <div data-mdb-input-init className="form-outline mb-3">
-                    <input type="text" value={refCode} onChange={(e) => setRefCode(e.target.value)} id="formOutline-user-register-refCode" className="form-control" required />
-                    <label className="form-label" for="formOutline-user-register-refCode-">Referance Code</label>
-                </div>
-                <button data-mdb-ripple-init type="submit" className="btn btn-primary btn-block">Sign up</button>
+                <Input type="text" name="email" label={"Email Address"} onChange={handleChange} id="formOutline-user-register-email" required={true}>{form.email}</Input>
+                <Input type="password" name="password" label={"Password"} onChange={handleChange} id="formOutline-user-register-password" autoComplete="new-password" required={true}>{form.password}</Input>
+                <Input type="password" name="passwordConfirmation" label={"Password Confirmation"} onChange={handleChange} id="formOutline-user-register-passwordConfirmation" autoComplete="new-password" required={true}>{form.passwordConfirmation}</Input>
+                <Input type="text" name="refCode" label={"Reference Code"} onChange={handleChange} id="formOutline-user-register-refCode" required={true}>{form.refCode}</Input>
+                <Button type="submit" color="primary" addClass="btn-block">Sign Up</Button>
                 <span className={`text-start btn-block ${authMessage.color}`}><i className={authMessage.icon}></i> {authMessage.text}</span>
             </form>
             <div className="card-footer text-center">
-            Have an account? <Link to="/auth/login" onClick={() => clearAuthMessage()} className="text-blue-500 fw-bold">Log in</Link>
+            Have an account? <Link to="/auth/login" onClick={() => dispatch(clearAuthMessage())} className="text-blue-500 fw-bold">Log in</Link>
             </div>
         </>
     );

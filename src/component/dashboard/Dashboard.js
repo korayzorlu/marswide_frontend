@@ -5,7 +5,7 @@ function Dashboard() {
     const navigate = useNavigate();
 
   return (
-    <div className="row">
+    <div className="row g-0">
         <div className="col-md-12">
 
 
