@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "bootstrap/js/dist/dropdown.js";
 import { Dropdown } from "mdb-ui-kit";
@@ -18,6 +18,8 @@ function Navbar() {
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
+
+    const [image, setImage] = useState(user.image);
 
     useEffect(() => {
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
@@ -118,12 +120,15 @@ function Navbar() {
                     <div className="dropdown">
                         <a data-mdb-dropdown-init className="dropdown-toggle d-flex align-items-center" href="#/"
                         id="navbarDropdownMenuAvatar" role="button" aria-expanded="false" data-mdb-offset="0,10">
-                            <img src={user["image"] ? require(user["image"]) : require('../../images/icons/navbar/user-2.png')}
-                            className="rounded-circle" height="25" alt="" loading="lazy" />
+                            <img
+                            src={user.image ? user.image : require('../../images/icons/navbar/user-2.png')}
+                            className="rounded-circle" height="25" width="25" alt="" loading="lazy"
+                            style={{objectFit:"cover"}}
+                            />
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                             <li>
-                                <div className="dropdown-header text-center p-3">{user.name}</div>
+                                <div className="dropdown-header text-center p-3">{user.name} <br/> {user.subscription}</div>
                             </li>
                             <li><hr className="dropdown-divider m-0"/></li>
                             <li>

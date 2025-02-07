@@ -8,4 +8,3 @@ function Card(props) {
 }
 
 export default Card;
-<div></div>

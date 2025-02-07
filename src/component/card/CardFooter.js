@@ -1,8 +1,8 @@
 function CardFooter(props) {
-    const {children} = props;
+    const {children, addClass} = props;
 
     return ( 
-        <div className="card-footer">
+        <div className={`card-footer ${addClass ? addClass : ""}`}>
             {children}
         </div>
     );

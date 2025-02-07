@@ -14,18 +14,24 @@ import Profile from './features/auth/pages/Profile.js'
 import Auth from './features/auth/pages/Auth.js';
 import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
-import Company from './features/card/company/pages/Companies.js';
+import Company from './features/organization/pages/Companies.js';
 import Data from './features/card/data/pages/Data.js';
 import PasswordReset from './features/settings/auth/pages/PasswordReset.js';
 import AuthSettingsLinks from './features/settings/auth/pages/AuthSettingsLinks.js';
+import ProfileSettings from './features/settings/auth/pages/ProfileSettings.js';
 import PersonalSettings from './features/settings/auth/pages/PersonalSettings.js';
 import EmailSettings from './features/settings/auth/pages/EmailSettings.js';
 import ForgotPassword from './features/auth/pages/ForgotPassword.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, fetchTheme, fetchCSRFToken } from './store/slices/authSlice.js';
 import { checkMobile, setResize } from './store/slices/sidebarSlice.js';
+import Partners from './features/card/partners/pages/Partners.js';
+import AddCompany from './features/organization/pages/AddCompany.js';
+import UpdateCompany from './features/organization/pages/UpdateCompany.js';
+import { ThemeProvider } from '@emotion/react'
 
 export const NumberContext = React.createContext();
+
 
 function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -50,6 +56,9 @@ function App() {
     //fetchUser();
     //fetchCSRFToken();
   },[]);
+
+  const {muiLightTheme,muiDarkTheme} = useSelector((store) => store.theme);
+  
 
 
 
@@ -102,58 +111,64 @@ function App() {
   if (loading) return <Loading></Loading>;
 
   return (
+    <ThemeProvider theme={theme === "light" ? muiLightTheme : muiDarkTheme}>
+        <div className="App" id='Marswide'>
+
+          { user && status ? 
+
+            <>
+              <Routes>
+
+                <Route exact path='/' element={<Panel></Panel>}>
+                  <Route index element={<Dashboard></Dashboard>}></Route>
+                  <Route path='profile/:username' element={<Profile></Profile>}></Route>
+                  <Route path='settings' element={<Settings></Settings>}>
+                    <Route path='auth' element={<AuthSettingsLinks></AuthSettingsLinks>}></Route>
+                    <Route path='auth/profile' element={<ProfileSettings></ProfileSettings>}></Route>
+                    <Route path='auth/personal' element={<PersonalSettings></PersonalSettings>}></Route>
+                    <Route path='auth/email' element={<EmailSettings></EmailSettings>}></Route>
+                    <Route path='auth/password-reset' element={<PasswordReset></PasswordReset>}></Route>
+                  </Route>
+                  <Route path='/companies' element={<Company></Company>}></Route>
+                  <Route path='/companies/add-company' element={<AddCompany></AddCompany>}></Route>
+                  <Route path='/companies/update/:name' element={<UpdateCompany></UpdateCompany>}></Route>
+                  <Route path='/partners' element={<Partners></Partners>}></Route>
+
+                  <Route path='auth' element={<Dashboard></Dashboard>}>
+                    <Route path='login'></Route>
+                    <Route path='register'></Route>
+                  </Route>
+                </Route>
+
+                <Route path='*' element={<WrongPath></WrongPath>}></Route>
+
+              </Routes>
+            </>
+
+            :
+            
+            <>
+              <Routes>
+
+                <Route path='/' element={<Landing></Landing>}>
+                  <Route index element={<Home></Home>}></Route>
+                  <Route path='auth' element={<Auth></Auth>}>
+                    <Route path='login' element={<Login></Login>}></Route>
+                    <Route path='register' element={<Register></Register>}></Route>
+                    <Route path='forgot-password' element={<ForgotPassword></ForgotPassword>}></Route>
+                  </Route>
+                </Route>
+
+                <Route path='*' element={<WrongPath></WrongPath>}></Route>
+
+              </Routes>
+            </>
+          }
+
+        </div>
+      
+    </ThemeProvider>
     
-    <div className="App" id='Marswide'>
-
-      { user && status ? 
-
-        <>
-          <Routes>
-
-            <Route exact path='/' element={<Panel></Panel>}>
-              <Route index element={<Dashboard></Dashboard>}></Route>
-              <Route path='profile/:username' element={<Profile></Profile>}></Route>
-              <Route path='settings' element={<Settings></Settings>}>
-                <Route path='auth' element={<AuthSettingsLinks></AuthSettingsLinks>}></Route>
-                <Route path='auth/personal' element={<PersonalSettings></PersonalSettings>}></Route>
-                <Route path='auth/email' element={<EmailSettings></EmailSettings>}></Route>
-                <Route path='auth/password-reset' element={<PasswordReset></PasswordReset>}></Route>
-              </Route>
-              <Route path='/companies' element={<Company></Company>}></Route>
-              <Route path='/data' element={<Data></Data>}></Route>
-
-              <Route path='auth' element={<Dashboard></Dashboard>}>
-                <Route path='login'></Route>
-                <Route path='register'></Route>
-              </Route>
-            </Route>
-
-            <Route path='*' element={<WrongPath></WrongPath>}></Route>
-
-          </Routes>
-        </>
-
-        :
-        
-        <>
-          <Routes>
-
-            <Route path='/' element={<Landing></Landing>}>
-              <Route index element={<Home></Home>}></Route>
-              <Route path='auth' element={<Auth></Auth>}>
-                <Route path='login' element={<Login></Login>}></Route>
-                <Route path='register' element={<Register></Register>}></Route>
-                <Route path='forgot-password' element={<ForgotPassword></ForgotPassword>}></Route>
-              </Route>
-            </Route>
-
-            <Route path='*' element={<WrongPath></WrongPath>}></Route>
-
-          </Routes>
-        </>
-      }
-
-    </div>
   );
 }
 

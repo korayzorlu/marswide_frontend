@@ -17,14 +17,14 @@ function Input(props) {
         <div className={`form-outline mb-3 ${addClass}`} data-mdb-input-init>
             <input
             className={`form-control ${size ? "form-control-" + size : ""}`}
-                type={type}
-                id={id}
-                name={name}
-                value={children}
-                onChange={onChange}
-                autoComplete={autoComplete}
-                required={required}
-                disabled={disabled}
+                type={type ? type : "text"}
+                id={id ? id : ""}
+                name={name ? name : ""}
+                value={children ? children : ""}
+                onChange={onChange ? onChange : ""}
+                autoComplete={autoComplete ? autoComplete : ""}
+                required={required ? required : false}
+                disabled={disabled ? disabled : false}
             />
             <label className="form-label" htmlFor={id}>{label}</label>
         </div>

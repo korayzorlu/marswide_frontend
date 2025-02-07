@@ -2,7 +2,6 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-
 const initialState = {
     user:null,
     status:false,
@@ -113,6 +112,7 @@ const authSlice = createSlice({
             state.theme = action.payload;
             state.logo = require(`../../images/logo/${action.payload}/marswide-logo-full.png`);
             document.cookie = `theme=${action.payload}; path=/; ${process.env.REACT_APP_SAME_SITE}`;
+
         },
         setAuthMessage: (state,action) => {
             state.authMessage = action.payload;

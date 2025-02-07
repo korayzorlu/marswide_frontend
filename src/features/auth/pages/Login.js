@@ -2,7 +2,7 @@ import { useEffect,useState } from "react";
 import { Input } from "mdb-ui-kit";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { changeTheme, clearAuthMessage, fetchCSRFToken, loginAuth } from "../../../store/slices/authSlice";
+import { changeTheme, clearAuthMessage, fetchCSRFToken, fetchUser, loginAuth } from "../../../store/slices/authSlice";
 
 function Login() {
     const {status,theme,authMessage} = useSelector((store) => store.auth);
@@ -29,7 +29,7 @@ function Login() {
         try {
             await dispatch(loginAuth({email, password, remember})).unwrap();
             await dispatch(fetchCSRFToken()).unwrap();
-            dispatch(changeTheme(theme === "dark" ? true : false));
+            await dispatch(changeTheme(theme === "dark" ? true : false)).unwrap();
             navigate('/');
         } catch (error) {
 

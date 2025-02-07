@@ -4,6 +4,7 @@ import notificationReducer from './slices/notificationSlice';
 import processReducer from './slices/processSlice';
 import sidebarReduce from './slices/sidebarSlice';
 import tableReducer from './slices/tableSlice';
+import themeReducer from './slices/themeSlice';
 
 export const store = configureStore({
     reducer:{
@@ -12,5 +13,6 @@ export const store = configureStore({
         process: processReducer,
         sidebar: sidebarReduce,
         table: tableReducer,
+        theme: themeReducer,
     }
 })

@@ -6,7 +6,7 @@ function ProgressBar(props) {
             style={{
                 "position":"absolute",
                 "top":"0",
-                "border-radius":"0",
+                "borderRadius":"0",
                 "height":"4px",
                 "color":"red"
             }}

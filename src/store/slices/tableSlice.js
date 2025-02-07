@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createTheme } from "@mui/material/styles";
 
 import { AllCommunityModule, ModuleRegistry, themeBalham,themeQuartz, colorSchemeDark } from 'ag-grid-community';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const initialState = {
-    tableLightTheme:themeQuartz.withParams({
+    tableLightThemee:themeQuartz.withParams({
         accentColor: "#15BDE8",
         backgroundColor: "#fff",
         borderColor: "#ffffff00",
@@ -28,7 +29,7 @@ const initialState = {
         wrapperBorder: false,
         wrapperBorderRadius: 0
     }),
-    tableDarkTheme:themeQuartz.withParams({
+    tableDarkThemee:themeQuartz.withParams({
         accentColor: "#15BDE8",
         backgroundColor: "#1b1f23",
         borderColor: "#ffffff00",
@@ -51,6 +52,46 @@ const initialState = {
         spacing: 5,
         wrapperBorder: false,
         wrapperBorderRadius: 0
+    }),
+    tableLightTheme:createTheme({
+        palette: {
+            mode: 'light',
+        },
+        components: {
+            MuiDataGrid: {
+                defaultProps: {
+                    rowHeight: 40,
+                    headerHeight: 40,
+                },
+                styleOverrides: {
+                    root: {
+                        backgroundColor: "#fff",
+                        border:0,
+                        borderRadius:0,
+                    },
+                },
+            },
+        },
+    }),
+    tableDarkTheme:createTheme({
+        palette: {
+            mode: 'dark',
+        },
+        components: {
+            MuiDataGrid: {
+                defaultProps: {
+                    rowHeight: 40,
+                    headerHeight: 40,
+                },
+                styleOverrides: {
+                    root: {
+                        backgroundColor: "#1b1f23",
+                        border:0,
+                        borderRadius:0,
+                    },
+                },
+            },
+        },
     }),
 }
 

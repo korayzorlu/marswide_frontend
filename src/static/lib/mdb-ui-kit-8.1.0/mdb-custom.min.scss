@@ -63,10 +63,25 @@ $pagination-padding-y: 0.1rem;
 
 $blue-esms: #003865 !default;
 $red-esms: #9d2235 !default;
+$mocha-mousse:  #a47864  !default;
+$viva-magenta:  #be3455  !default;
+$peach-fuzz: #FFBE98 !default;
+$classic-blue: #0F4C81!default;
+$living-coral: #ff6f61!default;
+$ultra-violet: #5f4b8b!default;
+$greenery: #88b04b!default;
+$mui-blue: #90caf9!default;
 
 $esms-colors: (
   'blue-esms': $blue-esms,
   'red-esms': $red-esms,
+  'mocha-mousse': $mocha-mousse,
+  'peach-fuzz': $peach-fuzz,
+  'classic-blue': $classic-blue,
+  'living-coral': $living-coral,
+  'ultra-violet': $ultra-violet,
+  'greenery': $greenery,
+  'mui-blue': $mui-blue,
 ) !default;
 
 $all-colors: map-merge-multiple($blues, $indigos, $purples, $pinks, $reds, $oranges, $yellows, $limes, $ambers, $greens, $teals, $cyans, $blue-grays, $esms-colors);

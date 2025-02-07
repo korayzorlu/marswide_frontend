@@ -2,7 +2,13 @@ import { Link } from "react-router-dom";
 
 function AuthSettingsLinks() {
     return ( 
-        <>
+        <>  
+            <div className="row border-bottom p-2">
+                <Link to="/settings/auth/profile" className="col-md-12 p-2 fw-bold d-flex">
+                    <span className="me-auto">Profile</span>
+                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
+                </Link>
+            </div>
             <div className="row border-bottom p-2">
                 <Link to="/settings/auth/personal" className="col-md-12 p-2 fw-bold d-flex">
                     <span className="me-auto">Personal</span>

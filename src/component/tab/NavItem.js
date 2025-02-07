@@ -14,7 +14,7 @@ function NavItem(props) {
     }, []);
 
     return ( 
-        <li class="nav-item me-2" role="presentation">
+        <li className="nav-item me-2" role="presentation">
             <button
             data-mdb-pill-init
             className={`nav-link m-0 ${navItem.active}`}
