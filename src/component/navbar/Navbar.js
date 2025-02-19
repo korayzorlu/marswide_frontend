@@ -4,19 +4,30 @@ import "bootstrap/js/dist/dropdown.js";
 import { Dropdown } from "mdb-ui-kit";
 import { Link } from 'react-router-dom';
 import { ReactComponent as NavbarLogo } from '../../images/logo/light/marswide-logo.svg';
-import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
-import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
+//import { ReactComponent as DarkModeIcon } from '../../images/icons/navbar/dark-mode.svg';
+//import { ReactComponent as LightModeIcon } from '../../images/icons/navbar/light-mode.svg';
 import ProgressBar from '../progress/ProgressBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeTheme, logoutAuth } from '../../store/slices/authSlice';
 import { setSidebar } from '../../store/slices/sidebarSlice';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import { Divider, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
+import InboxIcon from '@mui/icons-material/Inbox';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import Button from '../button/Button';
+import { setActiveCompany } from '../../store/slices/organizationSlice';
+import axios from 'axios';
+import { setAlert } from '../../store/slices/notificationSlice';
 
 function Navbar() {
     const {user,dark,logo} = useSelector((store) => store.auth);
+    const {companies,activeCompany} = useSelector((store) => store.organization);
     const {collapse,toggle} = useSelector((store) => store.sidebar);
     const {progress} = useSelector((store) => store.process);
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [image, setImage] = useState(user.image);
@@ -49,9 +60,35 @@ function Navbar() {
         dispatch(setSidebar({collapseTerm:!collapse,toggleTerm:!toggle}));
     };
 
-    const handleChaneSourceCompany = (event) => {
+    const handleChaneActiveCompany = async (event) => {
         event.preventDefault();
-        //changeSourceCompany(event.target.value);
+        const selectedCompany = companies.find(({id}) => id === Number(event.target.value));
+        dispatch(setActiveCompany(selectedCompany));
+        
+        try {
+            await axios.put(`/companies/api/user_companies/${activeCompany.id}/`, 
+                {
+                    id : activeCompany.id,
+                    is_active : false,
+                    is_admin : activeCompany.is_admin
+                },
+                {withCredentials: true},
+            );
+
+            const response = await axios.put(`/companies/api/user_companies/${selectedCompany.id}/`, 
+                {
+                    id : selectedCompany.id,
+                    is_active : true,
+                    is_admin : selectedCompany.is_admin
+                },
+                {withCredentials: true},
+            );
+            if (response.status === 200){
+                dispatch(setAlert({color:"secondary",text:"Successfully changed!",icon:"check-circle"}));
+            };
+        } catch (error) {
+            dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
+        };
     };
     
     const handleLogoutAuth = async (event) => {
@@ -65,7 +102,6 @@ function Navbar() {
         };
     };
 
-    
     
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
@@ -82,23 +118,45 @@ function Navbar() {
                     </a>
                 </div>
                 <div className="d-flex align-items-end">
-                    <div className="dropdown d-none">
-                        <a data-mdb-dropdown-init data-mdb-ripple-init className="link-secondary me-3 dropdown-toggle"
-                        href="/"id="navbarDropdownMenuLink" role="button" aria-expanded="false">
-                            {user.sourceCompanyName + " "}
-                        </a>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            {
-                                user.userSourceCompanies.map((userSourceCompany,index) => {
-                                    return (
-                                        <li key={index}>
-                                            <button className="dropdown-item" onClick={handleChaneSourceCompany} value={userSourceCompany.id}>{userSourceCompany.name}</button>
-                                        </li>
-                                    );
-                                })
-                            }
-                        </ul>
-                    </div>
+                    {
+                        companies.length > 0 && activeCompany
+                            ?
+                                <div className="dropdown">
+                                    <a
+                                    data-mdb-dropdown-init
+                                    className={`link-secondary me-3 dropdown-toggle ${dark ? "text-white" : "text-dark"}`}
+                                    href="/"
+                                    id="navbarDropdownMenuLink"
+                                    role="button"
+                                    aria-expanded="false"
+                                    data-mdb-offset="0,12"
+                                    >
+                                        {companies.length > 0 ? activeCompany.company.name : ""}
+                                    </a>
+                                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                                        {
+                                            companies.map((company,index) => {
+                                                return (
+                                                    <li key={index}>
+                                                        <button
+                                                        className="dropdown-item"
+                                                        value={company.id}
+                                                        onClick={handleChaneActiveCompany}
+                                                        >
+                                                            {company.id === activeCompany.id ? <i className="fas fa-check"></i> : <i className="fas fa-check invisible"></i> }
+                                                            &nbsp;{company.company.name}
+                                                        </button>
+                                                    </li>
+                                                );
+                                            })
+                                        }
+                                    </ul>
+                                </div>
+                            :
+                                <></>
+                        
+                    }
+                    
                     <div className="dropdown">
                         <a data-mdb-dropdown-init className="link-secondary me-3 dropdown-toggle hidden-arrow" href="/"id="navbarDropdownMenuLink"
                         role="button" aria-expanded="false" data-mdb-offset="0,10">
@@ -126,7 +184,7 @@ function Navbar() {
                             style={{objectFit:"cover"}}
                             />
                         </a>
-                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <div className="dropdown-menu dropdown-menu-end shadow-4-strong" elevation={0} aria-labelledby="navbarDropdownMenuAvatar">
                             <li>
                                 <div className="dropdown-header text-center p-3">{user.name} <br/> {user.subscription}</div>
                             </li>
@@ -146,7 +204,44 @@ function Navbar() {
                             <li>
                                 <button className="dropdown-item" type="button" onClick={handleLogoutAuth}>Logout</button>
                             </li>
-                        </ul>
+                        </div>
+                        {/* <List
+                        className="dropdown-menu dropdown-menu-end"
+                        sx={{ width: '100%', maxWidth: 360, bgcolor: '#1b1f23' }}
+                        aria-labelledby="navbarDropdownMenuAvatar"
+                        elevation={3}
+                        subheader={
+                            <ListSubheader disablePadding component="div" id="nested-list-subheader">
+                              {user.name} <br/> {user.subscription}
+                            </ListSubheader>
+                        }
+                        >   
+                            <Divider />
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => navigate(`/profile/${user["username"]}`)}>
+                                    <ListItemText inset primary="Profile" />
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={() => navigate(`/settings/auth`)}>
+                                    <ListItemText inset primary="Settings" />
+                                </ListItemButton>
+                            </ListItem>
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={handleToggleTheme}>
+                                    <ListItemIcon>
+                                        {dark ? <LightModeIcon /> : <DarkModeIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText primary={dark ? "Light" : "Dark"} />
+                                </ListItemButton>
+                            </ListItem>
+                            <Divider />
+                            <ListItem disablePadding>
+                                <ListItemButton onClick={handleLogoutAuth}>
+                                    <ListItemText inset primary="Logout" />
+                                </ListItemButton>
+                            </ListItem>
+                        </List> */}
                     </div>
                 </div>
             </div>

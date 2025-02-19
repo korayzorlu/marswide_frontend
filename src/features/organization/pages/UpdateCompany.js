@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { act, useEffect, useState } from 'react';
 import BackAndHeader from '../../../component/card/BackAndHeader';
 import Card from '../../../component/card/Card';
 import CardHeader from '../../../component/card/CardHeader';
@@ -6,7 +6,7 @@ import CardBody from '../../../component/card/CardBody';
 import Input from '../../../component/input/Input';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAlert, setDialog } from '../../../store/slices/notificationSlice';
 import Col from '../../../component/grid/Col';
 import Row from '../../../component/grid/Row';
@@ -18,8 +18,12 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Dialog from '../../../component/feedback/Dialog';
 import Lightbox from '../../../component/image/Lightbox';
 import VissuallyHiddenInput from '../../../component/input/VissuallyHiddenInput';
+import { changeActiveCompany, deleteActiveCompany, deleteCompany, fetchCompanies, setActiveCompany } from '../../../store/slices/organizationSlice';
 
 function UpdateCompany() {
+    const {user} = useSelector((store) => store.auth);
+    const {companies,activeCompany,disabled} = useSelector((store) => store.organization);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -30,15 +34,16 @@ function UpdateCompany() {
     const [name, setName] = useState("-");
     const [formalName, setFormalName] = useState("-");
     const [data, setData] = useState({})
-    const [disabled, setDisabled] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const location = useLocation();
-    const {id} = location.state || {};
+    const {id,companyId} = location.state || {};
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`/companies/api/companies/${id}`);
+            const response = await axios.get(`/companies/api/companies/${companyId}/`,
+                {headers: {"X-Requested-With": "XMLHttpRequest"}}
+            );
             setData(response.data);
             setImage(response.data.image);
             setName(response.data.name);
@@ -56,7 +61,6 @@ function UpdateCompany() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setDisabled(true);
         setButtonDisabled(true);
         
         try {
@@ -90,35 +94,18 @@ function UpdateCompany() {
             };
         } finally {
             fetchData();
-            setDisabled(false);
         };
     };
 
-    const handleDelete = async () => {
-        setDisabled(true);
+    const handleDelete = () => {
         setButtonDisabled(true);
 
-        try {
-            const response = await axios.post(`/companies/delete_company/`, 
-                {   
-                    id : id,
-                },
-                {withCredentials: true},
-            );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully deleted!",icon:"check-circle"}));
-            };
-        } catch (error) {
-            if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
-        } finally {
-            setDisabled(false);
-            dispatch(setDialog(false));
-            navigate("/companies");
+        if (activeCompany.id === id) {
+            dispatch(setActiveCompany(companies.filter(item => item.id !== activeCompany.id)[0]));
         };
+
+        dispatch(deleteCompany(id));
+
     };
 
     const handleChangeImage = (event) => {

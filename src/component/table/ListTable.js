@@ -12,7 +12,7 @@ function ListTable(props) {
     const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
 
     const [paginationModel, setPaginationModel] = useState({
-        pageSize: 10,
+        pageSize: 50,
         page: 0,
     });
 
@@ -25,7 +25,11 @@ function ListTable(props) {
                     showQuickFilter: true,
                     children: customButtons
                 },
-                }}
+                loadingOverlay: {
+                  variant: 'linear-progress',
+                  noRowsVariant: 'linear-progress',
+                },
+              }}
             columns={columns}
             rows={rows}
             initialState={{

@@ -2,23 +2,35 @@ import React, { useEffect, useContext, useState } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMenuItems } from "../../store/slices/subscriptionsSlice";
 
 
 //import { ReactComponent as DataIcon } from '../../images/icons/sidebar/light/database-filled.svg';
 
 function Sidenav() {
     const {collapse,toggle,mobile} = useSelector((store) => store.sidebar);
+    const {menuItems} = useSelector((store) => store.subscriptions);
 
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
 
-    const DashboardIcon = require(`../../images/icons/sidebar/light/dashboard-filled.svg`).ReactComponent;
-    const CardIcon = require(`../../images/icons/sidebar/light/badge-filled.svg`).ReactComponent;
-    const CompanyIcon = require('../../images/icons/sidebar/light/home-work.svg').ReactComponent;
-    const HandshakeIcon = require('../../images/icons/sidebar/light/handshake.svg').ReactComponent;
-    const DataIcon = require('../../images/icons/sidebar/light/database-filled.svg').ReactComponent;
-    const OrganizationIcon = require('../../images/icons/sidebar/light/home-filled.svg').ReactComponent;
+    const icons = {
+        dashboard: require("../../images/icons/sidebar/light/dashboard-filled.svg").ReactComponent,
+        badge: require("../../images/icons/sidebar/light/badge-filled.svg").ReactComponent,
+        home: require("../../images/icons/sidebar/light/home-work.svg").ReactComponent,
+        handshake: require("../../images/icons/sidebar/light/handshake.svg").ReactComponent,
+        database: require("../../images/icons/sidebar/light/database-filled.svg").ReactComponent,
+        organization: require("../../images/icons/sidebar/light/home-filled.svg").ReactComponent,
+    };
+
+    const DefaultIcon = require("../../images/icons/sidebar/light/dashboard-filled.svg").ReactComponent;
+
+    const getIconComponent = (iconName) => {
+        const IconComponent = icons[iconName] || DefaultIcon;
+        return <IconComponent className="sideBarIcon" height="24" alt="" loading="lazy" />;
+    };
 
     var collapsed = collapse
     var sideBarWidth = "200px";
@@ -44,22 +56,72 @@ function Sidenav() {
             */
 
     return ( 
+        // <Sidebar collapsed={collapsed} toggled={toggle} customBreakPoint="1024px" width={sideBarWidth} collapsedWidth="78px"
+        // rootStyles={{"height":"100%","border":"none"}}>
+        //     <Menu menuItemStyles={{button: {[`&.active`]: {backgroundColor: '#13395e',color: '#b6c8d9',},},}}>
+        //         <MenuItem className={location.pathname === "/" ? "active" : ""} name="dashboard" component={<Link to="/"></Link>} icon={<DashboardIcon className="sideBarIcon" height="24" alt="" loading="lazy" disabled/>}>Dashboard</MenuItem>
+        //         <SubMenu rootStyles={{"marginTop":"auto"}} label="Organization" icon={<OrganizationIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
+        //             <MenuItem className={location.pathname.startsWith("/companies") ? "active" : ""} name="companies" component={<Link to="/companies"></Link>} icon={<CompanyIcon className="sideBarIcon" height="24" alt="" loading="lazy" disabled/>}>Companies</MenuItem>
+        //         </SubMenu>
+        //         <SubMenu label="Card" icon={<CardIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
+        //                 <MenuItem className={location.pathname === "/partners" ? "active" : ""} name="partners" component={<Link to="/partners"></Link>} icon={<HandshakeIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>Partners</MenuItem>
+        //         </SubMenu>
+        //         <SubMenu label="Data" icon={<DataIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
+        //             <MenuItem name="maker" onClick={handleClick} icon={<i className="fa-solid fa-bookmark"></i>}> Makers </MenuItem>
+        //             <MenuItem name="part" onClick={handleClick} icon={<i className="fa-solid fa-screwdriver-wrench"></i>}> Parts </MenuItem>
+        //         </SubMenu>
+        //     </Menu>
+            
+        // </Sidebar>
+
         <Sidebar collapsed={collapsed} toggled={toggle} customBreakPoint="1024px" width={sideBarWidth} collapsedWidth="78px"
         rootStyles={{"height":"100%","border":"none"}}>
             <Menu menuItemStyles={{button: {[`&.active`]: {backgroundColor: '#13395e',color: '#b6c8d9',},},}}>
-                <MenuItem className={location.pathname === "/" ? "active" : ""} name="dashboard" component={<Link to="/"></Link>} icon={<DashboardIcon className="sideBarIcon" height="24" alt="" loading="lazy" disabled/>}>Dashboard</MenuItem>
-                <SubMenu rootStyles={{"marginTop":"auto"}} label="Organization" icon={<OrganizationIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
-                    <MenuItem className={location.pathname.startsWith("/companies") ? "active" : ""} name="companies" component={<Link to="/companies"></Link>} icon={<CompanyIcon className="sideBarIcon" height="24" alt="" loading="lazy" disabled/>}>Companies</MenuItem>
-                </SubMenu>
-                <SubMenu label="Card" icon={<CardIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
-                        <MenuItem className={location.pathname === "/partners" ? "active" : ""} name="partners" component={<Link to="/partners"></Link>} icon={<HandshakeIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>Partners</MenuItem>
-                </SubMenu>
-                <SubMenu label="Data" icon={<DataIcon className="sideBarIcon" height="24" alt="" loading="lazy"/>}>
-                    <MenuItem name="maker" onClick={handleClick} icon={<i className="fa-solid fa-bookmark"></i>}> Makers </MenuItem>
-                    <MenuItem name="part" onClick={handleClick} icon={<i className="fa-solid fa-screwdriver-wrench"></i>}> Parts </MenuItem>
-                </SubMenu>
-            </Menu>
+
+            {
+                menuItems.map((menuItem,index) => {
+                    if(menuItem.type === "sub_menu"){
+                        return (
+                            <SubMenu
+                            rootStyles={{"marginTop":"auto"}}
+                            label={menuItem.label}
+                            icon={getIconComponent(menuItem.icon)}
+                            >
+                                {
+                                    menuItem.items.map((item,index) => {
+                                        return <MenuItem
+                                                className={location.pathname.startsWith(item.route) ? "active" : ""}
+                                                name={item.label}
+                                                component={<Link to={item.route}></Link>}
+                                                icon={getIconComponent(item.icon)}
+                                                >
+                                                    {item.label}
+                                                </MenuItem>
+                                    })
+                                }
+                            </SubMenu>
+                        );
+                    }
+                    if(menuItem.type === "item"){
+                        return (
+                            <MenuItem
+                            className={location.pathname.startsWith(menuItem.route) ? "active" : ""}
+                            name={menuItem.label}
+                            component={<Link to={menuItem.route}></Link>}
+                            icon={getIconComponent(menuItem.icon)}
+                            >
+                                {menuItem.label}
+                            </MenuItem>
+                        )
+                    }
+                    
+                    return <></>
+                    
+                })
+            }
             
+
+            </Menu>
         </Sidebar>
         
     );

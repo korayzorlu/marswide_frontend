@@ -20,6 +20,7 @@ export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
         const response = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
         return response.data[0];
     };
+    
     throw new Error('Session not authenticated');
 });
 
@@ -27,6 +28,8 @@ export const fetchCSRFToken = createAsyncThunk('auth/fetchCSRFToken', async () =
     const response = await axios.get(`/users/csrf_token_get/`, {withCredentials: true});
     return response.data.csrfToken;
 });
+
+
 
 export const changeTheme = createAsyncThunk('auth/changeTheme', async (darkTerm, {getState}) => {
     const { user } = getState().auth;
@@ -58,8 +61,6 @@ export const loginAuth = createAsyncThunk('auth/loginAuth', async ({email, passw
             message:error.response.data.message
         });
     };
-    
-    
 });
 
 export const logoutAuth = createAsyncThunk('auth/logoutAuth', async () => {
@@ -104,6 +105,9 @@ const authSlice = createSlice({
     name:"auth",
     initialState,
     reducers:{
+        setLoading: (state,action) => {
+            state.loading = action.payload;
+        },
         setCSRFToken: (state,action) => {
             state.csrfToken = action.payload;
         },
@@ -133,11 +137,9 @@ const authSlice = createSlice({
                 state.dark = action.payload["theme"] === "light" ? false : true;
                 state.theme = action.payload["theme"];
                 document.cookie = `theme=${action.payload["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE || "Lax"}`;
-                state.loading = false;
             })
             .addCase(fetchUser.rejected, (state,action) => {
                 state.status = false;
-                state.loading = false;
             })
 
             //fetch csrftoken
@@ -161,7 +163,7 @@ const authSlice = createSlice({
 
             //login
             .addCase(loginAuth.pending, (state) => {
-                state.loading = true;
+
             })
             .addCase(loginAuth.fulfilled, (state,action) => {
                 state.user = action.payload.user;
@@ -169,11 +171,9 @@ const authSlice = createSlice({
                 state.theme = action.payload.user.theme;
                 state.dark = action.payload.user.theme === "dark" ? true : false;
                 localStorage.setItem("login", Date.now());
-                state.loading = false;
             })
             .addCase(loginAuth.rejected, (state,action) => {
                 state.status = false;
-                state.loading = false;
                 state.authMessage = action.payload.status === 401
                     ? {color:"text-red-500",icon:"",text:action.payload.message}
                     : {color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"}
@@ -181,30 +181,27 @@ const authSlice = createSlice({
 
             //logout
             .addCase(logoutAuth.pending, (state) => {
-                state.loading = true;
+
             })
             .addCase(logoutAuth.fulfilled, (state,action) => {
                 state.user = null;
                 state.status = false;
                 localStorage.setItem("logout", Date.now());
-                state.loading = false;
             })
             .addCase(logoutAuth.rejected, (state,action) => {
-                state.loading = false;
                 state.authMessage = {color:"",icon:"",text:""};
             })
 
             //register
             .addCase(registerAuth.pending, (state) => {
-                state.loading = true;
+
             })
             .addCase(registerAuth.fulfilled, (state,action) => {
                 state.user = action.payload.user;
                 state.status = true;
-                state.loading = false;
             })
             .addCase(registerAuth.rejected, (state,action) => {
-                state.loading = false;
+
                 state.authMessage = action.payload.status === 400
                     ? {color:"text-red-500",icon:"",text:action.payload.message}
                     : {color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"}
@@ -212,13 +209,12 @@ const authSlice = createSlice({
 
             //forgot password
             .addCase(forgotPasswordAuth.pending, (state) => {
-                state.loading = true;
+
             })
             .addCase(forgotPasswordAuth.fulfilled, (state,action) => {
-                state.loading = false;
+
             })
             .addCase(forgotPasswordAuth.rejected, (state,action) => {
-                state.loading = false;
                 state.authMessage = action.payload.status === 400
                     ? {color:"text-red-500",icon:"",text:action.payload.message}
                     : {color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"}
@@ -228,5 +224,5 @@ const authSlice = createSlice({
 })
 
 
-export const {setCSRFToken,fetchTheme,setAuthMessage,clearAuthMessage} = authSlice.actions;
+export const {setLoading,setCSRFToken,fetchTheme,setAuthMessage,clearAuthMessage} = authSlice.actions;
 export default authSlice.reducer;

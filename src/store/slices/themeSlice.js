@@ -46,6 +46,14 @@ const commonTheme = {
                 },
             },
         },
+        MuiListSubheader: {
+            styleOverrides: {
+                root: {
+                    textAlign: "center",
+                    lineHeight: "36px",
+                },
+            },
+        },
     },
 };
 
@@ -64,6 +72,20 @@ const initialState = {
                     root: {
                         ...commonTheme.components.MuiDataGrid.styleOverrides.root,
                         backgroundColor: "#fff",
+                    },
+                },
+            },
+            MuiListItem: {
+                styleOverrides: {
+                    root: {
+                        color: "#000",
+                    },
+                },
+            },
+            MuiListItemIcon: {
+                styleOverrides: {
+                    root: {
+                        color: "#000",
                     },
                 },
             },
@@ -93,6 +115,23 @@ const initialState = {
                         backgroundColor: "#1b1f23",
                     }
                 }
+            },
+            MuiListSubheader: {
+                ...commonTheme.components.MuiListSubheader,
+                styleOverrides: {
+                    ...commonTheme.components.MuiListSubheader.styleOverrides,
+                    root: {
+                        ...commonTheme.components.MuiListSubheader.styleOverrides.root,
+                        backgroundColor: "#1b1f23",
+                    },
+                },
+            },
+            MuiDivider: {
+                styleOverrides: {
+                    root: {
+                        borderColor: "rgba(255, 255, 255, 0.24)",
+                    },
+                },
             },
         },
     }),

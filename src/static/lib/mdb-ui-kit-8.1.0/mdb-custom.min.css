@@ -16336,7 +16336,7 @@ hr.divider-vertical-blurry {
 }
 
 .dropdown-menu {
-  --mdb-dropdown-item-border-radius: 0.5rem;
+  --mdb-dropdown-item-border-radius: 0px;
   color: var(--mdb-dropdown-color);
   margin: 0;
   padding-top: 0;

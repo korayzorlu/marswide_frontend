@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import AddIcon from "@mui/icons-material/Add";
 
 function CustomTableButton(props) {
-    const {children, link, icon} = props;
+    const {children, link, icon,onClick,disabled,color} = props;
 
   return (
     <Button
@@ -16,6 +16,9 @@ function CustomTableButton(props) {
         padding:"4px 5px",
     }}
     startIcon={icon}
+    onClick={onClick}
+    disabled={disabled ? disabled : false}
+    color={color ? color : "primary"}
     >
         <Link to={link}>{children}</Link>
     </Button>

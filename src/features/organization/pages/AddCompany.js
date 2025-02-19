@@ -19,6 +19,7 @@ import { IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import VissuallyHiddenInput from '../../../component/input/VissuallyHiddenInput'
+import { fetchCompanies } from '../../../store/slices/organizationSlice'
 
 function AddCompany() {
     const dispatch = useDispatch();
@@ -66,7 +67,7 @@ function AddCompany() {
                 dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
             };
         } finally {
-            dispatch(fetchUser());
+            dispatch(fetchCompanies());
             setDisabled(false);
         };
     };
