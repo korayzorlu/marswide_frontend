@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import PanelContent from "../../../component/panel/PanelContent";
-import axios from "axios";
 import ListTable from "../../../component/table/ListTable";
 import CustomTableButton from "../../../component/table/CustomTableButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,10 +12,9 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCompanies } from "../../../store/slices/organizationSlice";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
 import { Chip, Divider, ListItemIcon, MenuItem } from "@mui/material";
-import { lime,amber,blueGrey,indigo,cyan } from '@mui/material/colors';
+import { amber,indigo } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import AccountMenu from "../../../component/menu/AccountMenu";
 import MessageIcon from '@mui/icons-material/Message';
@@ -74,7 +72,7 @@ function Companies() {
                 params.row.is_admin
                   ?
                     <Link
-                    to={`/companies/update/${encodeURIComponent(encodeURIComponent(params.value))}`} 
+                    to={`/companies/update/${encodeURIComponent(encodeURIComponent(params.value))}/`} 
                     state={{id: params.row.id,companyId: params.row.companyId}}
                     style={{textDecoration:"underline"}}>
                       {params.value.name}

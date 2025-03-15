@@ -12,20 +12,24 @@ import { changeTheme, logoutAuth } from '../../store/slices/authSlice';
 import { setSidebar } from '../../store/slices/sidebarSlice';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { Divider, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
+import { Badge, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
 import InboxIcon from '@mui/icons-material/Inbox';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Button from '../button/Button';
 import { setActiveCompany } from '../../store/slices/organizationSlice';
 import axios from 'axios';
-import { setAlert } from '../../store/slices/notificationSlice';
+import { changeNotifications, fetchNotifications, readNotifications, setAlert, setUnreadNotifications } from '../../store/slices/notificationSlice';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 function Navbar() {
     const {user,dark,logo} = useSelector((store) => store.auth);
     const {companies,activeCompany} = useSelector((store) => store.organization);
     const {collapse,toggle} = useSelector((store) => store.sidebar);
     const {progress} = useSelector((store) => store.process);
+    const {unreadNotifications} = useSelector((store) => store.notification)
+    
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -102,6 +106,23 @@ function Navbar() {
         };
     };
 
+    const handleNotifications = async () => {
+        navigate("/notification");
+
+        await dispatch(readNotifications()).unwrap();
+        await dispatch(fetchNotifications()).unwrap();
+    }
+
+    function notificationsLabel(count) {
+        if (count === 0) {
+          return 'no notifications';
+        }
+        if (count > 99) {
+          return 'more than 99 notifications';
+        }
+        return `${count} notifications`;
+      }
+
     
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
@@ -154,10 +175,20 @@ function Navbar() {
                                 </div>
                             :
                                 <></>
-                        
                     }
+                    <IconButton className='p-0 me-3' onClick={() => handleNotifications()}>
+                        <Badge
+                        badgeContent={unreadNotifications}
+                        variant="dot"
+                        color="error"
+                        >   
+                            <NotificationsIcon
+                            color="action"
+                            />
+                        </Badge>
+                    </IconButton>
                     
-                    <div className="dropdown">
+                    <div className="dropdown ms-3 d-none">
                         <a data-mdb-dropdown-init className="link-secondary me-3 dropdown-toggle hidden-arrow" href="/"id="navbarDropdownMenuLink"
                         role="button" aria-expanded="false" data-mdb-offset="0,10">
                             <i className="fas fa-bell"></i>

@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMenuItems } from "../../store/slices/subscriptionsSlice";
+import { setSidebar } from "../../store/slices/sidebarSlice";
 
 
 //import { ReactComponent as DataIcon } from '../../images/icons/sidebar/light/database-filled.svg';
@@ -23,6 +24,7 @@ function Sidenav() {
         handshake: require("../../images/icons/sidebar/light/handshake.svg").ReactComponent,
         database: require("../../images/icons/sidebar/light/database-filled.svg").ReactComponent,
         organization: require("../../images/icons/sidebar/light/home-filled.svg").ReactComponent,
+        mail: require("../../images/icons/sidebar/light/mail-filled.svg").ReactComponent,
     };
 
     const DefaultIcon = require("../../images/icons/sidebar/light/dashboard-filled.svg").ReactComponent;
@@ -45,6 +47,10 @@ function Sidenav() {
     const handleClick = (event) => {
         navigate(event.currentTarget.name)
        
+    };
+
+    const handleToggle = () => {
+        dispatch(setSidebar({collapseTerm:!collapse,toggleTerm:!toggle}));
     };
 
     /*
@@ -74,8 +80,15 @@ function Sidenav() {
             
         // </Sidebar>
 
-        <Sidebar collapsed={collapsed} toggled={toggle} customBreakPoint="1024px" width={sideBarWidth} collapsedWidth="78px"
-        rootStyles={{"height":"100%","border":"none"}}>
+        <Sidebar
+        collapsed={collapsed}
+        toggled={toggle}
+        customBreakPoint="1024px"
+        width={sideBarWidth}
+        collapsedWidth="78px"
+        rootStyles={{"height":"100%","border":"none"}}
+        onBackdropClick={handleToggle}
+        >
             <Menu menuItemStyles={{button: {[`&.active`]: {backgroundColor: '#13395e',color: '#b6c8d9',},},}}>
 
             {

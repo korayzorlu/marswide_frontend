@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import Form from '../../../../component/form/Form'
-import Button from '../../../../component/button/Button'
-import Input from '../../../../component/input/Input'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,10 +9,9 @@ import BackAndHeader from '../../../../component/card/BackAndHeader';
 import Row from '../../../../component/grid/Row';
 import Col from '../../../../component/grid/Col';
 import Lightbox from '../../../../component/image/Lightbox';
-import { IconButton } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import VissuallyHiddenInput from '../../../../component/input/VissuallyHiddenInput';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 function Profile() {
@@ -107,7 +104,7 @@ function Profile() {
                     </Lightbox>
                 </Col>
             </Row>
-            <Row addClass="justify-content-center g-0">
+            <Row addClass="justify-content-center g-0" className="mb-3">
                 <Col size="1">
                     <IconButton component="label" role={undefined} tabIndex={-1} color="neutral">
                         <CameraAltIcon />
@@ -120,7 +117,11 @@ function Profile() {
                     </IconButton>
                 </Col>
             </Row>
-            <Button type="submit" color="primary" addClass="btn-block" disabled={disabled}>Save</Button>
+            <Row>
+                <Col>
+                    <Button type="submit" variant="contained" color="primary" addClass="btn-block" disabled={disabled} fullWidth>Save</Button>
+                </Col>
+            </Row>
         </Form>
     )
 }

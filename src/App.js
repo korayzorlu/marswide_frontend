@@ -1,6 +1,6 @@
 import './App.css';
-import React, {useEffect, useContext, useState, useReducer, useMemo, useRef} from 'react';
-import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Landing from './features/layout/pages/Landing.js';
 import Panel from './features/layout/pages/Panel.js';
 import WrongPath from './features/layout/pages/WrongPath.js';
@@ -15,7 +15,6 @@ import Auth from './features/auth/pages/Auth.js';
 import Login from './features/auth/pages/Login';
 import Register from './features/auth/pages/Register';
 import Company from './features/organization/pages/Companies.js';
-import Data from './features/card/data/pages/Data.js';
 import PasswordReset from './features/settings/auth/pages/PasswordReset.js';
 import AuthSettingsLinks from './features/settings/auth/pages/AuthSettingsLinks.js';
 import ProfileSettings from './features/settings/auth/pages/ProfileSettings.js';
@@ -29,24 +28,30 @@ import AddCompany from './features/organization/pages/AddCompany.js';
 import UpdateCompany from './features/organization/pages/UpdateCompany.js';
 import { ThemeProvider } from '@emotion/react'
 import { fetchMenuItems } from './store/slices/subscriptionsSlice.js';
-import { fetchCompanies, setActiveCompany } from './store/slices/organizationSlice.js';
+import { fetchCompanies } from './store/slices/organizationSlice.js';
 import CariHesapHareketleri from './features/mikro/pages/CariHesapHareketleri.js';
 import Personeller from './features/mikro/pages/Personeller.js';
 import Partners from './features/partners/pages/Partners.js';
 import { setNavigate } from './store/store.js';
 import PersonelTahakkuklari from './features/mikro/pages/PersonelTahakkuklari.js';
+import Notification from './features/notification/pages/Notification.js';
+import { joinWebsocket } from './store/slices/websocketSlice.js';
+import { fetchNotifications } from './store/slices/notificationSlice.js';
+import Invitations from './features/organization/pages/Invitations.js';
+import PhoneNumberSettings from './features/settings/auth/pages/PhoneNumberSettings.js';
+import { fetchCountries } from './store/slices/dataSlice.js';
+import PhoneNumberVerify from './features/settings/auth/pages/PhoneNumberVerify.js';
+import EmailVerify from './features/settings/auth/pages/EmailVerify.js';
 
 export const NumberContext = React.createContext();
-
 
 function App() {
   axios.defaults.baseURL = process.env.REACT_APP_API_URL;
   const {user,status,theme,dark,loading} = useSelector((store) => store.auth);
-  const {companies,activeCompany} = useSelector((store) => store.organization);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   //get user from api
 
   useEffect(() => {
@@ -62,44 +67,22 @@ function App() {
     const fetchData = async () => {
       await Promise.allSettled([
         dispatch(fetchUser()).unwrap(),
+        dispatch(joinWebsocket()).unwrap(),
         dispatch(fetchCSRFToken()).unwrap(),
         dispatch(fetchMenuItems()).unwrap(),
         dispatch(fetchCompanies()).unwrap(),
+        dispatch(fetchCountries()).unwrap(),
+        dispatch(fetchNotifications()).unwrap(),
       ])
-      
       dispatch(setLoading(false));
     };
     
     fetchData();
+    
 
   },[dispatch]);
 
-  // useEffect(() => {
-  //   const fetchData = () => {
-      
-  //     dispatch(fetchMenuItems());
-  //     dispatch(fetchCompanies());
-  //     dispatch(setLoading(false));
-  //   };
-    
-  //   dispatch(fetchUser());
-  //   dispatch(fetchCSRFToken());
-  //   fetchData();
-
-  // },[dispatch]);
-
-  // useEffect(() => {
-  //   dispatch(fetchUser());
-  //   dispatch(fetchCSRFToken());
-  //   dispatch(setLoading(false));
-  // },[]);
-
   const {muiLightTheme,muiDarkTheme} = useSelector((store) => store.theme);
-  
-
-
-
-  //get user from api-end
 
   //sidebar collapse
   
@@ -116,58 +99,44 @@ function App() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  //sidebar collapse-end
 
-
-  //reducer
-  
-  // const initialValue = 0;
-  // const reducer = (state,action) => {
-  //   switch(action){
-  //     case "increment" : 
-  //       return state + 1;
-  //     case "decrement" :
-  //       return state - 1;
-  //     case "reset" :
-  //         return initialValue;
-  //     default:
-  //       return state;
-  //   };
-  // };
-  // const [count, dispatch] = useReducer(reducer,initialValue);
-
-  // useEffect(() => {
-  //   console.log("rendered");
-  // },[count]);
-  //reducer-ends
-
-  //hook
-
-  //hook-end
   if (loading) return <Loading></Loading>;
+
+  if (user && !user.is_email_verified) return (
+    <ThemeProvider theme={theme === "light" ? muiLightTheme : muiDarkTheme}>
+      <EmailVerify></EmailVerify>
+    </ThemeProvider>
+  );
 
   return (
     <ThemeProvider theme={theme === "light" ? muiLightTheme : muiDarkTheme}>
         <div className="App" id='Marswide'>
 
-          { user && status ? 
-
+          { user && status
+          ? 
             <>
               <Routes>
 
                 <Route exact path='/' element={<Panel></Panel>}>
                   <Route index element={<Dashboard></Dashboard>}></Route>
                   <Route path='profile/:username' element={<Profile></Profile>}></Route>
+                  <Route path='notification' element={<Notification></Notification>}></Route>
+
                   <Route path='settings' element={<Settings></Settings>}>
                     <Route path='auth' element={<AuthSettingsLinks></AuthSettingsLinks>}></Route>
                     <Route path='auth/profile' element={<ProfileSettings></ProfileSettings>}></Route>
                     <Route path='auth/personal' element={<PersonalSettings></PersonalSettings>}></Route>
                     <Route path='auth/email' element={<EmailSettings></EmailSettings>}></Route>
+                    <Route path='auth/phone-number' element={<PhoneNumberSettings></PhoneNumberSettings>}></Route>
                     <Route path='auth/password-reset' element={<PasswordReset></PasswordReset>}></Route>
                   </Route>
+                  <Route path='phone-number-verify' element={<PhoneNumberVerify></PhoneNumberVerify>}></Route>
+
                   <Route path='/companies' element={<Company></Company>}></Route>
                   <Route path='/companies/add-company' element={<AddCompany></AddCompany>}></Route>
                   <Route path='/companies/update/:name' element={<UpdateCompany></UpdateCompany>}></Route>
+                  <Route path='/invitations' element={<Invitations></Invitations>}></Route>
+
                   <Route path='/partners' element={<Partners></Partners>}></Route>
 
                   <Route path='/cari-hesap-hareketleri' element={<CariHesapHareketleri></CariHesapHareketleri>}></Route>
@@ -178,15 +147,14 @@ function App() {
                     <Route path='login'></Route>
                     <Route path='register'></Route>
                   </Route>
+
                 </Route>
 
                 <Route path='*' element={<WrongPath></WrongPath>}></Route>
 
               </Routes>
             </>
-
-            :
-            
+          :
             <>
               <Routes>
 

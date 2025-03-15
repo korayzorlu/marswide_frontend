@@ -10,6 +10,7 @@ import IconButton from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Box from '@mui/joy/Box';
+import UserDialog from '../../../component/dialog/UserDialog';
 
 function Panel() {
   const {alert} = useSelector((store) => store.notification);
@@ -60,6 +61,7 @@ function Panel() {
       </Box> */}
      
       <Alert color={alert.color} text={alert.text} icon={alert.icon}></Alert>
+      <UserDialog/>
     </>
   )
 }

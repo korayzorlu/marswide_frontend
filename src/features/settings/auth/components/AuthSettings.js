@@ -12,12 +12,8 @@ function AuthSettings(props) {
  
     return ( 
         <div className="row g-0">
-            <div className="col-md-4">
-                <Card>
-                    <CardBody>
-                        <Outlet/>
-                    </CardBody>
-                </Card>
+            <div className="col-md-12">
+                <Outlet/>
             </div>
         </div>
     );

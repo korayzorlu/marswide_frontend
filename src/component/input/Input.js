@@ -20,8 +20,8 @@ function Input(props) {
                 type={type ? type : "text"}
                 id={id ? id : ""}
                 name={name ? name : ""}
-                value={children ? children : ""}
-                onChange={onChange ? onChange : ""}
+                value={children || ""}
+                onChange={onChange || (() => {})}
                 autoComplete={autoComplete ? autoComplete : ""}
                 required={required ? required : false}
                 disabled={disabled ? disabled : false}

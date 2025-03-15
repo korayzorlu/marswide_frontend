@@ -12,6 +12,8 @@ const initialState = {
     logo:require(`../../images/logo/light/marswide-logo-full.png`),
     loading:true,
     authMessage:{color:"",icon:"",text:""},
+    userInformation:{},
+    verifyPhoneNumber:""
 }
 
 export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
@@ -28,8 +30,6 @@ export const fetchCSRFToken = createAsyncThunk('auth/fetchCSRFToken', async () =
     const response = await axios.get(`/users/csrf_token_get/`, {withCredentials: true});
     return response.data.csrfToken;
 });
-
-
 
 export const changeTheme = createAsyncThunk('auth/changeTheme', async (darkTerm, {getState}) => {
     const { user } = getState().auth;
@@ -101,6 +101,20 @@ export const forgotPasswordAuth = createAsyncThunk('auth/forgotPasswordAuth', as
     };
 });
 
+export const fetchUserInformation = createAsyncThunk('auth/fetchUserInformation', async (email,{rejectWithValue}) => {
+    try {
+        const response = await axios.post('/users/user_information/', { 
+            email:email
+        },{ withCredentials: true, });
+        return response.data;
+    } catch (error) {
+        return rejectWithValue({
+            status:error.status,
+            message:error.response.data.message
+        });
+    };
+});
+
 const authSlice = createSlice({
     name:"auth",
     initialState,
@@ -123,7 +137,10 @@ const authSlice = createSlice({
         },
         clearAuthMessage: (state,action) => {
             state.authMessage = "";
-        }
+        },
+        setVerifyPhoneNumber: (state,action) => {
+            state.verifyPhoneNumber = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -137,6 +154,29 @@ const authSlice = createSlice({
                 state.dark = action.payload["theme"] === "light" ? false : true;
                 state.theme = action.payload["theme"];
                 document.cookie = `theme=${action.payload["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE || "Lax"}`;
+                //const wsMain = new WebSocket("ws://localhodst:8000/api/ws/socket/1/");
+                // const wsMain = new WebSocket(
+                //     (window.location.protocol === 'https:' ? 'wss://' : 'ws://')
+                //     + window.location.host
+                //     + '/ws/socket/'
+                //     + action.payload.id
+                //     + '/'
+                // );
+
+                // wsMain.onopen = function() {
+                //     console.log('WebSocket bağlantısı başarıyla kuruldu.');
+                // };
+                // wsMain.onerror = function(error) {
+                //     console.error('WebSocket hatası:', error);
+                //     wsMain.close();
+                // };
+                
+                // wsMain.onclose = function () {
+                //     console.log("Websocket kapatıldı!");
+                // };
+                
+                
+                
             })
             .addCase(fetchUser.rejected, (state,action) => {
                 state.status = false;
@@ -219,10 +259,23 @@ const authSlice = createSlice({
                     ? {color:"text-red-500",icon:"",text:action.payload.message}
                     : {color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"}
             })
+
+            //fetch user information
+            .addCase(fetchUserInformation.pending, (state) => {
+
+            })
+            .addCase(fetchUserInformation.fulfilled, (state,action) => {
+                state.userInformation = action.payload.user;
+            })
+            .addCase(fetchUserInformation.rejected, (state,action) => {
+                state.authMessage = action.payload.status === 400
+                    ? {color:"text-red-500",icon:"",text:action.payload.message}
+                    : {color:"text-red-500",icon:"fas fa-triangle-exclamation",text:"Sorry, something went wrong!"}
+            })
                 
     }
 })
 
 
-export const {setLoading,setCSRFToken,fetchTheme,setAuthMessage,clearAuthMessage} = authSlice.actions;
+export const {setLoading,setCSRFToken,fetchTheme,setAuthMessage,clearAuthMessage,setVerifyPhoneNumber} = authSlice.actions;
 export default authSlice.reducer;

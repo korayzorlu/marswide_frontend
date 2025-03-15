@@ -18,15 +18,30 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Dialog from '../../../component/feedback/Dialog';
 import Lightbox from '../../../component/image/Lightbox';
 import VissuallyHiddenInput from '../../../component/input/VissuallyHiddenInput';
-import { changeActiveCompany, deleteActiveCompany, deleteCompany, fetchCompanies, setActiveCompany } from '../../../store/slices/organizationSlice';
+import {deleteCompany, fetchCompanies, fetchUsersInCompany, setActiveCompany } from '../../../store/slices/organizationSlice';
+import { Avatar, Chip, Divider, ListItemIcon, MenuItem, Tab, Tabs, TextField, Typography } from '@mui/material';
+import TabPanel from '../../../component/tab/TabPanel';
+import CustomTableButton from '../../../component/table/CustomTableButton';
+import AddIcon from "@mui/icons-material/Add";
+import BasicTable from '../../../component/table/BasicTable';
+import AccountMenu from '../../../component/menu/AccountMenu';
+import MessageIcon from '@mui/icons-material/Message';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { amber,indigo,red} from '@mui/material/colors';
+import BadgeIcon from '@mui/icons-material/Badge';
+import InviteDialog from '../components/InviteDialog';
+import CancelIcon from '@mui/icons-material/Cancel';
+import OutUserInCompanyDialog from '../components/OutUserInCompanyDialog';
+import UsersInCompany from '../components/UsersInCompany';
 
 function UpdateCompany() {
     const {user} = useSelector((store) => store.auth);
-    const {companies,activeCompany,disabled} = useSelector((store) => store.organization);
+    const {companies,activeCompany,disabled,usersLoading,usersInCompany} = useSelector((store) => store.organization);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [tabValue, setTabValue] = useState(0);
     const [image, setImage] = useState(null);
     const [prevImage, setPrevImage] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -38,6 +53,8 @@ function UpdateCompany() {
 
     const location = useLocation();
     const {id,companyId} = location.state || {};
+
+    const [thisCompanyId, setThisCompanyId] = useState(companyId);
 
     const fetchData = async () => {
         try {
@@ -59,13 +76,13 @@ function UpdateCompany() {
         fetchData();
     }, [])
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
+        //event.preventDefault();
         setButtonDisabled(true);
         
         try {
             const formData = new FormData();
-            const jsonData = JSON.stringify({ id, name, formalName, removeImage });
+            const jsonData = JSON.stringify({ id:companyId, name, formalName, removeImage });
             formData.append("data", jsonData);
 
             if (selectedImage) {
@@ -131,66 +148,84 @@ function UpdateCompany() {
         setPrevImage(null);
         setButtonDisabled(false);
     };
+
+    const handleChangeTabValue = (event, newTabValue) => {
+        setTabValue(newTabValue);
+    };
+
+
     
     //<Button type="submit" addClass="bg-mui-blue text-dark" disabled={buttonDisabled}>Save</Button>
-
+    
     return (
         <Card>
-            <Form onSubmit={handleSubmit}>
-                <CardHeader>
-                    <BackAndHeader>
-                        <IconButton type="submit" aria-label="save" color="neutral" className="me-3" disabled={buttonDisabled}><SaveIcon /></IconButton>
-                        <IconButton type="button" aria-label="delete" color="error" onClick={() => dispatch(setDialog(true))}><DeleteIcon /></IconButton>
-                    </BackAndHeader>
-                </CardHeader>
-                <CardBody>
-                    <Row addClass="justify-content-center g-0">
-                        <Col size="4" addClass="mb-3 text-center">
-                            <Row>
-                                <Col>
-                                    <Lightbox
-                                    src={image || prevImage || require('../../../images/icons/global/company.jpg')}
-                                    addClass="rounded-circle"
-                                    height="150"
-                                    width="150"
-                                    loading="lazy"
-                                    >
-                                    </Lightbox>
-                                </Col>
-                            </Row>
-                            <Row addClass="justify-content-center g-0">
-                                <Col size="1">
-                                    <IconButton component="label" role={undefined} tabIndex={-1} color="neutral">
-                                        <CameraAltIcon />
-                                        <VissuallyHiddenInput onChange={handleChangeImage} />
-                                    </IconButton>
-                                </Col>
-                                <Col size="1">
-                                    <IconButton component="label" role={undefined} tabIndex={-1} color="neutral" onClick={handleDeleteImage}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col size="6">
-                            <Input type="text" id="update-company-name" label={"Name"} onChange={(e) => {setName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{name}</Input>
-                        </Col>
-                        <Col size="6">
-                            <Input type="text" id="update-company-formalName" label={"Formal Name"} onChange={(e) => {setFormalName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{formalName}</Input>
-                        </Col>
-                    </Row>
-                </CardBody>
-                <Dialog
-                title="Delete company"
-                onClickText="Delete"
-                dismissText="Cancel"
-                onClick={handleDelete}
-                >
-                    Are you sure you want to delete {data.name}? You cant't undo this action.
-                </Dialog>
-            </Form>
+            
+            <CardHeader>
+                <BackAndHeader>
+                    <IconButton type="button" aria-label="save" color="neutral" onClick={() => handleSubmit()} className="me-3" disabled={buttonDisabled}><SaveIcon /></IconButton>
+                    <IconButton type="button" aria-label="delete" color="error" onClick={() => dispatch(setDialog(true))}><DeleteIcon /></IconButton>
+                </BackAndHeader>
+            </CardHeader>
+            <CardBody>
+                <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
+                    <Tab label="Preferences" value={0}/>
+                    <Tab label="Users" value={1}/>
+                </Tabs>
+                <TabPanel value={tabValue} index={0}>
+                    <Form>
+                        <Row addClass="justify-content-center g-0">
+                            <Col size="4" addClass="mb-3 text-center">
+                                <Row>
+                                    <Col>
+                                        <Lightbox
+                                        src={image || prevImage || require('../../../images/icons/global/company.jpg')}
+                                        addClass="rounded-circle"
+                                        height="150"
+                                        width="150"
+                                        loading="lazy"
+                                        >
+                                        </Lightbox>
+                                    </Col>
+                                </Row>
+                                <Row addClass="justify-content-center g-0">
+                                    <Col size="1">
+                                        <IconButton component="label" role={undefined} tabIndex={-1} color="neutral">
+                                            <CameraAltIcon />
+                                            <VissuallyHiddenInput onChange={handleChangeImage} />
+                                        </IconButton>
+                                    </Col>
+                                    <Col size="1">
+                                        <IconButton component="label" role={undefined} tabIndex={-1} color="neutral" onClick={handleDeleteImage}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col size="6">
+                                <Input type="text" id="update-company-name" label={"Name"} onChange={(e) => {setName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{name}</Input>
+                            </Col>
+                            <Col size="6">
+                                <Input type="text" id="update-company-formalName" label={"Formal Name"} onChange={(e) => {setFormalName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{formalName}</Input>
+                            </Col>
+                        </Row>
+                    </Form>
+                </TabPanel>
+                <TabPanel value={tabValue} index={1}>
+                    <UsersInCompany companyId={thisCompanyId} companyName={name}></UsersInCompany>
+                </TabPanel>
+                
+            </CardBody>
+            <Dialog
+            title="Delete company"
+            onClickText="Delete"
+            onClickColor="error"
+            dismissText="Cancel"
+            onClick={handleDelete}
+            >
+                Are you sure you want to delete {data.name}? You cant't undo this action.
+            </Dialog>
         </Card>
     )
 }

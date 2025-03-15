@@ -22,7 +22,9 @@ function CariHesapHareketleri() {
     const fetchData = async () => {
         try {
             const response = await axios.get(`/mikro/api/cari_hesap_hareketleri/?database=${database}`,
-              {headers: {"X-Requested-With": "XMLHttpRequest"}}
+                {
+                    headers: {"X-Requested-With": "XMLHttpRequest"},
+                }
             );
             setRows(response.data);
         } catch (error) {
@@ -89,6 +91,7 @@ function CariHesapHareketleri() {
         { field: 'tarih', headerName: 'Tarih', flex: 1},
         { field: 'cari', headerName: 'Cari', width: 350},
         { field: 'evrakTip', headerName: 'Evrak Tipi', flex: 1},
+        { field: 'belgeTarih', headerName: 'Belge Tarihi', flex: 1},
         { field: 'belgeNo', headerName: 'Belge No', flex: 1},
         { field: 'aciklama', headerName: 'Açıklama', width: 300},
         { field: 'doviz', headerName: 'Döviz', flex: 1},

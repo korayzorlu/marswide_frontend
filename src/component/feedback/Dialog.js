@@ -10,7 +10,7 @@ import { setDialog } from '../../store/slices/notificationSlice';
 import { ThemeProvider } from '@emotion/react';
 
 function Dialog(props) {
-    const {children,title,dismissText,onClickText,onClick} = props;
+    const {children,title,dismissText,onClickText,onClickColor,onClick} = props;
     const {dialog} = useSelector((store) => store.notification);
     const {theme} = useSelector((store) => store.auth);
     const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
@@ -34,13 +34,19 @@ function Dialog(props) {
                 {title ? title : ""}
             </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
+                <DialogContentText id="alert-dialog-description" component="div">
                     {children}
                 </DialogContentText>
             </DialogContent>
             <DialogActions className=''>
                 <Button color="neutral" onClick={handleClose}>{dismissText ? dismissText : "Cancel"}</Button>
-                <Button variant="outlined" color="error" onClick={onClick ? onClick : console.log("")} autoFocus>{onClickText ? onClickText : "Save"}</Button>
+                {
+                    onClick
+                    ?
+                    <Button variant="outlined" color={onClickColor ? onClickColor : "primary"} onClick={onClick} autoFocus>{onClickText ? onClickText : "Save"}</Button>
+                    :
+                    <></>
+                }
             </DialogActions>
         </MUIDialog>
     

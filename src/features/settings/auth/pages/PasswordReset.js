@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Form from "../../../../component/form/Form";
 import Input from "../../../../component/input/Input";
-import Button from "../../../../component/button/Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../store/slices/notificationSlice";
 import { fetchUser } from "../../../../store/slices/authSlice";
+import { Button } from "@mui/material";
 
 function PasswordReset() {
     const {user} = useSelector((store) => store.auth);
@@ -66,7 +66,7 @@ function PasswordReset() {
             <Input type="password" id="settings-auth-currentPassword" label={"Current Password"} onChange={(e) => setCurrentPassword(e.target.value)} disabled={disabled}></Input>
             <Input type="password" id="settings-auth-newPassword" label={"New Password"} onChange={(e) => setNewPassword(e.target.value)} disabled={disabled}></Input>
             <Input type="password" id="settings-auth-newPasswordConfirmation" label={"New Password Confirm"} onChange={(e) => setNewPasswordConfirmation(e.target.value)} disabled={disabled}></Input>
-            <Button type="submit" color="primary" addClass="btn-block" disabled={disabled}>Save</Button>
+            <Button type="submit" variant="contained" color="primary" addClass="btn-block" disabled={disabled} fullWidth>Save</Button>
         </Form>
     );
 }

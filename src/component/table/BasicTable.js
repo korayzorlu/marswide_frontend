@@ -1,34 +1,22 @@
 import React, { useState } from 'react'
-import TableContent from './TableContent'
-import { ThemeProvider } from '@emotion/react'
-import { DataGrid, gridClasses } from '@mui/x-data-grid'
 import { useSelector } from 'react-redux';
+import TableContent from './TableContent';
+import { DataGrid, gridClasses } from '@mui/x-data-grid'
 import Toolbar from './Toolbar';
 
-function ListTable(props) {
-    const {
-      rows,
-      columns,
-      loading,
-      customButtons,
-      hiddenColumns,
-      checkboxSelection,
-      disableRowSelectionOnClick,
-      pageModel
-    } = props;
+function BasicTable(props) {
+    const {rows,columns,loading,customButtons,hiddenColumns,checkboxSelection,disableRowSelectionOnClick} = props;
 
     const {theme} = useSelector((store) => store.auth);
     const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
 
-    const [paginationModel, setPaginationModel] = useState(
-      {
+    const [paginationModel, setPaginationModel] = useState({
         pageSize: 50,
         page: 0,
-      }
-    );
+    });
 
-  return (
-    <TableContent>
+    return (
+        <TableContent height="auto">
             <DataGrid
             slots={{ toolbar: Toolbar}}
             slotProps={{
@@ -53,7 +41,7 @@ function ListTable(props) {
             paginationModel={paginationModel}
             onPaginationModelChange={(model) => setPaginationModel(model)}
             loading={loading}
-            checkboxSelection={checkboxSelection || true}
+            checkboxSelection={checkboxSelection}
             disableRowSelectionOnClick={disableRowSelectionOnClick}
             autoHeight
             sx={{
@@ -66,8 +54,8 @@ function ListTable(props) {
                   },
             }}
             />
-    </TableContent>
-  )
+        </TableContent>
+    )
 }
 
-export default ListTable
+export default BasicTable

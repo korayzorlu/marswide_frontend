@@ -7,7 +7,10 @@ const initialState = {
     companies:[],
     activeCompany:null,
     companiesLoading:false,
+    usersLoading:false,
     disabled:false,
+    invitations:[],
+    usersInCompany:[],
 }
 
 export const fetchCompanies = createAsyncThunk('organization/fetchCompanies', async () => {
@@ -44,6 +47,16 @@ export const deleteCompany = createAsyncThunk('organization/deleteCompany', asyn
         dispatch(fetchCompanies());
         dispatch(setDialog(false));
     }
+});
+
+export const fetchUsersInCompany = createAsyncThunk('organization/fetchUsersInCompany', async (companyId) => {
+    const response = await axios.get(`/companies/api/users_in_company/?companyId=${companyId}`, {withCredentials: true});
+    return response.data;
+});
+
+export const fetchInvitations = createAsyncThunk('organization/fetchInvitations', async () => {
+    const response = await axios.get(`/companies/api/invitations`, {withCredentials: true});
+    return response.data;
 });
 
 const organizationSlice = createSlice({
@@ -122,6 +135,28 @@ const organizationSlice = createSlice({
                 state.disabled = false;
             })
             .addCase(deleteCompany.rejected, (state,action) => {
+                state.disabled = false;
+            })
+            //fetch users in company
+            .addCase(fetchUsersInCompany.pending, (state) => {
+                state.usersLoading = true;
+            })
+            .addCase(fetchUsersInCompany.fulfilled, (state,action) => {
+                state.usersInCompany = action.payload;
+                state.usersLoading = false;
+            })
+            .addCase(fetchUsersInCompany.rejected, (state,action) => {
+                state.usersLoading = false;
+            })
+            //fetch invitations
+            .addCase(fetchInvitations.pending, (state) => {
+                state.disabled = true;
+            })
+            .addCase(fetchInvitations.fulfilled, (state,action) => {
+                state.invitations = action.payload;
+                state.disabled = false;
+            })
+            .addCase(fetchInvitations.rejected, (state,action) => {
                 state.disabled = false;
             })
                 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Tab } from "mdb-ui-kit";
 
 function NavItem(props) {
-    const {children, navItem} = props;
+    const {children, navItem,addClass,btnClass} = props;
 
     useEffect(() => {
         //mdb input
@@ -14,10 +14,10 @@ function NavItem(props) {
     }, []);
 
     return ( 
-        <li className="nav-item me-2" role="presentation">
+        <li className={`nav-item ${addClass || ""}`} role="presentation">
             <button
             data-mdb-pill-init
-            className={`nav-link m-0 ${navItem.active}`}
+            className={`nav-link m-0 ${navItem.active} ${btnClass || ""}`}
             id={navItem.id}
             data-mdb-target={`#${navItem.target}`}
             type="button"

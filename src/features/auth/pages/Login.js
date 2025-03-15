@@ -2,9 +2,10 @@ import { useEffect,useState } from "react";
 import { Input } from "mdb-ui-kit";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { changeTheme, clearAuthMessage, fetchCSRFToken, fetchUser, loginAuth, setLoading } from "../../../store/slices/authSlice";
+import { changeTheme, clearAuthMessage, fetchCSRFToken, loginAuth, setLoading } from "../../../store/slices/authSlice";
 import { fetchCompanies } from "../../../store/slices/organizationSlice";
 import { fetchMenuItems } from "../../../store/slices/subscriptionsSlice";
+import { fetchNotifications } from "../../../store/slices/notificationSlice";
 
 function Login() {
     const {status,theme,authMessage} = useSelector((store) => store.auth);
@@ -35,7 +36,8 @@ function Login() {
                 dispatch(fetchCSRFToken()).unwrap(),
                 dispatch(changeTheme(theme === "dark" ? true : false)).unwrap(),
                 dispatch(fetchMenuItems()).unwrap(),
-                dispatch(fetchCompanies()).unwrap()
+                dispatch(fetchCompanies()).unwrap(),
+                dispatch(fetchNotifications()).unwrap()
             ]);
             dispatch(setLoading(false));
             navigate('/');

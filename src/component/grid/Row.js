@@ -1,8 +1,8 @@
 function Row(props) {
-    const {children,addClass} = props;
+    const {children,addClass,className} = props;
 
   return (
-    <div className={`row ${addClass ? addClass : ""}`}>
+    <div className={`row ${addClass ? addClass : ""} ${className || ""}`}>
       {children}
     </div>
   )

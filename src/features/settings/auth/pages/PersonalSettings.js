@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "../../../../component/form/Form";
-import Button from "../../../../component/button/Button";
 import Input from "../../../../component/input/Input";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../store/slices/notificationSlice";
 import { fetchUser } from "../../../../store/slices/authSlice";
+import { Button } from "@mui/material";
 
 function PersonalSettings() {
     const {user} = useSelector((store) => store.auth);
@@ -58,7 +58,7 @@ function PersonalSettings() {
             </div>
             <Input type="text" id="settings-auth-firstName" label={"First Name"} onChange={(e) => setFirstName(e.target.value)} disabled={disabled}>{firstName}</Input>
             <Input type="text" id="settings-auth-lastName" label={"Last Name"} onChange={(e) => setLastName(e.target.value)} disabled={disabled}>{lastName}</Input>
-            <Button type="submit" color="primary" addClass="btn-block" disabled={disabled}>Save</Button>
+            <Button type="submit" variant="contained" color="primary" addClass="btn-block" disabled={disabled} fullWidth>Save</Button>
         </Form>
     );
 }

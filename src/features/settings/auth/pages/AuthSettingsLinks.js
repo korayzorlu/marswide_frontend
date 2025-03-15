@@ -21,6 +21,12 @@ function AuthSettingsLinks() {
                     <i className="fas fa-arrow-right fs-5 align-content-center"></i>
                 </Link>
             </div>
+            <div className="row border-bottom p-2">
+                <Link to="/settings/auth/phone-number" className="col-md-12 p-2 fw-bold d-flex">
+                    <span className="me-auto">Phone Number</span>
+                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
+                </Link>
+            </div>
             <div className="row p-2">
                 <Link to="/settings/auth/password-reset" className="col-md-12 p-2 fw-bold d-flex">
                     <span className="me-auto">Password Reset</span>
