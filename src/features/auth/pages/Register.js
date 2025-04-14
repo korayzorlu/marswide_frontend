@@ -7,9 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeTheme, clearAuthMessage, fetchCSRFToken, registerAuth } from "../../../store/slices/authSlice";
 import Input from "../../../component/input/Input";
 import Button from "../../../component/button/Button";
+import { fetchMenuItems } from "../../../store/slices/subscriptionsSlice";
+import { fetchCompanies } from "../../../store/slices/organizationSlice";
+import { fetchNotifications } from "../../../store/slices/notificationSlice";
+import { fetchImportProcess } from "../../../store/slices/processSlice";
 
 function Register() {
-    const {authMessage,dark} = useSelector((store) => store.auth);
+    const {authMessage,theme} = useSelector((store) => store.auth);
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -85,8 +89,14 @@ function Register() {
         
         try {
             await dispatch(registerAuth(form)).unwrap();
-            await dispatch(fetchCSRFToken()).unwrap();
-            dispatch(changeTheme(!dark));
+            await Promise.all([
+                dispatch(fetchCSRFToken()).unwrap(),
+                dispatch(changeTheme(theme === "dark" ? true : false)).unwrap(),
+                dispatch(fetchMenuItems()).unwrap(),
+                dispatch(fetchCompanies()).unwrap(),
+                dispatch(fetchNotifications()).unwrap(),
+                dispatch(fetchImportProcess()).unwrap()
+                        ]);
             navigate('/');
         } catch (error) {
 

@@ -66,10 +66,8 @@ function UpdateCompany() {
             setName(response.data.name);
             setFormalName(response.data.formalName);
         } catch (error) {
-            dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-        } finally {
-
-        }
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+        };
     };
     
     useEffect(() => {
@@ -98,17 +96,9 @@ function UpdateCompany() {
                     withCredentials: true
                 },
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully saved!",icon:"check-circle"}));
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             fetchData();
         };
@@ -162,8 +152,8 @@ function UpdateCompany() {
             
             <CardHeader>
                 <BackAndHeader>
-                    <IconButton type="button" aria-label="save" color="neutral" onClick={() => handleSubmit()} className="me-3" disabled={buttonDisabled}><SaveIcon /></IconButton>
-                    <IconButton type="button" aria-label="delete" color="error" onClick={() => dispatch(setDialog(true))}><DeleteIcon /></IconButton>
+                    <IconButton type="button" aria-label="save" color="neutral" onClick={() => handleSubmit()} className="me-3 p-0" disabled={buttonDisabled}><SaveIcon /></IconButton>
+                    <IconButton type="button" aria-label="delete" color="error" onClick={() => dispatch(setDialog(true))} className="p-0"><DeleteIcon /></IconButton>
                 </BackAndHeader>
             </CardHeader>
             <CardBody>

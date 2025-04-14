@@ -28,16 +28,16 @@ function PersonalSettings() {
                     id : user.id,
                     email : user.email,
                     username : user.username,
+                    phone_number : user.phone_number,
+                    is_email_verified : user.is_email_verified,
                     first_name : firstName,
                     last_name : lastName
                 },
                 {withCredentials: true},
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully saved!",icon:"check-circle"}));
-            };
+            dispatch(setAlert({status:response.status,text:"Saved successfully!"}));
         } catch (error) {
-            dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

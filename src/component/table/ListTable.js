@@ -9,16 +9,15 @@ function ListTable(props) {
     const {
       rows,
       columns,
+      getRowId,
       loading,
       customButtons,
       hiddenColumns,
       checkboxSelection,
       disableRowSelectionOnClick,
-      pageModel
+      pageModel,
+      onRowSelectionModelChange
     } = props;
-
-    const {theme} = useSelector((store) => store.auth);
-    const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
 
     const [paginationModel, setPaginationModel] = useState(
       {
@@ -29,43 +28,45 @@ function ListTable(props) {
 
   return (
     <TableContent>
-            <DataGrid
-            slots={{ toolbar: Toolbar}}
-            slotProps={{
-                toolbar: {
-                    showQuickFilter: true,
-                    children: customButtons
-                },
-                loadingOverlay: {
-                  variant: 'linear-progress',
-                  noRowsVariant: 'linear-progress',
-                },
-              }}
-            columns={columns}
-            rows={rows}
-            initialState={{
-                columns: {
-                  columnVisibilityModel: hiddenColumns,
-                },
-              }}
-            pageSizeOptions={[25, 50, 100]}
-            pagination
-            paginationModel={paginationModel}
-            onPaginationModelChange={(model) => setPaginationModel(model)}
-            loading={loading}
-            checkboxSelection={checkboxSelection || true}
-            disableRowSelectionOnClick={disableRowSelectionOnClick}
-            autoHeight
-            sx={{
-                [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
-                  outline: 'none',
-                },
-                [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
-                  {
-                    outline: 'none',
-                  },
-            }}
-            />
+      <DataGrid
+      slots={{ toolbar: Toolbar}}
+      slotProps={{
+          toolbar: {
+              showQuickFilter: true,
+              children: customButtons
+          },
+          loadingOverlay: {
+            variant: 'linear-progress',
+            noRowsVariant: 'linear-progress',
+          },
+        }}
+      columns={columns}
+      rows={rows}
+      getRowId={getRowId || ((row) => row.uuid)}
+      initialState={{
+          columns: {
+            columnVisibilityModel: hiddenColumns,
+          },
+        }}
+      pageSizeOptions={[25, 50, 100]}
+      pagination
+      paginationModel={paginationModel}
+      onPaginationModelChange={(model) => setPaginationModel(model)}
+      loading={loading}
+      checkboxSelection={checkboxSelection || true}
+      disableRowSelectionOnClick={disableRowSelectionOnClick}
+      onRowSelectionModelChange={onRowSelectionModelChange}
+      autoHeight
+      sx={{
+          [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
+            outline: 'none',
+          },
+          [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+            {
+              outline: 'none',
+            },
+      }}
+      />
     </TableContent>
   )
 }

@@ -2,13 +2,16 @@ import { Button } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import AddIcon from "@mui/icons-material/Add";
+import { useSelector } from 'react-redux';
 
 function CustomTableButton(props) {
-    const {children, link, icon,onClick,disabled,color} = props;
+    const {children, link, icon,onClick,disabled,color,variant} = props;
+
+    const {dark} = useSelector((store) => store.auth);
 
   return (
     <Button
-    variant="outlined"
+    variant={variant || "text"}
     size="small"
     sx={{
         textTransform: "none",
@@ -18,7 +21,17 @@ function CustomTableButton(props) {
     startIcon={icon}
     onClick={onClick}
     disabled={disabled ? disabled : false}
-    color={color ? color : "primary"}
+    color={
+      color
+      ?
+      color
+      :
+      dark
+        ?
+          "primary"
+        :
+          "blackhole"
+    }
     >
         <Link to={link}>{children}</Link>
     </Button>

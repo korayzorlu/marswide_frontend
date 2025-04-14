@@ -7,9 +7,6 @@ import Toolbar from './Toolbar';
 function BasicTable(props) {
     const {rows,columns,loading,customButtons,hiddenColumns,checkboxSelection,disableRowSelectionOnClick} = props;
 
-    const {theme} = useSelector((store) => store.auth);
-    const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
-
     const [paginationModel, setPaginationModel] = useState({
         pageSize: 50,
         page: 0,

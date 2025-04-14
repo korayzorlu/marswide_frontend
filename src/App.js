@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Landing from './features/layout/pages/Landing.js';
 import Panel from './features/layout/pages/Panel.js';
@@ -26,7 +26,7 @@ import { fetchUser, fetchTheme, fetchCSRFToken, setLoading } from './store/slice
 import { checkMobile, setResize } from './store/slices/sidebarSlice.js';
 import AddCompany from './features/organization/pages/AddCompany.js';
 import UpdateCompany from './features/organization/pages/UpdateCompany.js';
-import { ThemeProvider } from '@emotion/react'
+//import { ThemeProvider } from '@emotion/react'
 import { fetchMenuItems } from './store/slices/subscriptionsSlice.js';
 import { fetchCompanies } from './store/slices/organizationSlice.js';
 import CariHesapHareketleri from './features/mikro/pages/CariHesapHareketleri.js';
@@ -42,6 +42,10 @@ import PhoneNumberSettings from './features/settings/auth/pages/PhoneNumberSetti
 import { fetchCountries } from './store/slices/dataSlice.js';
 import PhoneNumberVerify from './features/settings/auth/pages/PhoneNumberVerify.js';
 import EmailVerify from './features/settings/auth/pages/EmailVerify.js';
+import UpdatePartner from './features/partners/pages/UpdatePartner.js';
+import AddPartner from './features/partners/pages/AddPartner.js';
+import { fetchImportProcess } from './store/slices/processSlice.js';
+import { ThemeProvider } from './ThemeProvider.js';
 
 export const NumberContext = React.createContext();
 
@@ -67,18 +71,18 @@ function App() {
     const fetchData = async () => {
       await Promise.allSettled([
         dispatch(fetchUser()).unwrap(),
-        dispatch(joinWebsocket()).unwrap(),
         dispatch(fetchCSRFToken()).unwrap(),
         dispatch(fetchMenuItems()).unwrap(),
         dispatch(fetchCompanies()).unwrap(),
-        dispatch(fetchCountries()).unwrap(),
+        //dispatch(fetchCountries()).unwrap(),
         dispatch(fetchNotifications()).unwrap(),
+        dispatch(fetchImportProcess()).unwrap(),
       ])
+      dispatch(joinWebsocket()).unwrap();
       dispatch(setLoading(false));
     };
     
     fetchData();
-    
 
   },[dispatch]);
 
@@ -100,16 +104,20 @@ function App() {
     };
   }, []);
 
+  const currentTheme = useMemo(() => (
+    theme === "light" ? muiLightTheme : muiDarkTheme), [theme]
+  );
+
   if (loading) return <Loading></Loading>;
 
   if (user && !user.is_email_verified) return (
-    <ThemeProvider theme={theme === "light" ? muiLightTheme : muiDarkTheme}>
+    <ThemeProvider>
       <EmailVerify></EmailVerify>
     </ThemeProvider>
   );
 
   return (
-    <ThemeProvider theme={theme === "light" ? muiLightTheme : muiDarkTheme}>
+    <ThemeProvider>
         <div className="App" id='Marswide'>
 
           { user && status
@@ -138,6 +146,8 @@ function App() {
                   <Route path='/invitations' element={<Invitations></Invitations>}></Route>
 
                   <Route path='/partners' element={<Partners></Partners>}></Route>
+                  <Route path='/partners/add-partner' element={<AddPartner></AddPartner>}></Route>
+                  <Route path='/partners/update/:name' element={<UpdatePartner></UpdatePartner>}></Route>
 
                   <Route path='/cari-hesap-hareketleri' element={<CariHesapHareketleri></CariHesapHareketleri>}></Route>
                   <Route path='/personeller' element={<Personeller></Personeller>}></Route>

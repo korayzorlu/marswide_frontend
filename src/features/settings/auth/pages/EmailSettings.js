@@ -38,18 +38,10 @@ function EmailSettings() {
                 },
                 {withCredentials: true},
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully sent!",icon:"check-circle"}));
-                setChanged(true);
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
+            setChanged(true);
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

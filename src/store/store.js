@@ -28,7 +28,7 @@ export const store = configureStore({
         partner: partnerReducer,
         process: processReducer,
         sidebar: sidebarReduce,
-        table: tableReducer,
+        //table: tableReducer,
         theme: themeReducer,
     },
     middleware: (getDefaultMiddleware) =>

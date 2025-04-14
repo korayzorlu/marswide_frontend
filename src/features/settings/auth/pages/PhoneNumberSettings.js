@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setAlert } from '../../../../store/slices/notificationSlice';
@@ -8,6 +8,7 @@ import Form from '../../../../component/form/Form';
 import { Button, FormControl, MenuItem, Select, TextField } from '@mui/material';
 import Row from '../../../../component/grid/Row';
 import Col from '../../../../component/grid/Col';
+import { fetchCountries } from '../../../../store/slices/dataSlice';
 
 function PhoneNumberSettings() {
     const {user} = useSelector((store) => store.auth);
@@ -21,6 +22,10 @@ function PhoneNumberSettings() {
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [iso2, setIso2] = useState("TR");
 
+    useEffect(() => {
+      dispatch(fetchCountries());
+    }, [])
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         setDisabled(true);
@@ -34,24 +39,16 @@ function PhoneNumberSettings() {
                 },
                 {withCredentials: true},
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully saved!",icon:"check-circle"}));
-                dispatch(setVerifyPhoneNumber(phoneNumber.slice(-2)))
-                navigate(
-                    "/phone-number-verify",
-                    {
-                        state: {iso2:iso2,phoneNumber:phoneNumber}
-                    }
-                );
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
+            dispatch(setVerifyPhoneNumber(phoneNumber.slice(-2)))
+            navigate(
+                "/phone-number-verify",
+                {
+                    state: {iso2:iso2,phoneNumber:phoneNumber}
+                }
+            );
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

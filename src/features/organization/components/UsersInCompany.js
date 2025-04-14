@@ -16,6 +16,7 @@ import InviteDialog from './InviteDialog';
 import axios from 'axios';
 import { setAlert, setUserDialog } from '../../../store/slices/notificationSlice';
 import { fetchUserInformation } from '../../../store/slices/authSlice';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 function UsersInCompany(props) {
     const {companyId,companyName} = props;
@@ -68,17 +69,9 @@ function UsersInCompany(props) {
                 {id:selectedUserCompanyId,userEmail:selectedUserEmail,status:status},
                 { withCredentials: true},
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully changed!",icon:"check-circle"}));
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUsersInCompany(companyId));
             handleClose();
@@ -203,7 +196,7 @@ function UsersInCompany(props) {
             disableRowSelectionOnClick={true}
             loading={usersLoading}
             customButtons={
-                <CustomTableButton onClick={() => setOpenInviteDialog(true)} icon={<AddIcon/>} children="INVITE"/>
+                <CustomTableButton onClick={() => setOpenInviteDialog(true)} icon={<AddBoxIcon/>} children="INVITE PERSON"/>
             }
             />
             <InviteDialog

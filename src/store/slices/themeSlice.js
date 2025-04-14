@@ -58,83 +58,83 @@ const commonTheme = {
 };
 
 const initialState = {
-    muiLightTheme:createTheme({
-        ...commonTheme,
-        palette: {
-            mode: 'light',
-        },
-        components: {
-            ...commonTheme.components,
-            MuiDataGrid: {
-                ...commonTheme.components.MuiDataGrid,
-                styleOverrides: {
-                    ...commonTheme.components.MuiDataGrid.styleOverrides,
-                    root: {
-                        ...commonTheme.components.MuiDataGrid.styleOverrides.root,
-                        backgroundColor: "#fff",
-                    },
-                },
-            },
-            MuiListItem: {
-                styleOverrides: {
-                    root: {
-                        color: "#000",
-                    },
-                },
-            },
-            MuiListItemIcon: {
-                styleOverrides: {
-                    root: {
-                        color: "#000",
-                    },
-                },
-            },
-        },
-    }),
-    muiDarkTheme:createTheme({
-        ...commonTheme,
-        palette: {
-            mode: 'dark',
-        },
-        components: {
-            ...commonTheme.components,
-            MuiDataGrid: {
-                ...commonTheme.components.MuiDataGrid,
-                styleOverrides: {
-                    ...commonTheme.components.MuiDataGrid.styleOverrides,
-                    root: {
-                        ...commonTheme.components.MuiDataGrid.styleOverrides.root,
-                        backgroundColor: "#1b1f23",
-                    },
-                },
-            },
-            MuiPaper: {
-                styleOverrides: {
-                    root: {
-                        ...commonTheme.components.MuiPaper.styleOverrides.root,
-                        backgroundColor: "#1b1f23",
-                    }
-                }
-            },
-            MuiListSubheader: {
-                ...commonTheme.components.MuiListSubheader,
-                styleOverrides: {
-                    ...commonTheme.components.MuiListSubheader.styleOverrides,
-                    root: {
-                        ...commonTheme.components.MuiListSubheader.styleOverrides.root,
-                        backgroundColor: "#1b1f23",
-                    },
-                },
-            },
-            MuiDivider: {
-                styleOverrides: {
-                    root: {
-                        borderColor: "rgba(255, 255, 255, 0.24)",
-                    },
-                },
-            },
-        },
-    }),
+    // muiLightTheme:createTheme({
+    //     ...commonTheme,
+    //     palette: {
+    //         mode: 'light',
+    //     },
+    //     components: {
+    //         ...commonTheme.components,
+    //         MuiDataGrid: {
+    //             ...commonTheme.components.MuiDataGrid,
+    //             styleOverrides: {
+    //                 ...commonTheme.components.MuiDataGrid.styleOverrides,
+    //                 root: {
+    //                     ...commonTheme.components.MuiDataGrid.styleOverrides.root,
+    //                     backgroundColor: "#fff",
+    //                 },
+    //             },
+    //         },
+    //         MuiListItem: {
+    //             styleOverrides: {
+    //                 root: {
+    //                     color: "#000",
+    //                 },
+    //             },
+    //         },
+    //         MuiListItemIcon: {
+    //             styleOverrides: {
+    //                 root: {
+    //                     color: "#000",
+    //                 },
+    //             },
+    //         },
+    //     },
+    // }),
+    // muiDarkTheme:createTheme({
+    //     ...commonTheme,
+    //     palette: {
+    //         mode: 'dark',
+    //     },
+    //     components: {
+    //         ...commonTheme.components,
+    //         MuiDataGrid: {
+    //             ...commonTheme.components.MuiDataGrid,
+    //             styleOverrides: {
+    //                 ...commonTheme.components.MuiDataGrid.styleOverrides,
+    //                 root: {
+    //                     ...commonTheme.components.MuiDataGrid.styleOverrides.root,
+    //                     backgroundColor: "#1b1f23",
+    //                 },
+    //             },
+    //         },
+    //         MuiPaper: {
+    //             styleOverrides: {
+    //                 root: {
+    //                     ...commonTheme.components.MuiPaper.styleOverrides.root,
+    //                     backgroundColor: "#1b1f23",
+    //                 }
+    //             }
+    //         },
+    //         MuiListSubheader: {
+    //             ...commonTheme.components.MuiListSubheader,
+    //             styleOverrides: {
+    //                 ...commonTheme.components.MuiListSubheader.styleOverrides,
+    //                 root: {
+    //                     ...commonTheme.components.MuiListSubheader.styleOverrides.root,
+    //                     backgroundColor: "#1b1f23",
+    //                 },
+    //             },
+    //         },
+    //         MuiDivider: {
+    //             styleOverrides: {
+    //                 root: {
+    //                     borderColor: "rgba(255, 255, 255, 0.24)",
+    //                 },
+    //             },
+    //         },
+    //     },
+    // }),
 }
 
 const themeSlice = createSlice({

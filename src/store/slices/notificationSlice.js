@@ -5,18 +5,20 @@ import { Alert as MDBAlert} from 'mdb-ui-kit';
 const initialState = {
     alert:{color:"",icon:"",text:""},
     dialog:false,
+    deleteDialog:false,
+    importDialog:false,
     userDialog:false,
     modal:false,
     notifications:[],
     unreadNotifications:0
 }
 
-export const fetchNotifications = createAsyncThunk('websocket/fetchNotifications', async () => {
+export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async () => {
     const response = await axios.get(`/notifications/api/notifications`, {withCredentials: true});
     return response.data;
 });
 
-export const changeNotifications = createAsyncThunk('websocket/changeNotifications', async () => {
+export const changeNotifications = createAsyncThunk('notifications/changeNotifications', async () => {
     const response = await axios.put(`/notifications/api/notifications/`,
         {   
             id: 0,
@@ -27,7 +29,7 @@ export const changeNotifications = createAsyncThunk('websocket/changeNotificatio
     return response.data;
 });
 
-export const readNotifications = createAsyncThunk('websocket/readNotifications', async () => {
+export const readNotifications = createAsyncThunk('notifications/readNotifications', async () => {
     const response = await axios.post(`/notifications/read_notification/`,{withCredentials: true});
     return response.data;
 });
@@ -38,8 +40,65 @@ const notificationSlice = createSlice({
     reducers:{
         setAlert: (state,action) => {
             state.alert = action.payload;
+            const defaultMessage = "Successfull!";
+            const defaultErrorMessage = "Sorry, something went wrong!";
+            const getAlertProps = (status) => {
+                switch (status) {
+                    case 200:
+                    return {
+                        color:action.payload.color || "secondary",
+                        icon:action.payload.icon || "check-circle",
+                        text:action.payload.text || defaultMessage,
+                    };
+                    case 201:
+                    return {
+                        color:action.payload.color || "secondary",
+                        icon:action.payload.icon || "check-circle",
+                        text:action.payload.text || defaultMessage,
+                    };
+                    case 400:
+                    return {
+                        color:action.payload.color || "danger",
+                        icon:action.payload.icon || "times-circle",
+                        text:action.payload.text || defaultErrorMessage,
+                    };
+                    case 401:
+                    return {
+                        color:action.payload.color || "danger",
+                        icon:action.payload.icon || "times-circle",
+                        text:action.payload.text || defaultErrorMessage,
+                    };
+                    case 403:
+                    return {
+                        color:action.payload.color || "danger",
+                        icon:action.payload.icon || "times-circle",
+                        text:action.payload.text || defaultErrorMessage,
+                    };
+                    case 404:
+                    return {
+                        color:action.payload.color || "danger",
+                        icon:action.payload.icon || "times-circle",
+                        text:action.payload.text || defaultErrorMessage,
+                    };
+                    case 500:
+                    return {
+                        color:action.payload.color || "danger",
+                        icon:action.payload.icon || "times-circle",
+                        text:action.payload.text || defaultErrorMessage,
+                    };
+                    default:
+                    return {
+                        color:action.payload.color || "secondary",
+                        icon:action.payload.icon || "circle",
+                        text:action.payload.text || defaultMessage,
+                    };
+                }
+            };
+            const { color, icon, text } = getAlertProps(action.payload.status);
+            state.alert = {color, icon, text};
             let basicInstance = MDBAlert.getInstance(document.getElementById("mainAlert"));
-            basicInstance.update({color:action.payload.color})
+            //basicInstance.update({color:action.payload.color})
+            basicInstance.update({color:color});
             basicInstance.show();
         },
         clearAlert: (state,action) => {
@@ -47,6 +106,12 @@ const notificationSlice = createSlice({
         },
         setDialog: (state,action) => {
             state.dialog = action.payload;
+        },
+        setDeleteDialog: (state,action) => {
+            state.deleteDialog = action.payload;
+        },
+        setImportDialog: (state,action) => {
+            state.importDialog = action.payload;
         },
         setUserDialog: (state,action) => {
             state.userDialog = action.payload;
@@ -79,5 +144,5 @@ const notificationSlice = createSlice({
   
 })
 
-export const {setAlert,clearAler,setDialog,setModal,send_notification,setUnreadNotifications,setUserDialog} = notificationSlice.actions;
+export const {setAlert,clearAler,setDialog,setDeleteDialog,setImportDialog,setModal,send_notification,setUnreadNotifications,setUserDialog} = notificationSlice.actions;
 export default notificationSlice.reducer;

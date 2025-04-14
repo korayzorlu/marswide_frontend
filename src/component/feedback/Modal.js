@@ -14,10 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 function Modal(props) {
     const {children,titleIcon,titleText,dismissText,dissmissColor,onClickText,onClickColor,onClick} = props;
     const {modal} = useSelector((store) => store.notification);
-    const {theme} = useSelector((store) => store.auth);
-    const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
-
-
+    
     const dispatch = useDispatch();
 
   return (

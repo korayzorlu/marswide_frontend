@@ -7,18 +7,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDialog } from '../../store/slices/notificationSlice';
-import { ThemeProvider } from '@emotion/react';
 
 function Dialog(props) {
-    const {children,title,dismissText,onClickText,onClickColor,onClick} = props;
+    const {children,title,dismissText,onClickText,onClickColor,onClick,closeEvent} = props;
     const {dialog} = useSelector((store) => store.notification);
     const {theme} = useSelector((store) => store.auth);
-    const {tableLightTheme,tableDarkTheme} = useSelector((store) => store.table);
 
     const dispatch = useDispatch();
     
     const handleClose = () => {
         dispatch(setDialog(false));
+        if(closeEvent){
+            closeEvent();
+        };
     };
 
   return (

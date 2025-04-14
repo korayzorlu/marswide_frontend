@@ -31,17 +31,12 @@ export const deleteCompany = createAsyncThunk('organization/deleteCompany', asyn
             },
             {withCredentials: true},
         );
-        if (response.status === 200){
-            dispatch(setAlert({color:"secondary",text:"Successfully deleted!",icon:"check-circle"}));
-            navigate("/companies");
-        };
+        dispatch(setAlert({status:response.status,text:response.data.message}));
+        navigate("/companies");
         return id;
+
     } catch (error) {
-        if (error.status === 400){
-            dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-        } else {
-            dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-        };
+        dispatch(setAlert({status:error.status,text:error.response.data.message}));
         return rejectWithValue(error.response.data);
     } finally {
         dispatch(fetchCompanies());

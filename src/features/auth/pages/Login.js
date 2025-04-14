@@ -6,6 +6,7 @@ import { changeTheme, clearAuthMessage, fetchCSRFToken, loginAuth, setLoading } 
 import { fetchCompanies } from "../../../store/slices/organizationSlice";
 import { fetchMenuItems } from "../../../store/slices/subscriptionsSlice";
 import { fetchNotifications } from "../../../store/slices/notificationSlice";
+import { fetchImportProcess } from "../../../store/slices/processSlice";
 
 function Login() {
     const {status,theme,authMessage} = useSelector((store) => store.auth);
@@ -37,7 +38,8 @@ function Login() {
                 dispatch(changeTheme(theme === "dark" ? true : false)).unwrap(),
                 dispatch(fetchMenuItems()).unwrap(),
                 dispatch(fetchCompanies()).unwrap(),
-                dispatch(fetchNotifications()).unwrap()
+                dispatch(fetchNotifications()).unwrap(),
+                dispatch(fetchImportProcess()).unwrap()
             ]);
             dispatch(setLoading(false));
             navigate('/');

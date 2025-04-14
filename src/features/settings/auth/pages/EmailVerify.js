@@ -8,9 +8,10 @@ import { Button, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { setAlert } from '../../../../store/slices/notificationSlice';
-import { fetchUser } from '../../../../store/slices/authSlice'
+import { fetchUser, logoutAuth } from '../../../../store/slices/authSlice'
 import VerifiedIcon from '@mui/icons-material/Verified';
 import EmailIcon from '@mui/icons-material/Email';
+import Alert from '../../../../component/alert/Alert'
 
 function EmailVerify() {
     const {user} = useSelector((store) => store.auth);
@@ -29,18 +30,14 @@ function EmailVerify() {
                 },
                 {withCredentials: true},
             );
-            if (response.status === 200){
-                (setAlert({color:"secondary",text:"Successfully sent!",icon:"check-circle"}));
-                await dispatch(fetchUser()).unwrap();
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
+            await dispatch(fetchUser()).unwrap();
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            const status = error?.response?.status || 500;
+            const message = error?.response?.data?.message || "Sorry, something went wrong!";
+            dispatch(setAlert({ status, text: message }));
+        } finally {
+            setButtonDisabled(false);
         }
     };
 
@@ -84,10 +81,25 @@ function EmailVerify() {
                                     </Button>
                                 </Col>
                             </Row>
+                            <Row>
+                                <Col size="6" addClass="mb-3 ms-auto me-auto text-center">
+                                    <Button
+                                    type="button"
+                                    onClick={() => dispatch(logoutAuth())}
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={buttonDisabled}
+                                    fullWidth
+                                    >
+                                        Back To Homepage
+                                    </Button>
+                                </Col>
+                            </Row>
                         </CardBody>
                     </Card>
                 </Col>
             </Row>
+            <Alert color={alert.color} text={alert.text} icon={alert.icon}></Alert>
         </PanelContent>
     )
 }

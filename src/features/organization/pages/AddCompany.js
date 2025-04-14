@@ -54,18 +54,10 @@ function AddCompany() {
                     withCredentials: true
                 },
             );
-            if (response.status === 200){
-                dispatch(setAlert({color:"secondary",text:"Successfully created!",icon:"check-circle"}));
-                navigate("/companies")
-            };
+            dispatch(setAlert({status:response.status,text:response.data.message}));
+            navigate("/companies");
         } catch (error) {
-            if (error.status === 401){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else if (error.status === 400){
-                dispatch(setAlert({color:"danger",text:error.response.data.message,icon:"times-circle"}));
-            } else {
-                dispatch(setAlert({color:"danger",text:"Sorry, something went wrong!",icon:"times-circle"}));
-            };
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchCompanies());
             setDisabled(false);

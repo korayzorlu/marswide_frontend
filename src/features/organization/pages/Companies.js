@@ -18,6 +18,7 @@ import { amber,indigo } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import AccountMenu from "../../../component/menu/AccountMenu";
 import MessageIcon from '@mui/icons-material/Message';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 function Companies() {
     const {companies,companiesLoading} = useSelector((store) => store.organization);
@@ -191,7 +192,7 @@ function Companies() {
                 getRowId={(row) => row.id}
                 loading={companiesLoading}
                 customButtons={
-                    <CustomTableButton link="/companies/add-company" icon={<AddIcon/>} children="NEW"/>
+                    <CustomTableButton link="/companies/add-company" icon={<AddBoxIcon/>} children="NEW"/>
                 }
                 ></ListTable>
             </PanelContent>

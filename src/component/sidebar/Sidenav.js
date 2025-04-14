@@ -53,6 +53,8 @@ function Sidenav() {
         dispatch(setSidebar({collapseTerm:!collapse,toggleTerm:!toggle}));
     };
 
+    console.log(location.pathname)
+
     /*
     <div className="row p-2" style={{ textAlign: 'center', borderTop: '1px solid #ccc' }}>
                 <div className="col-md-12">
@@ -96,17 +98,19 @@ function Sidenav() {
                     if(menuItem.type === "sub_menu"){
                         return (
                             <SubMenu
+                            key={index}
                             rootStyles={{"marginTop":"auto"}}
                             label={menuItem.label}
                             icon={getIconComponent(menuItem.icon)}
                             >
                                 {
                                     menuItem.items.map((item,index) => {
-                                        return <MenuItem
-                                                className={location.pathname.startsWith(item.route) ? "active" : ""}
-                                                name={item.label}
-                                                component={<Link to={item.route}></Link>}
-                                                icon={getIconComponent(item.icon)}
+                                        return  <MenuItem
+                                                    key={index}
+                                                    className={location.pathname.startsWith(item.route) ? "active" : ""}
+                                                    name={item.label}
+                                                    component={<Link to={item.route}></Link>}
+                                                    icon={getIconComponent(item.icon)}
                                                 >
                                                     {item.label}
                                                 </MenuItem>
@@ -118,9 +122,20 @@ function Sidenav() {
                     if(menuItem.type === "item"){
                         return (
                             <MenuItem
-                            className={location.pathname.startsWith(menuItem.route) ? "active" : ""}
+                            key={index}
+                            className={
+                                location.pathname === "/" && menuItem.route === "/dashboard"
+                                ?
+                                    "active"
+                                :
+                                    location.pathname.startsWith(menuItem.route)
+                                    ?
+                                        "active"
+                                    :
+                                        ""
+                            }
                             name={menuItem.label}
-                            component={<Link to={menuItem.route}></Link>}
+                            component={<Link to={menuItem.route === "/dashboard" ? "/" : menuItem.route}></Link>}
                             icon={getIconComponent(menuItem.icon)}
                             >
                                 {menuItem.label}

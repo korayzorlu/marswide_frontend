@@ -21,7 +21,9 @@ const partnerSlice = createSlice({
     name:"partner",
     initialState,
     reducers:{
-
+        setPartnersLoading: (state,action) => {
+            state.partnersLoading = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -39,5 +41,5 @@ const partnerSlice = createSlice({
   
 })
 
-export const {} = partnerSlice.actions;
+export const {setPartnersLoading} = partnerSlice.actions;
 export default partnerSlice.reducer;
