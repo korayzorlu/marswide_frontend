@@ -12,7 +12,7 @@ import { setAlert } from '../../../store/slices/notificationSlice';
 import { fetchPartners } from '../../../store/slices/partners/partnerSlice';
 import axios from 'axios';
 import TabPanel from '../../../component/tab/TabPanel';
-import { fetchCountries} from '../../../store/slices/dataSlice';
+import { fetchCountries, fetchCurrencies} from '../../../store/slices/dataSlice';
 import AddressTab from '../companies/AddressTab';
 import InformationTab from '../companies/InformationTab';
 import ContactTab from '../companies/ContactTab';
@@ -21,7 +21,7 @@ import Grid from '@mui/material/Grid2';
 import AndroidSwitch from '../../../component/switch/AndroidSwitch';
 
 function AddPartner() {
-    const {dark} = useSelector((store) => store.auth);
+    const {user,dark} = useSelector((store) => store.auth);
     const {activeCompany} = useSelector((store) => store.organization);
 
     const dispatch = useDispatch();
@@ -40,6 +40,7 @@ function AddPartner() {
 
     useEffect(() => {
         dispatch(fetchCountries());
+        dispatch(fetchCurrencies());
     }, [dispatch])
     
 
@@ -141,11 +142,13 @@ function AddPartner() {
                         <TabPanel value={tabValue} index={2}>
                             <ContactTab
                             valueEmail={data.email}
-                            valuePhoneCountry={data.phoneCountry || 0}
+                            valuePhoneCountry={data.phoneCountry || user.location.country || 0}
                             valuePhoneNumber={data.phoneNumber}
                             onChangeEmail={(value) => handleChangeField("email",value)}
                             onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
                             onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
+                            valueCurrency={data.currency || user.location.currency || 0}
+                            onChangeCurrency={(value) => handleChangeField("currency",value)}
                             disabled={disabled}
                             />
                         </TabPanel>

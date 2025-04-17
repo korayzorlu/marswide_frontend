@@ -12,7 +12,7 @@ import Form from '../../../component/form/Form';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import Dialog from '../../../component/feedback/Dialog';
-import { fetchCountries } from '../../../store/slices/dataSlice';
+import { fetchCountries, fetchCurrencies } from '../../../store/slices/dataSlice';
 import TabPanel from '../../../component/tab/TabPanel';
 import AddressTab from '../companies/AddressTab';
 import InformationTab from '../companies/InformationTab';
@@ -37,6 +37,7 @@ function UpdatePartner() {
     const fetchData = async () => {
         try {
             await dispatch(fetchCountries()).unwrap();
+            await dispatch(fetchCurrencies()).unwrap();
             const response = await axios.get(`/partners/partners/?active_company=${activeCompany.id}&uuid=${uuid}`,
                 {headers: {"X-Requested-With": "XMLHttpRequest"}}
             );
@@ -179,11 +180,13 @@ function UpdatePartner() {
                         <TabPanel value={tabValue} index={2}>
                             <ContactTab
                             valueEmail={data.email}
-                            valuePhoneCountry={data.phoneCountry || user.country || 0}
+                            valuePhoneCountry={data.phoneCountry || user.location.country || 0}
                             valuePhoneNumber={data.phoneNumber}
                             onChangeEmail={(value) => handleChangeField("email",value)}
                             onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
                             onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
+                            valueCurrency={data.currency || user.location.currency || 0}
+                            onChangeCurrency={(value) => handleChangeField("currency",value)}
                             disabled={disabled}
                             />
                         </TabPanel>

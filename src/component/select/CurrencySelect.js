@@ -6,7 +6,7 @@ function CurrencySelect(props) {
     const {emptyValue,label,value,onChange} = props;
 
     const {currencies,currenciesLoading} = useSelector((store) => store.data);
-
+    console.log(currencies)
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
@@ -22,7 +22,8 @@ function CurrencySelect(props) {
     };
 
     const handleChange = (newValue) => {
-        
+        onChange(newValue ? newValue.code : 0);
+        setSelectedValue(newValue ? newValue.code : 0);
     }
 
     return (

@@ -5,12 +5,13 @@ import { Stack, TextField } from '@mui/material'
 import CountrySelect from '../../../component/select/CountrySelect';
 import Grid from '@mui/material/Grid2';
 import { useSelector } from 'react-redux';
+import CurrencySelect from '../../../component/select/CurrencySelect';
 
 function ContactTab(props) {
-    const {valueEmail,valuePhoneCountry,valuePhoneNumber,onChangeEmail,onChangePhoneCountry,onChangePhoneNumber,disabled} = props;
+    const {valueEmail,valuePhoneCountry,valuePhoneNumber,onChangeEmail,onChangePhoneCountry,onChangePhoneNumber,valueCurrency,onChangeCurrency,disabled} = props;
 
     return (
-        <Stack>
+        <Stack spacing={2}>
             <Grid container spacing={2}>
                 <Grid size={{xs:12,sm:3}}>
                     <CountrySelect
@@ -43,6 +44,16 @@ function ContactTab(props) {
                     onChange={(e) => onChangeEmail(e.target.value)}
                     disabled={disabled}
                     fullWidth
+                    />
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid size={{xs:12,sm:3}}>
+                    <CurrencySelect
+                    label="Currency"
+                    emptyValue={true}
+                    value={valueCurrency}
+                    onChange={(value) => onChangeCurrency(value)}
                     />
                 </Grid>
             </Grid>

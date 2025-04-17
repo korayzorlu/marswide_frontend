@@ -4,6 +4,7 @@ import axios from "axios";
 const initialState = {
     countries:[],
     cities:[],
+    currencies:[],
     countriesLoading:false,
     citiesLoading:false,
     currenciesLoading:false,
