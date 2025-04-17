@@ -6,8 +6,7 @@ const initialState = {
     cities:[],
     countriesLoading:false,
     citiesLoading:false,
-    selectedCountry:{},
-    selectedCity:{}
+    currenciesLoading:false,
 }
 
 export const fetchCountries = createAsyncThunk('data/fetchCountries', async () => {
@@ -26,6 +25,11 @@ export const fetchCities = createAsyncThunk('data/fetchCities', async ({country,
     return response.data;
 });
 
+export const fetchCurrencies = createAsyncThunk('data/fetchCurrencies', async () => {
+    const response = await axios.get(`/data/api/currencies/`, {withCredentials: true});
+    return response.data;
+});
+
 const dataSlice = createSlice({
     name:"data",
     initialState,
@@ -35,12 +39,6 @@ const dataSlice = createSlice({
         },
         deleteCities: (state,action) => {
             state.cities = [];
-        },
-        setSelectedCountry: (state,action) => {
-            state.selectedCountry = action.payload;
-        },
-        setSelectedCity: (state,action) => {
-            state.selectedCity = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -67,8 +65,19 @@ const dataSlice = createSlice({
             .addCase(fetchCities.rejected, (state,action) => {
                 state.citiesLoading = false;
             })
+            //fetch currencies
+            .addCase(fetchCurrencies.pending, (state) => {
+                state.currenciesLoading = true;
+            })
+            .addCase(fetchCurrencies.fulfilled, (state,action) => {
+                state.currencies = action.payload;
+                state.currenciesLoading = false;
+            })
+            .addCase(fetchCurrencies.rejected, (state,action) => {
+                state.currenciesLoading = false;
+            })
     }
 })
 
-export const {deleteCountries,deleteCities,setSelectedCountry,setSelectedCity} = dataSlice.actions;
+export const {deleteCountries,deleteCities} = dataSlice.actions;
 export default dataSlice.reducer;

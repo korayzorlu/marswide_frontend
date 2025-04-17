@@ -6,7 +6,6 @@ import Panel from './features/layout/pages/Panel.js';
 import WrongPath from './features/layout/pages/WrongPath.js';
 import Home from './features/layout/pages/Home.js';
 
-import Dashboard from './component/dashboard/Dashboard.js';
 import axios from 'axios';
 import Loading from './component/loading/Loading.js';
 import Settings from './features/settings/pages/Settings.js';
@@ -39,13 +38,13 @@ import { joinWebsocket } from './store/slices/websocketSlice.js';
 import { fetchNotifications } from './store/slices/notificationSlice.js';
 import Invitations from './features/organization/pages/Invitations.js';
 import PhoneNumberSettings from './features/settings/auth/pages/PhoneNumberSettings.js';
-import { fetchCountries } from './store/slices/dataSlice.js';
 import PhoneNumberVerify from './features/settings/auth/pages/PhoneNumberVerify.js';
 import EmailVerify from './features/settings/auth/pages/EmailVerify.js';
 import UpdatePartner from './features/partners/pages/UpdatePartner.js';
 import AddPartner from './features/partners/pages/AddPartner.js';
 import { fetchImportProcess } from './store/slices/processSlice.js';
 import { ThemeProvider } from './ThemeProvider.js';
+import Dashboard from './features/dashboard/pages/Dashboard.js';
 
 export const NumberContext = React.createContext();
 
@@ -65,7 +64,7 @@ function App() {
   useEffect(() => {
     //fetchTheme();
     dispatch(fetchTheme(theme));
-  }, [dark]);
+  }, [dark,dispatch]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -86,10 +85,7 @@ function App() {
 
   },[dispatch]);
 
-  const {muiLightTheme,muiDarkTheme} = useSelector((store) => store.theme);
-
   //sidebar collapse
-  
   useEffect(() => {
     const handleResize = () => {
       dispatch(setResize());
@@ -102,11 +98,7 @@ function App() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-
-  const currentTheme = useMemo(() => (
-    theme === "light" ? muiLightTheme : muiDarkTheme), [theme]
-  );
+  }, [dispatch]);
 
   if (loading) return <Loading></Loading>;
 
@@ -147,7 +139,7 @@ function App() {
 
                   <Route path='/partners' element={<Partners></Partners>}></Route>
                   <Route path='/partners/add-partner' element={<AddPartner></AddPartner>}></Route>
-                  <Route path='/partners/update/:name' element={<UpdatePartner></UpdatePartner>}></Route>
+                  <Route path='/partners/update/:uuid' element={<UpdatePartner></UpdatePartner>}></Route>
 
                   <Route path='/cari-hesap-hareketleri' element={<CariHesapHareketleri></CariHesapHareketleri>}></Route>
                   <Route path='/personeller' element={<Personeller></Personeller>}></Route>

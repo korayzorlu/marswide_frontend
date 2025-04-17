@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { setAlert, setDialog } from '../../../store/slices/notificationSlice';
 import Card from '../../../component/card/Card';
 import CardHeader from '../../../component/card/CardHeader';
@@ -12,24 +12,25 @@ import Form from '../../../component/form/Form';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import Dialog from '../../../component/feedback/Dialog';
-import { fetchCountries, setSelectedCity, setSelectedCountry } from '../../../store/slices/dataSlice';
+import { fetchCountries } from '../../../store/slices/dataSlice';
 import TabPanel from '../../../component/tab/TabPanel';
 import AddressTab from '../companies/AddressTab';
 import InformationTab from '../companies/InformationTab';
 import ContactTab from '../companies/ContactTab';
+import AndroidSwitch from '../../../component/switch/AndroidSwitch';
+import Grid from '@mui/material/Grid2';
 
 function UpdatePartner() {
+    const {user} = useSelector((store) => store.auth);
     const {activeCompany,disabled} = useSelector((store) => store.organization);
-    const {countries} = useSelector((store) => store.data);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const location = useLocation();
 
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [tabValue, setTabValue] = useState(0);
 
-    const {uuid} = location.state || {};
+    const { uuid } = useParams();
 
     const [data, setData] = useState({})
 
@@ -39,12 +40,12 @@ function UpdatePartner() {
             const response = await axios.get(`/partners/partners/?active_company=${activeCompany.id}&uuid=${uuid}`,
                 {headers: {"X-Requested-With": "XMLHttpRequest"}}
             );
+            
             if(response.data.length > 0){
                 setData(response.data[0]);
-                dispatch(setSelectedCountry({iso2:response.data[0].country}))
-                dispatch(setSelectedCity({id:response.data[0].city,name:response.data[0].city_name}))
+            }else{
+                navigate("/partners");
             };
-            //await dispatch(fetchCities(response.data[0].country)).unwrap();
         } catch (error) {
             dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
@@ -53,7 +54,6 @@ function UpdatePartner() {
     };
     
     useEffect(() => {
-        setData({name:"-",formalName:"-"})
         fetchData();
     }, [activeCompany])
 
@@ -98,6 +98,11 @@ function UpdatePartner() {
     
     };
 
+    const handleChangeField = (field,value) => {
+        setData(data => ({...data, [field]:value}));
+        setButtonDisabled(false);
+    };
+
     return (
         <Card>
             <CardHeader>
@@ -108,38 +113,79 @@ function UpdatePartner() {
             </CardHeader>
             <CardBody>
                     <Form>
-                        <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
-                            <Tab label="Information" value={0}/>
-                            <Tab label="Address" value={1}/>
-                            <Tab label="Contact" value={2}/>
-                        </Tabs>
+                        <Grid
+                        container
+                        spacing={{xs:2,sm:0}}
+                        sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}>
+                            <Grid>
+                                <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
+                                    <Tab label="Information" value={0}/>
+                                    <Tab label="Address" value={1}/>
+                                    <Tab label="Contact" value={2}/>
+                                </Tabs>
+                            </Grid>
+                            <Grid>
+                                <AndroidSwitch
+                                label="Customer"
+                                checked={data.customer}
+                                onChange={(value) => handleChangeField("customer",value)}
+                                />
+                                <AndroidSwitch
+                                label="Supplier"
+                                checked={data.supplier}
+                                onChange={(value) => handleChangeField("supplier",value)}
+                                />
+                            </Grid>
+                        </Grid>
                         <TabPanel value={tabValue} index={0}>
                             <InformationTab
                             valueName={data.name}
                             valueFormalName={data.formalName}
-                            onChangeName={(value) => {setData(data => ({...data, name:value}));setButtonDisabled(false);}}
-                            onChangeFormalName={(value) => {setData(data => ({...data, formalName:value}));setButtonDisabled(false);}}
+                            valueVatOffice={data.vatOffice}
+                            valueVatNo={data.vatNo}
+                            onChangeName={(value) => handleChangeField("name",value)}
+                            onChangeFormalName={(value) => handleChangeField("formalName",value)}
+                            onChangeVatOffice={(value) => handleChangeField("vatOffice",value)}
+                            onChangeVatNo={(value) => handleChangeField("vatNo",value)}
                             disabled={disabled}
                             />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                             <AddressTab
                             valueCountry={data.country || 0}
-                            valueAddress={data.address}
-                            onChangeCountry={(value) => {setData(data => ({...data, country:value}));setButtonDisabled(false);}}
-                            onChangeCity={(value) => {setData(data => ({...data, city:value}));setButtonDisabled(false);}}
-                            onChangeAddress={(value) => {setData(data => ({...data, address:value}));setButtonDisabled(false);}}
+                            valueCity={data.city || null}
+                            valueAddress={data.address || ""}
+                            valueAddress2={data.address2 || ""}
+                            onChangeCountry={(value) => handleChangeField("country",value)}
+                            onChangeCity={(value) => handleChangeField("city",{id:value})}
+                            onChangeAddress={(value) => handleChangeField("address",value)}
+                            onChangeAddress2={(value) => handleChangeField("address2",value)}
+                            isBillingSame={data.isBillingSame}
+                            onChangeIsBillingSame={(value) => handleChangeField("isBillingSame",value)}
+                            valueBillingCountry={data.billingCountry || 0}
+                            valueBillingCity={data.billingCity || null}
+                            valueBillingAddress={data.billingAddress || ""}
+                            valueBillingAddress2={data.billingAddress2 || ""}
+                            onChangeBillingCountry={(value) => handleChangeField("billingCountry",value)}
+                            onChangeBillingCity={(value) => handleChangeField("billingCity",{id:value})}
+                            onChangeBillingAddress={(value) => handleChangeField("billingAddress",value)}
+                            onChangeBillingAddress2={(value) => handleChangeField("billingAddress2",value)}
                             disabled={disabled}
                             />
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                                <ContactTab
-                                valueEmail={data.email}
-                                valuePhone={data.phone}
-                                onChangeEmail={(value) => {setData(data => ({...data, email:value}));setButtonDisabled(false);}}
-                                onChangePhone={(value) => {setData(data => ({...data, phone:value}));setButtonDisabled(false);}}
-                                disabled={disabled}
-                                />
+                            <ContactTab
+                            valueEmail={data.email}
+                            valuePhoneCountry={data.phoneCountry || user.country || 0}
+                            valuePhoneNumber={data.phoneNumber}
+                            onChangeEmail={(value) => handleChangeField("email",value)}
+                            onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
+                            onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
+                            disabled={disabled}
+                            />
                         </TabPanel>
                     </Form>
                 

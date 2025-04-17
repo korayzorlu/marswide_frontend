@@ -66,7 +66,7 @@ function Companies(props) {
                 ?   
 
                     <>
-                        <MUIButton
+                        <Button
                         id="basic-button"
                         aria-controls={open ? 'basic-menu' : undefined}
                         aria-haspopup="true"
@@ -78,7 +78,7 @@ function Companies(props) {
                         endIcon={<KeyboardArrowDownIcon />}
                         >
                             {companies.length > 0 ? activeCompany.company.name : ""}
-                        </MUIButton>
+                        </Button>
                         <Menu
                         id="basic-menu"
                         anchorEl={anchorEl}

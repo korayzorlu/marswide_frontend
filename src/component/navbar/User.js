@@ -54,7 +54,6 @@ function User(props) {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
             className='me-3 p-0'
-            endIcon={<KeyboardArrowDownIcon />}
             >   
                 {
                     user.image

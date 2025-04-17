@@ -1,31 +1,41 @@
 import React from 'react'
 import Row from '../../../component/grid/Row'
 import Col from '../../../component/grid/Col'
-import { TextField } from '@mui/material'
+import { Stack, TextField } from '@mui/material'
+import CountrySelect from '../../../component/select/CountrySelect';
+import Grid from '@mui/material/Grid2';
+import { useSelector } from 'react-redux';
 
 function ContactTab(props) {
-    const {valueEmail,valuePhone,onChangeEmail,onChangePhone,disabled} = props;
+    const {valueEmail,valuePhoneCountry,valuePhoneNumber,onChangeEmail,onChangePhoneCountry,onChangePhoneNumber,disabled} = props;
 
     return (
-        <>
-            <Row>
-                <Col size="6" className="mb-3">
+        <Stack>
+            <Grid container spacing={2}>
+                <Grid size={{xs:12,sm:3}}>
+                    <CountrySelect
+                    label="Phone Code"
+                    emptyValue={true}
+                    value={valuePhoneCountry}
+                    onChange={(value) => onChangePhoneCountry(value)}
+                    isPhoneCountry={true}
+                    />
+                </Grid>
+                <Grid size={{xs:12,sm:3}}>
                     <TextField
-                    type="text"
-                    id="update-partner-phone"
+                    type="number"
                     size="small"
-                    label={"Phone"}
+                    label={"Phone Number"}
                     variant='outlined'
-                    value={valuePhone}
-                    onChange={(e) => onChangePhone(e.target.value)}
+                    value={valuePhoneNumber}
+                    onChange={(e) => onChangePhoneNumber(e.target.value)}
                     disabled={disabled}
                     fullWidth
                     />
-                </Col>
-                <Col size="6" className="mb-3">
+                </Grid>
+                <Grid size={{xs:12,sm:6}}>
                     <TextField
                     type="email"
-                    id="update-partner-email"
                     size="small"
                     label={"Email"}
                     variant='outlined'
@@ -34,9 +44,9 @@ function ContactTab(props) {
                     disabled={disabled}
                     fullWidth
                     />
-                </Col>
-            </Row>
-        </>
+                </Grid>
+            </Grid>
+        </Stack>
     )
 }
 

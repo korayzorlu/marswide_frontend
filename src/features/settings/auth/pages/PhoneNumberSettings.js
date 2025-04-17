@@ -73,7 +73,7 @@ function PhoneNumberSettings() {
                         <Select
                             id="demo-simple-select"
                             onChange={(e) => {setIso2(e.target.value);setButtonDisabled(false);}}
-                            defaultValue={user.phone_country || "TR"}
+                            defaultValue={user.phone_country || user.country || "TR"}
                         >
                             {
                                 countries.map((country,index) => {

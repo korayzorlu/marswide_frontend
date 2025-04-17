@@ -8,7 +8,6 @@ import { DialogActions, DialogContent, DialogContentText, DialogTitle, Typograph
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { setAlert, setDialog, setImportDialog } from '../../store/slices/notificationSlice';
-import { fetchPartners, setPartnersLoading } from '../../store/slices/partners/partnerSlice';
 import axios from 'axios';
 import VissuallyHiddenInput from '../input/VissuallyHiddenInput';
 import { useNavigate } from 'react-router-dom';

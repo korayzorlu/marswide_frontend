@@ -1,7 +1,6 @@
 import React, { createContext, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
-import { grey } from '@mui/material/colors';
 
 const commonTheme = {
     typography: {
@@ -63,6 +62,13 @@ const commonTheme = {
                 root: {
                     textAlign: "center",
                     lineHeight: "36px",
+                },
+            },
+        },
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    //borderRadius: "4px",
                 },
             },
         },

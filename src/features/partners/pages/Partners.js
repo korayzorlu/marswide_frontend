@@ -13,10 +13,15 @@ import ImportDialog from '../../../component/feedback/ImportDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteDialog from '../../../component/feedback/DeleteDialog';
 import { fetchImportProcess } from '../../../store/slices/processSlice';
+import { Avatar, Button, Chip, Stack, Typography } from '@mui/material';
+import { capitalize } from 'lodash';
+import PeopleIcon from '@mui/icons-material/People';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import ListTableServer from '../../../component/table/ListTableServer';
 
 function Partners() {
     const {activeCompany} = useSelector((store) => store.organization);
-    const {partners,partnersLoading} = useSelector((store) => store.partner);
+    const {partners,partnersCount,partnersParams,partnersLoading} = useSelector((store) => store.partner);
 
     const dispatch = useDispatch();
 
@@ -26,31 +31,65 @@ function Partners() {
 
     useEffect(() => {
         startTransition(() => {
-            dispatch(fetchPartners(activeCompany)).unwrap();
+            dispatch(fetchPartners({activeCompany,params:partnersParams})).unwrap();
         });
-    }, [activeCompany,dispatch]);
-
+    }, [activeCompany,partnersParams,dispatch]);
+      
     const columns = [
-        { field: 'name', headerName: 'Name', width: 400, editable: true, renderCell: (params) => (
-            <Link
-            to={`/partners/update/${encodeURIComponent(encodeURIComponent(params.value))}/`} 
-            state={{uuid: params.row.uuid}}
-            style={{textDecoration:"underline"}}
-            >
-                {params.value}
-            </Link>
-            
-          )
+        { field: 'types', headerName: 'Type', flex: 1.5, renderCell: (params) => (
+                <Stack direction="row" spacing={1} sx={{alignItems: "center",height:'100%',}}>
+                    {
+                        params.value.map((value,index) => {
+                                return (
+                                        value === "customer"
+                                        ?   
+                                            <Chip key={index} variant='contained' color="mars" icon={<PeopleIcon />} label={capitalize(value)} size='small'/>
+                                        :
+                                            <Chip key={index} variant='contained' color="primary" icon={<LocalShippingIcon />} label={capitalize(value)} size='small'/>
+                                )
+                        })
+                    }
+                </Stack>
+            ) 
         },
-        { field: 'types', headerName: 'Type', flex: 1 },
+        { field: 'name', headerName: 'Name', width: 400, editable: true, renderCell: (params) => (
+                <Link
+                to={`/partners/update/${params.row.uuid}/`}
+                style={{textDecoration:"underline"}}
+                >
+                    {params.value}
+                </Link>
+                
+            )
+        },
         { field: 'country_name', headerName: 'Country', flex: 1 },
         { field: 'city_name', headerName: 'City', flex: 1 },
-        { field: 'address', headerName: 'Address', flex: 4 },
+        { field: 'address', headerName: 'Address', flex: 4, renderCell: (params) => (
+            <>
+                {params.value} {params.row.address2}
+            </>
+            
+        )
+        },
+        { field: 'email', headerName: 'Email', flex: 1 },
     ]
+
+    const handleAllDelete = async () => {
+        dispatch(setAlert({text:"Removing items.."}));
+
+        try {
+
+            const response = await axios.post(`/partners/delete_all_partners/`,
+                { withCredentials: true},
+            );
+        } catch (error) {
+            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+        };
+    };
 
     return (
         <PanelContent>
-            <ListTable
+            <ListTableServer
             rows={partners}
             columns={columns}
             getRowId={(row) => row.uuid}
@@ -65,18 +104,25 @@ function Partners() {
                     disabled={partners.length > 0 ? false : true}
                     children="DELETE"
                     />
+                    <CustomTableButton
+                    onClick={handleAllDelete}
+                    icon={<DeleteIcon/>}
+                    disabled={partners.length > 0 ? false : true}
+                    children="DELETE ALL"
+                    />
                 </>
             }
             onRowSelectionModelChange={(newRowSelectionModel) => {
                 setSelectedItems(newRowSelectionModel);
             }}
-            ></ListTable>
+            rowCount={partnersCount}
+            ></ListTableServer>
             <ImportDialog
             handleClose={() => dispatch(setImportDialog(false))}
             templateURL="/partners/partners_template"
             importURL="/partners/import_partners/"
             startEvent={() => dispatch(setPartnersLoading(true))}
-            finalEvent={() => {dispatch(fetchPartners(activeCompany));dispatch(setPartnersLoading(false));}}
+            finalEvent={() => {dispatch(fetchPartners({activeCompany}));dispatch(setPartnersLoading(false));}}
             >
 
             </ImportDialog>
@@ -85,7 +131,7 @@ function Partners() {
             deleteURL="/partners/delete_partners/"
             selectedItems={selectedItems}
             startEvent={() => dispatch(setPartnersLoading(true))}
-            finalEvent={() => {dispatch(fetchPartners(activeCompany));dispatch(setPartnersLoading(false));}}
+            finalEvent={() => {dispatch(fetchPartners({activeCompany}));dispatch(setPartnersLoading(false));}}
             />
         </PanelContent>
     )

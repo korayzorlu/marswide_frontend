@@ -7,16 +7,18 @@ import CardHeader from '../../../component/card/CardHeader';
 import BackAndHeader from '../../../component/card/BackAndHeader';
 import CardBody from '../../../component/card/CardBody';
 import CardFooter from '../../../component/card/CardFooter';
-import { Button, IconButton, Tab, Tabs } from '@mui/material';
+import { Button, Tab, Tabs } from '@mui/material';
 import { setAlert } from '../../../store/slices/notificationSlice';
 import { fetchPartners } from '../../../store/slices/partners/partnerSlice';
 import axios from 'axios';
 import TabPanel from '../../../component/tab/TabPanel';
-import { setSelectedCity, setSelectedCountry } from '../../../store/slices/dataSlice';
+import { fetchCountries} from '../../../store/slices/dataSlice';
 import AddressTab from '../companies/AddressTab';
 import InformationTab from '../companies/InformationTab';
 import ContactTab from '../companies/ContactTab';
 import SaveIcon from '@mui/icons-material/Save';
+import Grid from '@mui/material/Grid2';
+import AndroidSwitch from '../../../component/switch/AndroidSwitch';
 
 function AddPartner() {
     const {dark} = useSelector((store) => store.auth);
@@ -37,8 +39,7 @@ function AddPartner() {
     )
 
     useEffect(() => {
-        dispatch(setSelectedCountry({iso2:null}))
-        dispatch(setSelectedCity(null))
+        dispatch(fetchCountries());
     }, [dispatch])
     
 
@@ -59,9 +60,14 @@ function AddPartner() {
         } catch (error) {
             dispatch(setAlert({status:error.status,text:error.response.data.message}));
         } finally {
-            dispatch(fetchPartners());
+            //dispatch(fetchPartners({activeCompany}));
             setDisabled(false);
         };
+    };
+
+    const handleChangeField = (field,value) => {
+        setData(data => ({...data, [field]:value}));
+        setButtonDisabled(false);
     };
 
     return (
@@ -70,19 +76,45 @@ function AddPartner() {
                 <CardHeader>
                     <BackAndHeader></BackAndHeader>
                 </CardHeader>
-                <CardBody addClass="ps-0 pe-0">
+                <CardBody>
                     <Form>
-                        <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example" className='border-bottom'>
-                            <Tab label="Information" value={0}/>
-                            <Tab label="Address" value={1}/>
-                            <Tab label="Contact" value={2}/>
-                        </Tabs>
+                        <Grid
+                        container
+                        spacing={{xs:2,sm:0}}
+                        sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}>
+                            <Grid>
+                                <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
+                                    <Tab label="Information" value={0}/>
+                                    <Tab label="Address" value={1}/>
+                                    <Tab label="Contact" value={2}/>
+                                </Tabs>
+                            </Grid>
+                            <Grid>
+                                <AndroidSwitch
+                                label="Customer"
+                                checked={data.customer}
+                                onChange={(value) => handleChangeField("customer",value)}
+                                />
+                                <AndroidSwitch
+                                label="Supplier"
+                                checked={data.supplier}
+                                onChange={(value) => handleChangeField("supplier",value)}
+                                />
+                            </Grid>
+                        </Grid>
                         <TabPanel value={tabValue} index={0}>
                             <InformationTab
                             valueName={data.name}
                             valueFormalName={data.formalName}
-                            onChangeName={(value) => {setData(data => ({...data, name:value}));setButtonDisabled(false);}}
-                            onChangeFormalName={(value) => {setData(data => ({...data, formalName:value}));setButtonDisabled(false);}}
+                            valueVatOffice={data.vatOffice}
+                            valueVatNo={data.vatNo}
+                            onChangeName={(value) => handleChangeField("name",value)}
+                            onChangeFormalName={(value) => handleChangeField("formalName",value)}
+                            onChangeVatOffice={(value) => handleChangeField("vatOffice",value)}
+                            onChangeVatNo={(value) => handleChangeField("vatNo",value)}
                             disabled={disabled}
                             />
                         </TabPanel>
@@ -90,16 +122,30 @@ function AddPartner() {
                             <AddressTab
                             valueCountry={data.country || 0}
                             valueAddress={data.address}
-                            onChangeCountry={(value) => {setData(data => ({...data, country:value}));setButtonDisabled(false);}}
-                            onChangeCity={(value) => {setData(data => ({...data, city:value}));setButtonDisabled(false);}}
-                            onChangeAddress={(value) => {setData(data => ({...data, address:value}));setButtonDisabled(false);}}
+                            valueAddress2={data.address2 || ""}
+                            onChangeCountry={(value) => handleChangeField("country",value)}
+                            onChangeCity={(value) => handleChangeField("city",{id:value})}
+                            onChangeAddress={(value) => handleChangeField("address",value)}
+                            onChangeAddress2={(value) => handleChangeField("address2",value)}
+                            valueBillingCountry={data.billingCountry || 0}
+                            valueBillingCity={data.billingCity || null}
+                            valueBillingAddress={data.billingAddress || ""}
+                            valueBillingAddress2={data.billingAddress2 || ""}
+                            onChangeBillingCountry={(value) => handleChangeField("billingCountry",value)}
+                            onChangeBillingCity={(value) => handleChangeField("billingCity",{id:value})}
+                            onChangeBillingAddress={(value) => handleChangeField("billingAddress",value)}
+                            onChangeBillingAddress2={(value) => handleChangeField("billingAddress2",value)}
                             disabled={disabled}
                             />
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
                             <ContactTab
                             valueEmail={data.email}
-                            onChangeEmail={(value) => {setData(data => ({...data, email:value}));setButtonDisabled(false);}}
+                            valuePhoneCountry={data.phoneCountry || 0}
+                            valuePhoneNumber={data.phoneNumber}
+                            onChangeEmail={(value) => handleChangeField("email",value)}
+                            onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
+                            onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
                             disabled={disabled}
                             />
                         </TabPanel>

@@ -42,30 +42,6 @@ function Companies() {
       setRows(companies);
     }, []);
 
-    const handleSaveClick = (id) => () => {
-        setRows({ ...rows, [id]: { mode: GridRowModes.View } });
-    };
-
-    const handleCancelClick = (id) => () => {
-        setRows({
-          ...rows,
-          [id]: { mode: GridRowModes.View, ignoreModifications: true },
-        });
-    
-        const editedRow = rows.find((row) => row.id === id);
-        if (editedRow.isNew) {
-          setRows(rows.filter((row) => row.id !== id));
-        }
-    };
-
-    const handleEditClick = (id) => () => {
-        setRows({ ...rows, [id]: { mode: GridRowModes.Edit } });
-    };
-
-    const handleDeleteClick = (id) => () => {
-      setRows(rows.filter((row) => row.id !== id));
-    };
-
     const columns = [
         { field: 'company', headerName: 'Name', flex: 1, editable: true, renderCell: (params) => (
             <>
@@ -140,47 +116,6 @@ function Companies() {
               </AccountMenu>
             </>
           )
-        },
-        { field: 'actions', headerName: 'Actions', width: 100, type: 'actions',
-            getActions: ({ id }) => {
-                const isInEditMode = rows[id]?.mode === GridRowModes.Edit;
-        
-                if (isInEditMode) {
-                  return [
-                    <GridActionsCellItem
-                      icon={<SaveIcon />}
-                      label="Save"
-                      sx={{
-                        color: 'primary.main',
-                      }}
-                      onClick={handleSaveClick(id)}
-                    />,
-                    <GridActionsCellItem
-                      icon={<CancelIcon />}
-                      label="Cancel"
-                      className="textPrimary"
-                      onClick={handleCancelClick(id)}
-                      color="inherit"
-                    />,
-                  ];
-                }
-
-                return [
-                    <GridActionsCellItem
-                      icon={<EditIcon />}
-                      label="Edit"
-                      className="textPrimary"
-                      onClick={handleEditClick(id)}
-                      color="inherit"
-                    />,
-                    <GridActionsCellItem
-                      icon={<DeleteIcon />}
-                      label="Delete"
-                      onClick={handleDeleteClick(id)}
-                      color="inherit"
-                    />,
-                  ];
-            }
         },
     ]
 

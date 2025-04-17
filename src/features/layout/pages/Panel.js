@@ -6,10 +6,6 @@ import Sidenav from '../../../component/sidebar/Sidenav';
 import Alert from '../../../component/alert/Alert';
 import { useSelector } from 'react-redux';
 //import Alert from '@mui/joy/Alert';
-import IconButton from '@mui/joy/IconButton';
-import Typography from '@mui/joy/Typography';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import Box from '@mui/joy/Box';
 import UserDialog from '../../../component/dialog/UserDialog';
 
 function Panel() {

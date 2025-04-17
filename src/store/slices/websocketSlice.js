@@ -61,7 +61,16 @@ export const connectWebsocket = () => {
                 const actionName = `fetch${message.model}s`;
 
                 if (fetchActions[actionName]) {
-                    store.dispatch(fetchActions[actionName](message.activeCompany));
+                    store.dispatch(fetchActions[actionName](
+                        {
+                            activeCompany:message.activeCompany,
+                            params:{
+                                start: 0 * 50,
+                                end: (0 + 1) * 50,
+                                format: 'datatables'
+                            }
+                        }
+                    ));
                 }
             }
         };

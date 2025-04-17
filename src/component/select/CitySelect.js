@@ -1,13 +1,16 @@
 import { Autocomplete, FormControl, MenuItem, Select, TextField, Typography } from '@mui/material'
-import React, { useCallback, useDeferredValue, useEffect, useState, useTransition } from 'react'
+import React, { useCallback, useDeferredValue, useEffect, useRef, useState, useTransition } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteCities, fetchCities, setSelectedCity } from '../../store/slices/dataSlice';
+import { deleteCities, fetchCities } from '../../store/slices/dataSlice';
 import debounce from 'lodash/debounce';
+import { setAlert } from '../../store/slices/notificationSlice';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function CitySelect(props) {
-    const {emptyValue, value, onChange} = props;
+    const {emptyValue, value,country, onChange} = props;
 
-    const {cities,citiesLoading,selectedCountry,selectedCity} = useSelector((store) => store.data);
+    const {cities,citiesLoading} = useSelector((store) => store.data);
 
     const dispatch = useDispatch();
 
@@ -15,11 +18,22 @@ function CitySelect(props) {
 
     const [open, setOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const [selectedValue, setSelectedValue] = useState(value);
+
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+          } else {
+            setSelectedValue(null);
+        };
+    }, [country])
 
     useEffect(() => {
         dispatch(deleteCities());
         setInputValue("");
-    }, [selectedCountry,dispatch])
+    }, [country,dispatch])
 
     const handleOpen = async () => {
         if(inputValue.length > 2){
@@ -36,20 +50,20 @@ function CitySelect(props) {
 
     const handleChange = (newValue) => {
         onChange(newValue ? newValue.id : 0);
-        dispatch(setSelectedCity(newValue ? newValue : null));
+        setSelectedValue(newValue ? newValue : null);
     }
 
     const debouncedHandleInputChange = useCallback(
         debounce((newInputValue) => {
             if (newInputValue.length > 2) {
                 startTransition(() => {
-                    dispatch(fetchCities({ country: selectedCountry.iso2, name: newInputValue }));
+                    dispatch(fetchCities({ country: country, name: newInputValue }));
                 })
             } else if (newInputValue.length <= 2) {
                 dispatch(deleteCities());
             }
         }, 400),
-        [dispatch, selectedCountry.iso2]
+        [dispatch, country]
     );
     
     const handleInputChange = (newInputValue) => {
@@ -100,7 +114,7 @@ function CitySelect(props) {
         onClose={handleClose}
         onChange={(e, newValue) => handleChange(newValue)}
         onInputChange={(event, newInputValue) => handleInputChange(newInputValue)}
-        value={selectedCity}
+        value={selectedValue}
         inputValue={inputValue}
         isOptionEqualToValue={(option, val) => option.id === val.id}
         autoHighlight

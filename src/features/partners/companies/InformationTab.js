@@ -1,18 +1,19 @@
 import React from 'react'
 import Row from '../../../component/grid/Row';
 import Col from '../../../component/grid/Col';
-import { TextField } from '@mui/material';
+import { Stack, TextField } from '@mui/material';
+import AndroidSwitch from '../../../component/switch/AndroidSwitch';
+import Grid from '@mui/material/Grid2';
 
 function InformationTab(props) {
-    const {valueName,valueFormalName,onChangeName,onChangeFormalName,disabled} = props;
+    const {valueName,valueFormalName,valueVatOffice,valueVatNo,onChangeName,onChangeFormalName,onChangeVatOffice,onChangeVatNo,disabled} = props;
 
     return (
-        <>
-            <Row>
-                <Col size="6" className="mb-3">
+        <Stack spacing={2}> 
+            <Grid container spacing={2}>
+                <Grid size={{xs:12,sm:6}}>
                     <TextField
                     type="text"
-                    id="update-partner-name"
                     size="small"
                     label={"Name * "}
                     variant='outlined'
@@ -21,11 +22,10 @@ function InformationTab(props) {
                     disabled={disabled}
                     fullWidth
                     />
-                </Col>
-                <Col size="6" className="mb-3">
+                </Grid>
+                <Grid size={{xs:12,sm:6}}>
                     <TextField
                     type="text"
-                    id="update-partner-formal-name"
                     size="small"
                     label={"Formal Name * "}
                     variant='outlined'
@@ -34,9 +34,35 @@ function InformationTab(props) {
                     disabled={disabled}
                     fullWidth
                     />
-                </Col>
-            </Row>
-        </>
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid size={{xs:12,sm:6}}>
+                    <TextField
+                    type="text"
+                    size="small"
+                    label={"Vat Office"}
+                    variant='outlined'
+                    value={valueVatOffice}
+                    onChange={(e) => onChangeVatOffice(e.target.value)}
+                    disabled={disabled}
+                    fullWidth
+                    />
+                </Grid>
+                <Grid size={{xs:12,sm:6}}>
+                    <TextField
+                    type="text"
+                    size="small"
+                    label={"Vat No"}
+                    variant='outlined'
+                    value={valueVatNo}
+                    onChange={(e) => onChangeVatNo(e.target.value)}
+                    disabled={disabled}
+                    fullWidth
+                    />
+                </Grid>
+            </Grid>
+        </Stack>
     )
 }
 

@@ -1,18 +1,13 @@
 import React, { useState } from 'react'
 import TableContent from './TableContent'
-import { ThemeProvider } from '@emotion/react'
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
-import { useSelector } from 'react-redux';
 import Toolbar from './Toolbar';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import Row from '../grid/Row';
-import Col from '../grid/Col';
-import { grey } from '@mui/material/colors';
 import { Box, Typography } from '@mui/material';
-import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import FolderOffIcon from '@mui/icons-material/FolderOff';
+import { useDispatch } from 'react-redux';
+import { setPartnersParams } from '../../store/slices/partners/partnerSlice';
 
-function ListTable(props) {
+function ListTableServer(props) {
   const {
     rows,
     columns,
@@ -23,15 +18,52 @@ function ListTable(props) {
     checkboxSelection,
     disableRowSelectionOnClick,
     pageModel,
-    onRowSelectionModelChange
+    onRowSelectionModelChange,
+    rowCount,
   } = props;
 
-  const [paginationModel, setPaginationModel] = useState(
-    {
-      pageSize: 50,
-      page: 0,
-    }
-  );
+  const dispatch = useDispatch();
+
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 50 })
+
+  const handlePaginationModelChange = (model) => {
+    setPaginationModel(model);
+    dispatch(setPartnersParams({start:model.page * model.pageSize,end:(model.page+1) * model.pageSize}));
+  };
+
+  const handleSortModelChange = (model) => {
+    dispatch(setPartnersParams(
+        {
+            ordering:model.length
+            ?
+                (
+                    model[0].sort === 'desc'
+                    ?
+                        `-${model[0].field}`
+                    :
+                        model[0].field
+                )
+            :
+            ''
+        }
+    ))
+  };
+
+  const handleFilterModelChange = (model) => {
+    if(model.items.length > 0){
+        model.items.forEach((item) => {
+            if (item.value) {
+              dispatch(setPartnersParams({[item.columnField]:item.value}));
+            }
+        });
+    } else if(model.quickFilterValues.length > 0){
+        model.quickFilterValues.forEach((item) => {
+            dispatch(setPartnersParams({"search[value]":item}));
+        });
+    } else if(model.items.length === 0 && model.quickFilterValues.length === 0){
+        dispatch(setPartnersParams({"search[value]":""}));
+    };
+  };
 
   const NoRowsOverlay = () => (
     <Box sx={{mt: 2,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}}>
@@ -70,7 +102,14 @@ function ListTable(props) {
       pageSizeOptions={[25, 50, 100]}
       pagination
       paginationModel={paginationModel}
-      onPaginationModelChange={(model) => setPaginationModel(model)}
+      //onPaginationModelChange={(model) => setPaginationModel(model)}
+      paginationMode="server"
+      sortingMode="server"
+      filterMode="server"
+      onPaginationModelChange={(model) => handlePaginationModelChange(model)}
+      onSortModelChange={(model) => handleSortModelChange(model)}
+      onFilterModelChange={(model) => handleFilterModelChange(model)}
+      rowCount={rowCount}
       loading={loading}
       checkboxSelection={checkboxSelection || true}
       disableRowSelectionOnClick={disableRowSelectionOnClick}
@@ -91,4 +130,4 @@ function ListTable(props) {
   )
 }
 
-export default ListTable
+export default ListTableServer
