@@ -53,8 +53,6 @@ function Sidenav() {
         dispatch(setSidebar({collapseTerm:!collapse,toggleTerm:!toggle}));
     };
 
-    console.log(location.pathname)
-
     /*
     <div className="row p-2" style={{ textAlign: 'center', borderTop: '1px solid #ccc' }}>
                 <div className="col-md-12">

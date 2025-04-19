@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../button/Button';
 import Row from '../grid/Row';
 import Col from '../grid/Col';
+import Grid from '@mui/material/Grid2';
+import { IconButton } from '@mui/material';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 function BackAndHeader(props) {
     const {children,className} = props;
@@ -10,14 +13,33 @@ function BackAndHeader(props) {
     const navigate = useNavigate();
 
     return (
-      <Row addClass={`g-0 ${className || ""}`}>
-          <Col addClass="text-start fw-bold m-0">
-            <Button type="button" color="tertary" addClass="shadow-0 p-0 fs-5" onClick={()=>navigate(-1)}><i className="fas fa-arrow-left"></i></Button>
-          </Col>
-          <Col addClass="text-end fw-bold m-0">
+      <Grid
+      container
+      spacing={0}
+      >
+          <Grid
+          size={6}
+          container
+          sx={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+          >
+            <IconButton aria-label='back' onClick={()=>navigate(-1)}>
+              <ArrowBackIosNewIcon/>
+            </IconButton>
+          </Grid>
+          <Grid
+          size={6}
+          container
+          sx={{
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+          >
             {children}
-          </Col>
-      </Row>
+          </Grid>
+      </Grid>
     )
 }
 

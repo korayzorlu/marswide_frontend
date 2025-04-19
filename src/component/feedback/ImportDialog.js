@@ -52,7 +52,7 @@ function ImportDialog(props) {
             a.click();
             URL.revokeObjectURL(a.href);
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
 
         }
@@ -91,7 +91,7 @@ function ImportDialog(props) {
                 },
             );
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             if (finalEvent){
                 finalEvent();

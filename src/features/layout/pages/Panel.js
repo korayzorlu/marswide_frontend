@@ -56,7 +56,7 @@ function Panel() {
           </Alert>
       </Box> */}
      
-      <Alert color={alert.color} text={alert.text} icon={alert.icon}></Alert>
+      <Alert></Alert>
       <UserDialog/>
     </>
   )

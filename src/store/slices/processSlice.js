@@ -5,6 +5,7 @@ const initialState = {
     progress:{display:false,value:0},
     importProcesses:[],
     importProcessLoading:false,
+    isProgress:false,
 }
 
 export const fetchImportProcess = createAsyncThunk('process/fetchImportProcess', async () => {
@@ -23,6 +24,9 @@ const processSlice = createSlice({
         },
         clearProgress: (state,action) => {
             state.progress = "";
+        },
+        setIsProgress: (state,action) => {
+            state.isProgress = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -42,5 +46,5 @@ const processSlice = createSlice({
   
 })
 
-export const {setImportProgress,clearProgress} = processSlice.actions;
+export const {setImportProgress,clearProgress,setIsProgress} = processSlice.actions;
 export default processSlice.reducer;

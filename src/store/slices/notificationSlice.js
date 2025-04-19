@@ -4,6 +4,8 @@ import { Alert as MDBAlert} from 'mdb-ui-kit';
 
 const initialState = {
     alert:{color:"",icon:"",text:""},
+    alertt:{status:"",text:""},
+    openAlert:false,
     dialog:false,
     deleteDialog:false,
     importDialog:false,
@@ -39,67 +41,11 @@ const notificationSlice = createSlice({
     initialState,
     reducers:{
         setAlert: (state,action) => {
-            state.alert = action.payload;
-            const defaultMessage = "Successfull!";
-            const defaultErrorMessage = "Sorry, something went wrong!";
-            const getAlertProps = (status) => {
-                switch (status) {
-                    case 200:
-                    return {
-                        color:action.payload.color || "secondary",
-                        icon:action.payload.icon || "check-circle",
-                        text:action.payload.text || defaultMessage,
-                    };
-                    case 201:
-                    return {
-                        color:action.payload.color || "secondary",
-                        icon:action.payload.icon || "check-circle",
-                        text:action.payload.text || defaultMessage,
-                    };
-                    case 400:
-                    return {
-                        color:action.payload.color || "danger",
-                        icon:action.payload.icon || "times-circle",
-                        text:action.payload.text || defaultErrorMessage,
-                    };
-                    case 401:
-                    return {
-                        color:action.payload.color || "danger",
-                        icon:action.payload.icon || "times-circle",
-                        text:action.payload.text || defaultErrorMessage,
-                    };
-                    case 403:
-                    return {
-                        color:action.payload.color || "danger",
-                        icon:action.payload.icon || "times-circle",
-                        text:action.payload.text || defaultErrorMessage,
-                    };
-                    case 404:
-                    return {
-                        color:action.payload.color || "danger",
-                        icon:action.payload.icon || "times-circle",
-                        text:action.payload.text || defaultErrorMessage,
-                    };
-                    case 500:
-                    return {
-                        color:action.payload.color || "danger",
-                        icon:action.payload.icon || "times-circle",
-                        text:action.payload.text || defaultErrorMessage,
-                    };
-                    default:
-                    return {
-                        color:action.payload.color || "secondary",
-                        icon:action.payload.icon || "circle",
-                        text:action.payload.text || defaultMessage,
-                    };
-                }
-            };
-            const { color, icon, text } = getAlertProps(action.payload.status);
-            state.alert = {color, icon, text};
-            let basicInstance = MDBAlert.getInstance(document.getElementById("mainAlert"));
-            //basicInstance.update({color:action.payload.color})
-            basicInstance.update({color:color});
-            basicInstance.show();
+            state.alertt = {status:action.payload.status || "",text:action.payload.text || ""}
+            state.openAlert = true;
+        },
+        setOpenAlert: (state,action) => {
+            state.openAlert = action.payload;
         },
         clearAlert: (state,action) => {
             state.alert = "";
@@ -144,5 +90,5 @@ const notificationSlice = createSlice({
   
 })
 
-export const {setAlert,clearAler,setDialog,setDeleteDialog,setImportDialog,setModal,send_notification,setUnreadNotifications,setUserDialog} = notificationSlice.actions;
+export const {setAlert,setOpenAlert,clearAler,setDialog,setDeleteDialog,setImportDialog,setModal,send_notification,setUnreadNotifications,setUserDialog} = notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -35,9 +35,9 @@ function PersonalSettings() {
                 },
                 {withCredentials: true},
             );
-            dispatch(setAlert({status:response.status,text:"Saved successfully!"}));
+            dispatch(setAlert({status:response.data.status,text:"Saved successfully!"}));
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

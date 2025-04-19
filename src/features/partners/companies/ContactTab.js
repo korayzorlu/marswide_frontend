@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import CurrencySelect from '../../../component/select/CurrencySelect';
 
 function ContactTab(props) {
-    const {valueEmail,valuePhoneCountry,valuePhoneNumber,onChangeEmail,onChangePhoneCountry,onChangePhoneNumber,valueCurrency,onChangeCurrency,disabled} = props;
+    const {valueEmail,valueWeb,valuePhoneCountry,valuePhoneNumber,onChangeEmail,onChangeWeb,onChangePhoneCountry,onChangePhoneNumber,valueCurrency,onChangeCurrency,disabled} = props;
 
     return (
         <Stack spacing={2}>
@@ -34,7 +34,7 @@ function ContactTab(props) {
                     fullWidth
                     />
                 </Grid>
-                <Grid size={{xs:12,sm:6}}>
+                <Grid size={{xs:12,sm:3}}>
                     <TextField
                     type="email"
                     size="small"
@@ -42,6 +42,18 @@ function ContactTab(props) {
                     variant='outlined'
                     value={valueEmail}
                     onChange={(e) => onChangeEmail(e.target.value)}
+                    disabled={disabled}
+                    fullWidth
+                    />
+                </Grid>
+                <Grid size={{xs:12,sm:3}}>
+                    <TextField
+                    type="web"
+                    size="small"
+                    label={"Web"}
+                    variant='outlined'
+                    value={valueWeb}
+                    onChange={(e) => onChangeWeb(e.target.value)}
                     disabled={disabled}
                     fullWidth
                     />

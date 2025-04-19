@@ -26,7 +26,7 @@ function EmailSettings() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        dispatch(setAlert({color:"secondary",text:"Please wait...",icon:"hourglass"}));
+        dispatch(setAlert({status:"info",text:"Please wait..."}));
         setDisabled(true);
         setButtonDisabled(true);
         setEdit(false);
@@ -38,10 +38,10 @@ function EmailSettings() {
                 },
                 {withCredentials: true},
             );
-            dispatch(setAlert({status:response.status,text:response.data.message}));
+            dispatch(setAlert({status:response.data.status,text:response.data.message}));
             setChanged(true);
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

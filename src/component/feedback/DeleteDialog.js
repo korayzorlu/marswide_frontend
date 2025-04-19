@@ -28,7 +28,7 @@ function DeleteDialog(props) {
             startEvent();
         };
         dispatch(setDeleteDialog(false));
-        dispatch(setAlert({text:"Removing items.."}));
+        dispatch(setAlert({status:"info",text:"Removing items.."}));
 
         try {
 
@@ -39,7 +39,7 @@ function DeleteDialog(props) {
                 { withCredentials: true},
             );
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             if (finalEvent){
                 finalEvent();

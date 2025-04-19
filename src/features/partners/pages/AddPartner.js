@@ -7,7 +7,7 @@ import CardHeader from '../../../component/card/CardHeader';
 import BackAndHeader from '../../../component/card/BackAndHeader';
 import CardBody from '../../../component/card/CardBody';
 import CardFooter from '../../../component/card/CardFooter';
-import { Button, Tab, Tabs } from '@mui/material';
+import { Button, Divider, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { setAlert } from '../../../store/slices/notificationSlice';
 import { fetchPartners } from '../../../store/slices/partners/partnerSlice';
 import axios from 'axios';
@@ -19,6 +19,11 @@ import ContactTab from '../companies/ContactTab';
 import SaveIcon from '@mui/icons-material/Save';
 import Grid from '@mui/material/Grid2';
 import AndroidSwitch from '../../../component/switch/AndroidSwitch';
+import { setIsProgress } from '../../../store/slices/processSlice';
+import FormHeader from '../../../component/header/FormHeader';
+import InfoIcon from '@mui/icons-material/Info';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CallIcon from '@mui/icons-material/Call';
 
 function AddPartner() {
     const {user,dark} = useSelector((store) => store.auth);
@@ -33,14 +38,16 @@ function AddPartner() {
     const [data, setData] = useState(
         {   
             companyId: activeCompany.companyId,
-            name: null,
-            formalName: null
+            name: "",
+            formalName: ""
         }
     )
 
     useEffect(() => {
+        dispatch(setIsProgress(true));
         dispatch(fetchCountries());
         dispatch(fetchCurrencies());
+        dispatch(setIsProgress(false));
     }, [dispatch])
     
 
@@ -49,20 +56,22 @@ function AddPartner() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        //event.preventDefault();
+        dispatch(setIsProgress(true));
         setDisabled(true);
         
         try {const response = await axios.post(`/partners/add_partner/`, 
                 data,
                 { withCredentials: true},
             );
-            dispatch(setAlert({status:response.status,text:response.data.message}));
+            dispatch(setAlert({status:response.data.status,text:response.data.message}));
             navigate("/partners");
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             //dispatch(fetchPartners({activeCompany}));
             setDisabled(false);
+            dispatch(setIsProgress(false));
         };
     };
 
@@ -72,102 +81,100 @@ function AddPartner() {
     };
 
     return (
-        <Card>
-            <Form onSubmit={handleSubmit}>
-                <CardHeader>
-                    <BackAndHeader></BackAndHeader>
-                </CardHeader>
-                <CardBody>
-                    <Form>
-                        <Grid
-                        container
-                        spacing={{xs:2,sm:0}}
-                        sx={{
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}>
-                            <Grid>
-                                <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
-                                    <Tab label="Information" value={0}/>
-                                    <Tab label="Address" value={1}/>
-                                    <Tab label="Contact" value={2}/>
-                                </Tabs>
-                            </Grid>
-                            <Grid>
-                                <AndroidSwitch
-                                label="Customer"
-                                checked={data.customer}
-                                onChange={(value) => handleChangeField("customer",value)}
-                                />
-                                <AndroidSwitch
-                                label="Supplier"
-                                checked={data.supplier}
-                                onChange={(value) => handleChangeField("supplier",value)}
-                                />
-                            </Grid>
-                        </Grid>
-                        <TabPanel value={tabValue} index={0}>
-                            <InformationTab
-                            valueName={data.name}
-                            valueFormalName={data.formalName}
-                            valueVatOffice={data.vatOffice}
-                            valueVatNo={data.vatNo}
-                            onChangeName={(value) => handleChangeField("name",value)}
-                            onChangeFormalName={(value) => handleChangeField("formalName",value)}
-                            onChangeVatOffice={(value) => handleChangeField("vatOffice",value)}
-                            onChangeVatNo={(value) => handleChangeField("vatNo",value)}
-                            disabled={disabled}
-                            />
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={1}>
-                            <AddressTab
-                            valueCountry={data.country || 0}
-                            valueAddress={data.address}
-                            valueAddress2={data.address2 || ""}
-                            onChangeCountry={(value) => handleChangeField("country",value)}
-                            onChangeCity={(value) => handleChangeField("city",{id:value})}
-                            onChangeAddress={(value) => handleChangeField("address",value)}
-                            onChangeAddress2={(value) => handleChangeField("address2",value)}
-                            valueBillingCountry={data.billingCountry || 0}
-                            valueBillingCity={data.billingCity || null}
-                            valueBillingAddress={data.billingAddress || ""}
-                            valueBillingAddress2={data.billingAddress2 || ""}
-                            onChangeBillingCountry={(value) => handleChangeField("billingCountry",value)}
-                            onChangeBillingCity={(value) => handleChangeField("billingCity",{id:value})}
-                            onChangeBillingAddress={(value) => handleChangeField("billingAddress",value)}
-                            onChangeBillingAddress2={(value) => handleChangeField("billingAddress2",value)}
-                            disabled={disabled}
-                            />
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={2}>
-                            <ContactTab
-                            valueEmail={data.email}
-                            valuePhoneCountry={data.phoneCountry || user.location.country || 0}
-                            valuePhoneNumber={data.phoneNumber}
-                            onChangeEmail={(value) => handleChangeField("email",value)}
-                            onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
-                            onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
-                            valueCurrency={data.currency || user.location.currency || 0}
-                            onChangeCurrency={(value) => handleChangeField("currency",value)}
-                            disabled={disabled}
-                            />
-                        </TabPanel>
-                    </Form>
-                    
-                </CardBody>
-                <CardFooter addClass="text-end">
-                    <Button
-                    type="submit"
-                    variant='contained'
-                    color={dark ? "mars" : "blackhole"}
-                    startIcon={<SaveIcon />}
-                    disabled={buttonDisabled}
+        <Paper elevation={0} sx={{p:2}} square>
+            <Stack spacing={2}>
+                <FormHeader
+                loadingAdd={disabled}
+                disabledAdd={buttonDisabled}
+                onClickAdd={() => handleSubmit()}
+                />
+                <Divider></Divider>
+                <Stack spacing={2}>
+                    <Grid
+                    container
+                    spacing={{xs:2,sm:0}}
+                    sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
                     >
-                        Create
-                    </Button>
-                </CardFooter>
-            </Form>
-        </Card>
+                        <Grid>
+                            <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
+                            <Tab label="Information" value={0} icon={<InfoIcon/>}/>
+                                <Tab label="Address" value={1} icon={<LocationOnIcon/>}/>
+                                <Tab label="Contact" value={2} icon={<CallIcon/>}/>
+                            </Tabs>
+                        </Grid>
+                        <Grid>
+                            <AndroidSwitch
+                            label="Customer"
+                            checked={data.customer}
+                            onChange={(value) => handleChangeField("customer",value)}
+                            />
+                            <AndroidSwitch
+                            label="Supplier"
+                            checked={data.supplier}
+                            onChange={(value) => handleChangeField("supplier",value)}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Divider></Divider>
+                    <TabPanel value={tabValue} index={0}>
+                        <InformationTab
+                        valueName={data.name || ""}
+                        valueFormalName={data.formalName || ""}
+                        valueVatOffice={data.vatOffice || ""}
+                        valueVatNo={data.vatNo || ""}
+                        valueAbout={data.about || ""}
+                        onChangeName={(value) => handleChangeField("name",value)}
+                        onChangeFormalName={(value) => handleChangeField("formalName",value)}
+                        onChangeVatOffice={(value) => handleChangeField("vatOffice",value)}
+                        onChangeVatNo={(value) => handleChangeField("vatNo",value)}
+                        onChangeAbout={(value) => handleChangeField("about",value)}
+                        disabled={disabled}
+                        />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={1}>
+                        <AddressTab
+                        valueCountry={data.country || 0}
+                        valueCity={data.city || 0}
+                        valueAddress={data.address || ""}
+                        valueAddress2={data.address2 || ""}
+                        onChangeCountry={(value) => handleChangeField("country",value)}
+                        onChangeCity={(value) => handleChangeField("city",{id:value})}
+                        onChangeAddress={(value) => handleChangeField("address",value)}
+                        onChangeAddress2={(value) => handleChangeField("address2",value)}
+                        isBillingSame={data.isBillingSame}
+                        onChangeIsBillingSame={(value) => handleChangeField("isBillingSame",value)}
+                        valueBillingCountry={data.billingCountry || 0}
+                        valueBillingCity={data.billingCity || 0}
+                        valueBillingAddress={data.billingAddress || ""}
+                        valueBillingAddress2={data.billingAddress2 || ""}
+                        onChangeBillingCountry={(value) => handleChangeField("billingCountry",value)}
+                        onChangeBillingCity={(value) => handleChangeField("billingCity",{id:value})}
+                        onChangeBillingAddress={(value) => handleChangeField("billingAddress",value)}
+                        onChangeBillingAddress2={(value) => handleChangeField("billingAddress2",value)}
+                        disabled={disabled}
+                        />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={2}>
+                        <ContactTab
+                        valueEmail={data.email || ""}
+                        valueWeb={data.web || ""}
+                        valuePhoneCountry={data.phoneCountry || user.location.country || 0}
+                        valuePhoneNumber={data.phoneNumber || ""}
+                        onChangeEmail={(value) => handleChangeField("email",value)}
+                        onChangeWeb={(value) => handleChangeField("web",value)}
+                        onChangePhoneCountry={(value) => handleChangeField("phoneCountry",value)}
+                        onChangePhoneNumber={(value) => handleChangeField("phoneNumber",value)}
+                        valueCurrency={data.currency || user.location.currency || 0}
+                        onChangeCurrency={(value) => handleChangeField("currency",value)}
+                        disabled={disabled}
+                        />
+                    </TabPanel>
+                </Stack>
+            </Stack>
+        </Paper>
     )
 }
 

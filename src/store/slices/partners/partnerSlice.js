@@ -13,7 +13,6 @@ const initialState = {
 }
 
 export const fetchPartners = createAsyncThunk('auth/fetchPartners', async ({activeCompany,serverModels=null,params=null}) => {
-    console.log(params)
     try {
         const response = await axios.get(`/partners/partners/?active_company=${activeCompany.id}`,
             {   

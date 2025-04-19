@@ -35,6 +35,10 @@ const commonTheme = {
             main: '#fff',
             contrastText: '#000',
         },
+        navyblack: {
+            main: '#1b1f23',
+            contrastText: '#fff',
+        },
     },
     components: {
         MuiDataGrid: {
@@ -52,8 +56,8 @@ const commonTheme = {
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    borderRadius: 0,
-                    backgroundImage: "none",
+                    //borderRadius: 0,
+                    //backgroundImage: "none",
                 },
             },
         },
@@ -91,6 +95,10 @@ export const ThemeProvider = ({ children }) => {
             },
             mars: {
                 main: '#d9ce32',
+                contrastText: '#000',
+            },
+            panelbox: {
+                main: '#fff',
                 contrastText: '#000',
             },
         },
@@ -134,6 +142,10 @@ export const ThemeProvider = ({ children }) => {
             mars: {
                 main: '#efe237',
                 contrastText: '#000',
+            },
+            panelbox: {
+                main: '#1b1f23',
+                contrastText: '#fff',
             },
         },
         components: {

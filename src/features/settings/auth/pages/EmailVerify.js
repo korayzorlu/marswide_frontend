@@ -30,12 +30,12 @@ function EmailVerify() {
                 },
                 {withCredentials: true},
             );
-            dispatch(setAlert({status:response.status,text:response.data.message}));
+            dispatch(setAlert({status:response.data.status,text:response.data.message}));
             await dispatch(fetchUser()).unwrap();
         } catch (error) {
             const status = error?.response?.status || 500;
             const message = error?.response?.data?.message || "Sorry, something went wrong!";
-            dispatch(setAlert({ status, text: message }));
+            dispatch(setAlert({ status:"error", text: message }));
         } finally {
             setButtonDisabled(false);
         }

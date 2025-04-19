@@ -28,14 +28,12 @@ import Notifications from './Notifications';
 import User from './User';
 
 function Navbar() {
-    const {logo} = useSelector((store) => store.auth);
+    const {dark,logo} = useSelector((store) => store.auth);
     const {collapse,toggle} = useSelector((store) => store.sidebar);
     //const {progress} = useSelector((store) => store.process);
-    const {importProcesses} = useSelector((store) => store.process);
+    const {importProcesses,isProgress} = useSelector((store) => store.process);
 
     const dispatch = useDispatch();
-
-    const [progress, setProgress] = useState({value:0,display:false});
 
     useEffect(() => {
         const dropdowns = document.querySelectorAll('.dropdown-toggle');
@@ -53,8 +51,21 @@ function Navbar() {
     };
     
     return (
-        <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
-            <ProgressBar value={progress.value} display={progress.display}></ProgressBar>
+        <>
+            {
+                isProgress
+                ?
+                <Box sx={{ width:'100%',position:'absolute',zIndex:'9999' }}>
+                    <LinearProgress
+                    color={dark ? 'mars' : 'blackhole'}
+                    />
+                </Box>
+                :
+                <></>
+            }
+            
+            <nav className="navbar fixed-top navbar-expand-lg navbar-light bg-body-tertiary" style={{"height":"40px"}}>
+            {/* <ProgressBar value={progress.value} display={progress.display}></ProgressBar> */}
         
             <div className="container-fluid">
                 <button data-mdb-collapse-init className="navbar-toggler d-block" type="button" data-mdb-target="#navbarSupportedContent"
@@ -75,6 +86,8 @@ function Navbar() {
             </div>
         
         </nav>
+        </>
+        
     );
 }
 

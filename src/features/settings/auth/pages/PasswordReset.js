@@ -33,10 +33,10 @@ function PasswordReset() {
                 },
                 {withCredentials: true},
             );
-            dispatch(setAlert({status:response.status,text:response.data.message}));
+            dispatch(setAlert({status:response.data.status,text:response.data.message}));
             navigate("/auth/login");
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             dispatch(fetchUser());
             setDisabled(false);

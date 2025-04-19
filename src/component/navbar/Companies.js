@@ -49,10 +49,10 @@ function Companies(props) {
                     {withCredentials: true},
                 );
                 dispatch(setActiveCompany(selectedCompany));
-                dispatch(setAlert({status:response.status,text:"Changed successfully!"}));
+                dispatch(setAlert({status:response.data.status,text:"Changed successfully!"}));
             }
         } catch (error) {
-            dispatch(setAlert({status:error.status,text:error.response.data.message}));
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
         } finally {
             setAnchorEl(null);
         }

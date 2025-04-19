@@ -11,12 +11,12 @@ const initialState = {
 }
 
 export const fetchCountries = createAsyncThunk('data/fetchCountries', async () => {
-    const response = await axios.get(`/data/api/countries/`, {withCredentials: true});
+    const response = await axios.get(`/common/api/countries/`, {withCredentials: true});
     return response.data;
 });
 
 export const fetchCities = createAsyncThunk('data/fetchCities', async ({country,name}) => {
-    const response = await axios.get(`/data/api/cities/?country=${country}&name=${name}`,
+    const response = await axios.get(`/common/api/cities/?country=${country}&name=${name}`,
         {
             withCredentials: true,
             headers: {
@@ -27,7 +27,7 @@ export const fetchCities = createAsyncThunk('data/fetchCities', async ({country,
 });
 
 export const fetchCurrencies = createAsyncThunk('data/fetchCurrencies', async () => {
-    const response = await axios.get(`/data/api/currencies/`, {withCredentials: true});
+    const response = await axios.get(`/common/api/currencies/`, {withCredentials: true});
     return response.data;
 });
 

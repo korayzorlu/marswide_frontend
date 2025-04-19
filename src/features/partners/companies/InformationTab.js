@@ -6,7 +6,19 @@ import AndroidSwitch from '../../../component/switch/AndroidSwitch';
 import Grid from '@mui/material/Grid2';
 
 function InformationTab(props) {
-    const {valueName,valueFormalName,valueVatOffice,valueVatNo,onChangeName,onChangeFormalName,onChangeVatOffice,onChangeVatNo,disabled} = props;
+    const {
+        valueName,
+        valueFormalName,
+        valueVatOffice,
+        valueAbout,
+        valueVatNo,
+        onChangeName,
+        onChangeFormalName,
+        onChangeVatOffice,
+        onChangeAbout,
+        onChangeVatNo,
+        disabled
+    } = props;
 
     return (
         <Stack spacing={2}> 
@@ -57,6 +69,22 @@ function InformationTab(props) {
                     variant='outlined'
                     value={valueVatNo}
                     onChange={(e) => onChangeVatNo(e.target.value)}
+                    disabled={disabled}
+                    fullWidth
+                    />
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid size={{xs:12,sm:12}}>
+                    <TextField
+                    type="text"
+                    size="small"
+                    multiline
+                    rows={8}
+                    label={"About"}
+                    variant='outlined'
+                    value={valueAbout}
+                    onChange={(e) => onChangeAbout(e.target.value)}
                     disabled={disabled}
                     fullWidth
                     />
