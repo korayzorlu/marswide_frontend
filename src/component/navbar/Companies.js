@@ -1,13 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setActiveCompany } from '../../store/slices/organizationSlice';
+import { fetchCompanies, fetchCompaniesForStart, setActiveCompany } from '../../store/slices/organizationSlice';
 import { setAlert } from '../../store/slices/notificationSlice';
 import MUIButton from '@mui/material/Button';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { Backdrop, Button, CircularProgress, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { red } from '@mui/material/colors';
+import { setLoading } from '../../store/slices/authSlice';
 
 function Companies(props) {
     const {children} = props;
@@ -17,6 +18,7 @@ function Companies(props) {
 
     const dispatch = useDispatch();
 
+    const [openBackdrop, setOpenBackdrop] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -27,6 +29,8 @@ function Companies(props) {
     };
 
     const handleChaneActiveCompany = async (companyId) => {
+        //dispatch(setLoading(true));
+        setOpenBackdrop(true);
         const selectedCompany = companies.find(({id}) => id === Number(companyId));
         
         try {
@@ -49,17 +53,26 @@ function Companies(props) {
                     {withCredentials: true},
                 );
                 dispatch(setActiveCompany(selectedCompany));
-                dispatch(setAlert({status:response.data.status,text:"Changed successfully!"}));
+                dispatch(setAlert({status:"success",text:"Changed successfully!"}));
             }
         } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+            dispatch(setAlert({status:"error",text:error.response.data.message}));
         } finally {
             setAnchorEl(null);
+            dispatch(fetchCompaniesForStart());
+            //dispatch(setLoading(false));
+            setOpenBackdrop(false);
         }
     };
 
     return (
         <>
+             <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={openBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             {
                 companies.length > 0 && activeCompany
 

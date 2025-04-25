@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { setAlert, setDialog } from '../../../store/slices/notificationSlice';
@@ -17,14 +17,17 @@ import FormHeader from '../../../component/header/FormHeader';
 import InfoIcon from '@mui/icons-material/Info';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CallIcon from '@mui/icons-material/Call';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ListTableServer from '../../../component/table/ListTableServer';
+import AccountTab from '../companies/AccountTab';
+import { deletePartner, fetchPartner, updatePartner } from '../../../store/slices/partners/partnerSlice';
 
 function UpdatePartner() {
     const {user} = useSelector((store) => store.auth);
     const {activeCompany,disabled} = useSelector((store) => store.organization);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [tabValue, setTabValue] = useState(0);
@@ -34,24 +37,10 @@ function UpdatePartner() {
     const [data, setData] = useState({})
 
     const fetchData = async () => {
-        dispatch(setIsProgress(true));
-        try {
-            await dispatch(fetchCountries()).unwrap();
-            await dispatch(fetchCurrencies()).unwrap();
-            const response = await axios.get(`/partners/partners/?active_company=${activeCompany.id}&uuid=${uuid}`,
-                {headers: {"X-Requested-With": "XMLHttpRequest"}}
-            );
-            
-            if(response.data.length > 0){
-                setData(response.data[0]);
-            }else{
-                navigate("/partners");
-            };
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        } finally {
-            dispatch(setIsProgress(false));
-        }
+        await dispatch(fetchCountries()).unwrap();
+        await dispatch(fetchCurrencies()).unwrap();
+        const response = await dispatch(fetchPartner({activeCompany,params:{uuid}})).unwrap();
+        setData(response);
     };
     
     useEffect(() => {
@@ -63,41 +52,13 @@ function UpdatePartner() {
     };
 
     const handleSubmit = async () => {
-        dispatch(setIsProgress(true));
-        //event.preventDefault();
         setButtonDisabled(true);
-        
-        try {const response = await axios.post(`/partners/update_partner/`,
-                data,
-                { 
-                    withCredentials: true
-                },
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}))
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}))
-        } finally {
-            fetchData();
-            dispatch(setIsProgress(false));
-        };
+        dispatch(updatePartner({data}));
     };
 
     const handleDelete = async () => {
         setButtonDisabled(true);
-
-        try {const response = await axios.post(`/partners/delete_partner/`,
-                data,
-                { 
-                    withCredentials: true
-                },
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}))
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}))
-        } finally {
-            dispatch(setDialog(false));
-            navigate("/partners");
-        };
+        dispatch(deletePartner({data}));
     };
 
     const handleChangeField = (field,value) => {
@@ -109,6 +70,7 @@ function UpdatePartner() {
         <Paper elevation={0} sx={{p:2}} square>
             <Stack spacing={2}>
                 <FormHeader
+                title="PARTNER DETAILS"
                 loadingSave={disabled}
                 disabledSave={buttonDisabled}
                 onClickSave={() => handleSubmit()}
@@ -133,7 +95,7 @@ function UpdatePartner() {
                                 <Tab label="Information" value={0} icon={<InfoIcon/>} iconPosition="start"/>
                                 <Tab label="Address" value={1} icon={<LocationOnIcon/>} iconPosition="start"/>
                                 <Tab label="Contact" value={2} icon={<CallIcon/>} iconPosition="start"/>
-                                <Tab label="Account" value={3} icon={<AccountBalanceIcon/>} iconPosition="start"/>
+                                <Tab label="Accounts" value={3} icon={<MonetizationOnIcon/>} iconPosition="start"/>
                             </Tabs>
                         </Grid>
                         <Grid>
@@ -201,6 +163,11 @@ function UpdatePartner() {
                         valueCurrency={data.currency || user.location.currency || 0}
                         onChangeCurrency={(value) => handleChangeField("currency",value)}
                         disabled={disabled}
+                        />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={3}>
+                        <AccountTab
+                        partnerUuid={uuid}
                         />
                     </TabPanel>
                 </Stack>

@@ -3,7 +3,7 @@ import { Input } from "mdb-ui-kit";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { changeTheme, clearAuthMessage, fetchCSRFToken, loginAuth, setLoading } from "../../../store/slices/authSlice";
-import { fetchCompanies } from "../../../store/slices/organizationSlice";
+import { fetchCompanies, fetchCompaniesForStart } from "../../../store/slices/organizationSlice";
 import { fetchMenuItems } from "../../../store/slices/subscriptionsSlice";
 import { fetchNotifications } from "../../../store/slices/notificationSlice";
 import { fetchImportProcess } from "../../../store/slices/processSlice";
@@ -33,11 +33,11 @@ function Login() {
         dispatch(setLoading(true));
         try {
             await dispatch(loginAuth({email, password, remember})).unwrap();
+            await dispatch(fetchCSRFToken()).unwrap();
             await Promise.all([
-                dispatch(fetchCSRFToken()).unwrap(),
                 dispatch(changeTheme(theme === "dark" ? true : false)).unwrap(),
                 dispatch(fetchMenuItems()).unwrap(),
-                dispatch(fetchCompanies()).unwrap(),
+                dispatch(fetchCompaniesForStart()).unwrap(),
                 dispatch(fetchNotifications()).unwrap(),
                 dispatch(fetchImportProcess()).unwrap()
             ]);

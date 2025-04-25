@@ -2,6 +2,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { setAlert, setDialog } from "./notificationSlice";
+import { setIsProgress } from "./processSlice";
 
 const initialState = {
     companies:[],
@@ -13,6 +14,11 @@ const initialState = {
     usersInCompany:[],
 }
 
+export const fetchCompaniesForStart = createAsyncThunk('organization/fetchCompaniesForStart', async () => {
+    const response = await axios.get(`/companies/api/user_companies`, {withCredentials: true});
+    return response.data;
+});
+
 export const fetchCompanies = createAsyncThunk('organization/fetchCompanies', async () => {
     const response = await axios.get(`/companies/api/user_companies`, {withCredentials: true});
     return response.data;
@@ -23,7 +29,129 @@ export const changeActiveCompany = createAsyncThunk('organization/changeActiveCo
     return response.data;
 });
 
-export const deleteCompany = createAsyncThunk('organization/deleteCompany', async (id,{dispatch,rejectWithValue,extra: { navigate }}) => {
+export const fetchCompany = createAsyncThunk('auth/fetchCompany', async ({params=null},{dispatch,extra: { navigate }}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const response = await axios.get(`/companies/api/companies/${params.companyId}/`,
+            {   
+                headers: {"X-Requested-With": "XMLHttpRequest"}
+            }
+        );
+
+        if(response.data){
+            return response.data;
+        }else{
+            navigate("/companies");
+            return {}
+        }
+    } catch (error) {
+        dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        return {}
+    } finally {
+        dispatch(setIsProgress(false));
+    }
+});
+
+export const addCompany = createAsyncThunk('auth/addCompany', async ({data=null},{dispatch,extra: {navigate}}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const formData = new FormData();
+        const jsonData = JSON.stringify(
+            Object.fromEntries(
+                Object.entries(data).filter(([key]) => key !== 'image')
+            )
+        );
+        formData.append("data", jsonData);
+        
+        if (data.image) {
+            formData.append("image", data.image);
+        };
+
+        const response = await axios.post(`/companies/add_company/`, 
+            formData,
+            {   
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true
+            },
+        );
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+        navigate("/companies");
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(setIsProgress(false));
+    }
+});
+
+export const updateCompany = createAsyncThunk('auth/updateCompany', async ({data=null},{dispatch}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const formData = new FormData();
+        const jsonData = JSON.stringify(
+            Object.fromEntries(
+                Object.entries(data).filter(([key]) => key !== 'image')
+            )
+        );
+        formData.append("data", jsonData);
+
+        if (data.image) {
+            formData.append("image", data.image);
+        };
+
+        const response = await axios.post(`/companies/update_company/`,
+            formData,
+            {   
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true
+            },
+        );  
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(setIsProgress(false));
+    }
+});
+
+export const deleteCompany = createAsyncThunk('auth/deleteCompany', async ({id=null},{dispatch,extra: {navigate}}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const response = await axios.post(`/companies/delete_company/`,
+            {id:id},
+            { 
+                withCredentials: true
+            },
+        );
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(setIsProgress(false));
+        dispatch(setDialog(false));
+        navigate("/companies");
+    }
+});
+
+export const deleteCompanyy = createAsyncThunk('organization/deleteCompany', async (id,{dispatch,rejectWithValue,extra: { navigate }}) => {
     try {
         const response = await axios.post(`/companies/delete_company/`, 
             {   
@@ -71,11 +199,11 @@ const organizationSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            //fetch companies
-            .addCase(fetchCompanies.pending, (state) => {
+            //fetch companies for start
+            .addCase(fetchCompaniesForStart.pending, (state) => {
                 state.companiesLoading = true;
             })
-            .addCase(fetchCompanies.fulfilled, (state,action) => {
+            .addCase(fetchCompaniesForStart.fulfilled, (state,action) => {
                 state.companies = action.payload;
 
                 if (!action.payload.length > 0) {
@@ -117,6 +245,17 @@ const organizationSlice = createSlice({
                         localStorage.removeItem('active_company');
                     }
                 };
+                state.companiesLoading = false;
+            })
+            .addCase(fetchCompaniesForStart.rejected, (state,action) => {
+                state.companiesLoading = false;
+            })
+            //fetch companies
+            .addCase(fetchCompanies.pending, (state) => {
+                state.companiesLoading = true;
+            })
+            .addCase(fetchCompanies.fulfilled, (state,action) => {
+                state.companies = action.payload;
                 state.companiesLoading = false;
             })
             .addCase(fetchCompanies.rejected, (state,action) => {

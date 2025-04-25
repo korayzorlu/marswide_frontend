@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect} from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Landing from './features/layout/pages/Landing.js';
 import Panel from './features/layout/pages/Panel.js';
@@ -26,25 +26,23 @@ import { checkMobile, setResize } from './store/slices/sidebarSlice.js';
 import AddCompany from './features/organization/pages/AddCompany.js';
 import UpdateCompany from './features/organization/pages/UpdateCompany.js';
 //import { ThemeProvider } from '@emotion/react'
-import { fetchMenuItems } from './store/slices/subscriptionsSlice.js';
-import { fetchCompanies } from './store/slices/organizationSlice.js';
 import CariHesapHareketleri from './features/mikro/pages/CariHesapHareketleri.js';
 import Personeller from './features/mikro/pages/Personeller.js';
 import Partners from './features/partners/pages/Partners.js';
 import { setNavigate } from './store/store.js';
 import PersonelTahakkuklari from './features/mikro/pages/PersonelTahakkuklari.js';
 import Notification from './features/notification/pages/Notification.js';
-import { joinWebsocket } from './store/slices/websocketSlice.js';
-import { fetchNotifications } from './store/slices/notificationSlice.js';
 import Invitations from './features/organization/pages/Invitations.js';
 import PhoneNumberSettings from './features/settings/auth/pages/PhoneNumberSettings.js';
 import PhoneNumberVerify from './features/settings/auth/pages/PhoneNumberVerify.js';
 import EmailVerify from './features/settings/auth/pages/EmailVerify.js';
 import UpdatePartner from './features/partners/pages/UpdatePartner.js';
 import AddPartner from './features/partners/pages/AddPartner.js';
-import { fetchImportProcess } from './store/slices/processSlice.js';
 import { ThemeProvider } from './ThemeProvider.js';
 import Dashboard from './features/dashboard/pages/Dashboard.js';
+import Accounts from './features/accounting/pages/Accounts.js';
+import AddAccount from './features/accounting/pages/AddAccount.js';
+import UpdateAccount from './features/accounting/pages/UpdateAccount.js';
 
 export const NumberContext = React.createContext();
 
@@ -68,16 +66,8 @@ function App() {
   
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.allSettled([
-        dispatch(fetchUser()).unwrap(),
-        dispatch(fetchCSRFToken()).unwrap(),
-        dispatch(fetchMenuItems()).unwrap(),
-        dispatch(fetchCompanies()).unwrap(),
-        //dispatch(fetchCountries()).unwrap(),
-        dispatch(fetchNotifications()).unwrap(),
-        dispatch(fetchImportProcess()).unwrap(),
-      ])
-      dispatch(joinWebsocket()).unwrap();
+      await dispatch(fetchUser()).unwrap();
+      await dispatch(fetchCSRFToken()).unwrap();
       dispatch(setLoading(false));
     };
     
@@ -140,6 +130,10 @@ function App() {
                   <Route path='/partners' element={<Partners></Partners>}></Route>
                   <Route path='/partners/add-partner' element={<AddPartner></AddPartner>}></Route>
                   <Route path='/partners/update/:uuid' element={<UpdatePartner></UpdatePartner>}></Route>
+
+                  <Route path='/accounts' element={<Accounts></Accounts>}></Route>
+                  <Route path='/accounts/add-account/:type' element={<AddAccount></AddAccount>}></Route>
+                  <Route path='/accounts/update/:type/:uuid' element={<UpdateAccount></UpdateAccount>}></Route>
 
                   <Route path='/cari-hesap-hareketleri' element={<CariHesapHareketleri></CariHesapHareketleri>}></Route>
                   <Route path='/personeller' element={<Personeller></Personeller>}></Route>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Typography } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
@@ -20,6 +20,8 @@ function FormHeader(props) {
         loadingDelete,
         disabledDelete,
         onClickDelete,
+        title,
+        noBackButton,
     } = props;
 
     const navigate = useNavigate();
@@ -30,19 +32,37 @@ function FormHeader(props) {
         spacing={0}
         >
             <Grid
-            size={6}
+            size={4}
             container
             sx={{
                 justifyContent: "flex-start",
                 alignItems: "center",
             }}
-            >
-                <IconButton aria-label='back' onClick={()=>navigate(-1)}>
-                    <ArrowBackIosNewIcon/>
-                </IconButton>
+            >   
+                {
+                    noBackButton
+                    ?
+                        null
+                    :
+                        <IconButton aria-label='back' onClick={()=>navigate(-1)}>
+                            <ArrowBackIosNewIcon/>
+                        </IconButton>
+                }
             </Grid>
             <Grid
-            size={6}
+            size={4}
+            container
+            sx={{
+                justifyContent: "flex-center",
+                alignItems: "center",
+            }}
+            >
+                <Typography variant='body1' sx={{textAlign: 'center',width: '100%',color:'text.secondary'}}>
+                    {title || ""}
+                </Typography>
+            </Grid>
+            <Grid
+            size={4}
             container
             sx={{
                 justifyContent: "flex-end",

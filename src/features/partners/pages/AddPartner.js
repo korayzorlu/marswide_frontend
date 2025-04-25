@@ -9,7 +9,7 @@ import CardBody from '../../../component/card/CardBody';
 import CardFooter from '../../../component/card/CardFooter';
 import { Button, Divider, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { setAlert } from '../../../store/slices/notificationSlice';
-import { fetchPartners } from '../../../store/slices/partners/partnerSlice';
+import { addPartner, fetchPartners } from '../../../store/slices/partners/partnerSlice';
 import axios from 'axios';
 import TabPanel from '../../../component/tab/TabPanel';
 import { fetchCountries, fetchCurrencies} from '../../../store/slices/dataSlice';
@@ -35,13 +35,7 @@ function AddPartner() {
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [disabled, setDisabled] = useState(false);
     const [tabValue, setTabValue] = useState(0);
-    const [data, setData] = useState(
-        {   
-            companyId: activeCompany.companyId,
-            name: "",
-            formalName: ""
-        }
-    )
+    const [data, setData] = useState({companyId: activeCompany.companyId})
 
     useEffect(() => {
         dispatch(setIsProgress(true));
@@ -55,24 +49,10 @@ function AddPartner() {
         setTabValue(newTabValue);
     };
 
-    const handleSubmit = async (event) => {
-        //event.preventDefault();
-        dispatch(setIsProgress(true));
+    const handleSubmit = async () => {
         setDisabled(true);
-        
-        try {const response = await axios.post(`/partners/add_partner/`, 
-                data,
-                { withCredentials: true},
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}));
-            navigate("/partners");
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        } finally {
-            //dispatch(fetchPartners({activeCompany}));
-            setDisabled(false);
-            dispatch(setIsProgress(false));
-        };
+        await dispatch(addPartner({data})).unwrap();
+        setDisabled(false);
     };
 
     const handleChangeField = (field,value) => {
@@ -84,6 +64,7 @@ function AddPartner() {
         <Paper elevation={0} sx={{p:2}} square>
             <Stack spacing={2}>
                 <FormHeader
+                title="CREATE PARTNER"
                 loadingAdd={disabled}
                 disabledAdd={buttonDisabled}
                 onClickAdd={() => handleSubmit()}

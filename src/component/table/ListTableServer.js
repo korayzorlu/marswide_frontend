@@ -9,6 +9,7 @@ import { setPartnersParams } from '../../store/slices/partners/partnerSlice';
 
 function ListTableServer(props) {
   const {
+    height,
     rows,
     columns,
     getRowId,
@@ -20,6 +21,11 @@ function ListTableServer(props) {
     pageModel,
     onRowSelectionModelChange,
     rowCount,
+    setParams,
+    apiRef,
+    hideFooter,
+    noOverlay,
+    density
   } = props;
 
   const dispatch = useDispatch();
@@ -28,40 +34,59 @@ function ListTableServer(props) {
 
   const handlePaginationModelChange = (model) => {
     setPaginationModel(model);
-    dispatch(setPartnersParams({start:model.page * model.pageSize,end:(model.page+1) * model.pageSize}));
+    //dispatch(setPartnersParams({start:model.page * model.pageSize,end:(model.page+1) * model.pageSize}));
+    setParams({start:model.page * model.pageSize,end:(model.page+1) * model.pageSize})
   };
 
   const handleSortModelChange = (model) => {
-    dispatch(setPartnersParams(
-        {
-            ordering:model.length
-            ?
-                (
-                    model[0].sort === 'desc'
-                    ?
-                        `-${model[0].field}`
-                    :
-                        model[0].field
-                )
-            :
-            ''
-        }
-    ))
+    // dispatch(setPartnersParams(
+    //   {
+    //       ordering:model.length
+    //       ?
+    //           (
+    //               model[0].sort === 'desc'
+    //               ?
+    //                   `-${model[0].field}`
+    //               :
+    //                   model[0].field
+    //           )
+    //       :
+    //       ''
+    //   }
+    // ));
+    setParams(
+      {
+        ordering:model.length
+        ?
+            (
+                model[0].sort === 'desc'
+                ?
+                    `-${model[0].field}`
+                :
+                    model[0].field
+            )
+        :
+        ''
+      }
+    );
   };
 
   const handleFilterModelChange = (model) => {
     if(model.items.length > 0){
         model.items.forEach((item) => {
             if (item.value) {
-              dispatch(setPartnersParams({[item.columnField]:item.value}));
+              //dispatch(setPartnersParams({[item.columnField]:item.value}));
+              setParams({[item.columnField]:item.value});
             }
         });
     } else if(model.quickFilterValues.length > 0){
         model.quickFilterValues.forEach((item) => {
-            dispatch(setPartnersParams({"search[value]":item}));
+            //dispatch(setPartnersParams({"search[value]":item}));
+            setParams({"search[value]":item});
         });
     } else if(model.items.length === 0 && model.quickFilterValues.length === 0){
-        dispatch(setPartnersParams({"search[value]":""}));
+        //dispatch(setPartnersParams({"search[value]":""}));
+        setParams({"search[value]":""});
     };
   };
 
@@ -75,11 +100,11 @@ function ListTableServer(props) {
   );
 
   return (
-    <TableContent>
+    <TableContent height={height}>
       <DataGrid
       slots={{
         toolbar: Toolbar,
-        noRowsOverlay: NoRowsOverlay
+        noRowsOverlay: noOverlay ? undefined : NoRowsOverlay
       }}
       slotProps={{
           toolbar: {
@@ -111,9 +136,11 @@ function ListTableServer(props) {
       onFilterModelChange={(model) => handleFilterModelChange(model)}
       rowCount={rowCount}
       loading={loading}
-      checkboxSelection={checkboxSelection || true}
+      checkboxSelection={checkboxSelection}
       disableRowSelectionOnClick={disableRowSelectionOnClick}
       onRowSelectionModelChange={onRowSelectionModelChange}
+      apiRef={apiRef}
+      hideFooter={hideFooter}
       autoHeight
       //getRowHeight={() => 'auto'}
       sx={{
@@ -123,7 +150,7 @@ function ListTableServer(props) {
           [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]: {
               outline: 'none',
           },
-          '--DataGrid-overlayHeight': '50vh'
+          '--DataGrid-overlayHeight': `${noOverlay ? "unset" : "50vh"}`,
       }}
       />
     </TableContent>

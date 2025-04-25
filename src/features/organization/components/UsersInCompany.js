@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BasicTable from '../../../component/table/BasicTable'
 import CustomTableButton from '../../../component/table/CustomTableButton'
 import AddIcon from "@mui/icons-material/Add";
-import { Avatar, Chip, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material';
+import { Avatar, Button, Chip, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material';
 import AccountMenu from '../../../component/menu/AccountMenu';
 import MessageIcon from '@mui/icons-material/Message';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -135,27 +135,24 @@ function UsersInCompany(props) {
                     {
                         params.row.email === user.email
                         ?
-                        <Chip
-                        icon={icon}
-                        label={label}
-                        sx={{
-                            color: color,
-                            borderColor: color,
-                            border: "none"
-                        }}
-                        variant="outlined"
-                        />
+                            <Chip
+                            icon={icon}
+                            label={label}
+                            sx={{
+                                color: color,
+                                borderColor: color,
+                                border: "none"
+                            }}
+                            variant="outlined"
+                            />
                         :
                         <>
                             <Chip
                             icon={icon}
                             label={label}
                             onClick={(e) => handleClickUserStatus(e, params)}
-                            sx={{
-                                color: color,
-                                borderColor: color,
-                            }}
-                            variant="outlined"
+                            color='primary'
+                            variant="contained"
                             />
                             <AccountMenu open={openUserStatus} anchorEl={anchorElUserStatus} onClick={handleCloseUserStatus} onClose={handleCloseUserStatus} handleClose={handleCloseUserStatus}>
                                 <MenuItem onClick={() => handleChangeUserStatusInCompany({status:"manager"})}>

@@ -11,12 +11,17 @@ import AuthSettings from "../auth/components/AuthSettings";
 import { useSelector } from "react-redux";
 import Row from "../../../component/grid/Row";
 import Col from "../../../component/grid/Col";
-import { Tab, Tabs } from "@mui/material";
+import { Divider, Paper, Stack, Tab, Tabs } from "@mui/material";
 import TabPanel from "../../../component/tab/TabPanel";
 import Card from "../../../component/card/Card";
 import CardHeader from "../../../component/card/CardHeader";
 import CardBody from "../../../component/card/CardBody";
-
+import Grid from '@mui/material/Grid2';
+import FormHeader from "../../../component/header/FormHeader";
+import InfoIcon from '@mui/icons-material/Info';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 
 function Settings() {
     const {user} = useSelector((store) => store.auth);
@@ -57,27 +62,69 @@ function Settings() {
         //     </Row>
         // </PanelContent>
 
-        <PanelContent>
-            <Row addClass="m-0">
-                <Col size="6" addClass="ms-auto me-auto">
-                    <Card>
-                        <CardBody>
-                            <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="settings-tabs">
-                                <Tab label="Auth" value={0}/>
-                                <Tab label="Company" value={1}/>
-                                <Tab label="Plan" value={2}/>
-                            </Tabs>
+        // <PanelContent>
+        //     <Row addClass="m-0">
+        //         <Col size="6" addClass="ms-auto me-auto">
+        //             <Card>
+        //                 <CardBody>
+        //                     <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="settings-tabs">
+        //                         <Tab label="Auth" value={0}/>
+        //                         <Tab label="Company" value={1}/>
+        //                         <Tab label="Plan" value={2}/>
+        //                     </Tabs>
+        //                     <TabPanel value={tabValue} index={0}>
+        //                         <AuthSettings user={user}></AuthSettings>
+        //                     </TabPanel>
+        //                     <TabPanel value={tabValue} index={1}>
+        //                         Company settings
+        //                     </TabPanel>
+        //                 </CardBody>
+        //             </Card>
+        //         </Col>
+        //     </Row>
+        // </PanelContent>
+        
+        <Stack spacing={2}>
+            <Grid container spacing={2} sx={{justifyContent:'center',alignItems:'center'}}>
+                <Grid size={{xs:12,sm:6}}>
+                    <Paper elevation={0} sx={{p:2}} square>
+                        <Stack spacing={2}>
+                            <FormHeader
+                            title="SETTINGS"
+                            />
+                            <Divider></Divider>
+                            <Stack spacing={2}>
+                                <Grid
+                                container
+                                spacing={{xs:2,sm:0}}
+                                sx={{
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}>
+                                    <Grid>
+                                        <Tabs
+                                        value={tabValue}
+                                        variant='scrollable'
+                                        scrollButtons="auto"
+                                        onChange={handleChangeTabValue}
+                                        >
+                                            <Tab label="Auth" value={0} icon={<PersonIcon/>} iconPosition="start"/>
+                                            <Tab label="Organization" value={1} icon={<ApartmentIcon/>} iconPosition="start"/>
+                                        </Tabs>
+                                    </Grid>
+                                </Grid>
+                            </Stack>
                             <TabPanel value={tabValue} index={0}>
                                 <AuthSettings user={user}></AuthSettings>
                             </TabPanel>
                             <TabPanel value={tabValue} index={1}>
-                                Company settings
+                                Organization Settings
                             </TabPanel>
-                        </CardBody>
-                    </Card>
-                </Col>
-            </Row>
-        </PanelContent>
+                        </Stack>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </Stack>
     );
 }
 

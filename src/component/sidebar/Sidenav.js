@@ -25,6 +25,9 @@ function Sidenav() {
         database: require("../../images/icons/sidebar/light/database-filled.svg").ReactComponent,
         organization: require("../../images/icons/sidebar/light/home-filled.svg").ReactComponent,
         mail: require("../../images/icons/sidebar/light/mail-filled.svg").ReactComponent,
+        receipt: require("../../images/icons/sidebar/light/receipt_long.svg").ReactComponent,
+        account: require("../../images/icons/sidebar/light/account_balance_wallet-filled.svg").ReactComponent,
+        accounting: require("../../images/icons/sidebar/light/calculate-filled.svg").ReactComponent,
     };
 
     const DefaultIcon = require("../../images/icons/sidebar/light/dashboard-filled.svg").ReactComponent;

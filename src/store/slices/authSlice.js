@@ -1,6 +1,10 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { fetchMenuItems } from "./subscriptionsSlice";
+import { fetchCompaniesForStart } from "./organizationSlice";
+import { fetchNotifications } from "./notificationSlice";
+import { fetchImportProcess } from "./processSlice";
 
 const initialState = {
     user:null,
@@ -16,14 +20,15 @@ const initialState = {
     verifyPhoneNumber:""
 }
 
-export const fetchUser = createAsyncThunk('auth/fetchUser', async () => {
+export const fetchUser = createAsyncThunk('auth/fetchUser', async (_,{ dispatch }) => {
     const sessionResponse = await axios.get(`/users/session/`, {withCredentials: true});
     if(sessionResponse.data.authenticated){
         const response = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
         return response.data[0];
     };
     
-    throw new Error('Session not authenticated');
+    //throw new Error('Session not authenticated');
+    return null;
 });
 
 export const fetchCSRFToken = createAsyncThunk('auth/fetchCSRFToken', async () => {
@@ -37,7 +42,7 @@ export const changeTheme = createAsyncThunk('auth/changeTheme', async (darkTerm,
         await axios.put(`/users/api/user_profiles/${user["profile"]}/`, 
             {
                 pk : user["profile"],
-                theme : darkTerm ? "dark" : "light"
+                theme : darkTerm ? "dark" : "light",
             },
             {withCredentials: true},
         );
@@ -149,11 +154,14 @@ const authSlice = createSlice({
                 //state.loading = true
             })
             .addCase(fetchUser.fulfilled, (state,action) => {
-                state.user = action.payload;
-                state.status = true;
-                state.dark = action.payload["theme"] === "light" ? false : true;
-                state.theme = action.payload["theme"];
-                document.cookie = `theme=${action.payload["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE || "Lax"}`;
+                if(action.payload){
+                    state.user = action.payload || null;
+                    state.status = true;
+                    state.dark = action.payload["theme"] === "light" ? false : true;
+                    state.theme = action.payload["theme"];
+                    document.cookie = `theme=${action.payload["theme"]}; path=/; ${process.env.REACT_APP_SAME_SITE || "Lax"}`;
+                };
+                
                 //const wsMain = new WebSocket("ws://localhodst:8000/api/ws/socket/1/");
                 // const wsMain = new WebSocket(
                 //     (window.location.protocol === 'https:' ? 'wss://' : 'ws://')

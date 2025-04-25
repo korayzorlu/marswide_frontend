@@ -1,39 +1,92 @@
-import { Link } from "react-router-dom";
+import { Button, Divider, Stack } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import Grid from '@mui/material/Grid2';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function AuthSettingsLinks() {
+    const navigate = useNavigate();
+    
     return ( 
-        <>  
-            <div className="row border-bottom p-2">
-                <Link to="/settings/auth/profile" className="col-md-12 p-2 fw-bold d-flex">
-                    <span className="me-auto">Profile</span>
-                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
-                </Link>
-            </div>
-            <div className="row border-bottom p-2">
-                <Link to="/settings/auth/personal" className="col-md-12 p-2 fw-bold d-flex">
-                    <span className="me-auto">Personal</span>
-                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
-                </Link>
-            </div>
-            <div className="row border-bottom p-2">
-                <Link to="/settings/auth/email" className="col-md-12 p-2 fw-bold d-flex">
-                    <span className="me-auto">Email</span>
-                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
-                </Link>
-            </div>
-            <div className="row border-bottom p-2">
-                <Link to="/settings/auth/phone-number" className="col-md-12 p-2 fw-bold d-flex">
-                    <span className="me-auto">Phone Number</span>
-                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
-                </Link>
-            </div>
-            <div className="row p-2">
-                <Link to="/settings/auth/password-reset" className="col-md-12 p-2 fw-bold d-flex">
-                    <span className="me-auto">Password Reset</span>
-                    <i className="fas fa-arrow-right fs-5 align-content-center"></i>
-                </Link>
-            </div>
-        </>    
+        <Stack spacing={0}>  
+            <Grid container spacing={0}>
+                <Grid size={12}>
+                    <Button
+                    onClick={() => navigate("/settings/auth/profile")}
+                    variant="text"
+                    endIcon={<ArrowForwardIosIcon/>}
+                    sx={{justifyContent:'space-between',height:60}}
+                    size="large"
+                    fullWidth
+                    >
+                        Profile
+                    </Button>
+                    <Divider></Divider>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+                <Grid size={12}>
+                    <Button
+                    component={Link}
+                    to="/settings/auth/personal"
+                    variant="text"
+                    endIcon={<ArrowForwardIosIcon/>}
+                    sx={{justifyContent:'space-between',height:60}}
+                    size="large"
+                    fullWidth
+                    >
+                        Personal
+                    </Button>
+                    <Divider></Divider>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+                <Grid size={12}>
+                    <Button
+                    component={Link}
+                    to="/settings/auth/email"
+                    variant="text"
+                    endIcon={<ArrowForwardIosIcon/>}
+                    sx={{justifyContent:'space-between',height:60}}
+                    size="large"
+                    fullWidth
+                    >
+                        Email
+                    </Button>
+                    <Divider></Divider>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+                <Grid size={12}>
+                    <Button
+                    component={Link}
+                    to="/settings/auth/phone-number"
+                    variant="text"
+                    endIcon={<ArrowForwardIosIcon/>}
+                    sx={{justifyContent:'space-between',height:60}}
+                    size="large"
+                    fullWidth
+                    >
+                        Phone Number
+                    </Button>
+                    <Divider></Divider>
+                </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+                <Grid size={12}>
+                    <Button
+                    component={Link}
+                    to="/settings/auth/password-reset"
+                    variant="text"
+                    endIcon={<ArrowForwardIosIcon/>}
+                    sx={{justifyContent:'space-between',height:60}}
+                    size="large"
+                    fullWidth
+                    >
+                        Password Reset
+                    </Button>
+                </Grid>
+            </Grid>
+        </Stack>    
     );
 }
 

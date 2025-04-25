@@ -39,6 +39,10 @@ const commonTheme = {
             main: '#1b1f23',
             contrastText: '#fff',
         },
+        cream: {
+            main: '#F4F2EE',
+            contrastText: '#000',
+        },
     },
     components: {
         MuiDataGrid: {

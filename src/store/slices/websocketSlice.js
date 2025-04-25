@@ -1,7 +1,4 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { store } from "../store";
 import { fetchNotifications, send_notification, setAlert, setUnreadNotifications } from "./notificationSlice";
 import { fetchImportProcess, setImportProgress } from "./processSlice";
 import { fetchPartners } from "./partners/partnerSlice";
@@ -14,7 +11,7 @@ const fetchActions = {
     fetchPartners,
 };
 
-export const connectWebsocket = () => {
+export const connectWebsocket = (dispatch) => {
     const wsMain = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}/socket/`);
 
     wsMain.onopen = function() {
@@ -48,20 +45,21 @@ export const connectWebsocket = () => {
         
 
         if(type === "send_notification"){
-            store.dispatch(fetchNotifications()).unwrap();
-            store.dispatch(send_notification(message));
-            store.dispatch(setUnreadNotifications(1));
+            dispatch(fetchNotifications()).unwrap();
+            dispatch(send_notification(message));
+            dispatch(setUnreadNotifications(1));
         }else if(type === "send_alert"){
-            store.dispatch(setAlert({status:message.status,text:message.message}));
+            dispatch(setAlert({status:message.status,text:message.message}));
         }else if(type === "send_import_process_percent"){
-            store.dispatch(setImportProgress({task:message.task,progress:message.progress}));
+            dispatch(setImportProgress({task:message.task,progress:message.progress}));
         }else if(type === "fetch_import_processes"){
-            store.dispatch(fetchImportProcess());
+            //dispatch(setAlert({status:"success",text:"test başarılı"}));
+            dispatch(fetchImportProcess());
             if(message.status === "completed" || message.status === "rejected"){
                 const actionName = `fetch${message.model}s`;
 
                 if (fetchActions[actionName]) {
-                    store.dispatch(fetchActions[actionName](
+                    dispatch(fetchActions[actionName](
                         {
                             activeCompany:message.activeCompany,
                             params:{

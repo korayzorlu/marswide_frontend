@@ -19,18 +19,24 @@ import Avatar from '@mui/material/Avatar';
 import AccountMenu from "../../../component/menu/AccountMenu";
 import MessageIcon from '@mui/icons-material/Message';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import CheckIcon from '@mui/icons-material/Check';
+import { fetchUserInformation } from "../../../store/slices/authSlice";
+import { setUserDialog } from "../../../store/slices/notificationSlice";
 
 function Companies() {
-    const {companies,companiesLoading} = useSelector((store) => store.organization);
+    const {companies,companiesLoading,activeCompany} = useSelector((store) => store.organization);
 
     const dispatch = useDispatch();
 
     const [rows, setRows] = useState([]);
+    const [sessionCompany, setSessionCompany] = useState(JSON.parse(sessionStorage.getItem('active_company')));
+    const [selectedUserEmail, setSelectedUserEmail] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
-    const handleClick = (event) => {
+    const handleClick = (event,params) => {
       setAnchorEl(event.currentTarget);
+      setSelectedUserEmail(params.row.owner);
     };
 
     const handleClose = () => {
@@ -41,6 +47,11 @@ function Companies() {
       dispatch(fetchCompanies());
       setRows(companies);
     }, []);
+
+    const handleProfileDialog = async () => {
+        await dispatch(fetchUserInformation(selectedUserEmail)).unwrap();
+        dispatch(setUserDialog(true));
+    };
 
     const columns = [
         { field: 'company', headerName: 'Name', flex: 1, editable: true, renderCell: (params) => (
@@ -69,42 +80,63 @@ function Companies() {
                   ?
                     <>
                       <Chip
-                      icon={<ManageAccountsIcon color={amber[900]}/>}
+                      icon={<ManageAccountsIcon/>}
                       label="Manager"
-                      sx={{
-                        color: amber[900],
-                        borderColor: amber[900],
-                      }}
-                      variant="outlined"/>
+                      color="warning"
+                      variant="contained"
+                      size="small"
+                      />
                     </>
                   :
                     <>
                       <Chip
                       icon={<BadgeIcon color={indigo[300]}/>}
                       label="Staff"
-                      sx={{
-                        color: indigo[300],
-                        borderColor: indigo[300],
-                      }}
-                      variant="outlined"/>
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      />
                     </>
               }
             </>
           )
         },
+        { field: 'is_active', headerName: 'Is Active', width: 150, renderCell: (params) => (
+          <>
+            {
+              params.row.id === activeCompany.id
+                ?
+                  <>
+                    <Chip
+                    icon={<CheckIcon/>}
+                    label="Active"
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    />
+                  </>
+                :
+                  null
+            }
+          </>
+        )
+      },
         { field: 'owner', headerName: 'Owner', width: 300, renderCell: (params) => (
             <>
               <Chip
               avatar={<Avatar alt="" src={params.row.userImage} />}
               label={params.value} 
-              onClick={handleClick}
+              onClick={(e) => handleClick(e,params)}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
               />
               <AccountMenu open={open} anchorEl={anchorEl} onClick={handleClose} onClose={handleClose} handleClose={handleClose}>
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> Profile
+                <MenuItem onClick={handleProfileDialog}>
+                  <ListItemIcon>
+                    <Avatar/>
+                  </ListItemIcon>
+                  Profile
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>

@@ -23,8 +23,13 @@ function CountrySelect(props) {
 
     const handleChange = (newValue) => {
         onChange(newValue ? newValue.iso2 : 0);
-        setSelectedValue(newValue ? newValue.iso2 : 0);
+        setSelectedValue(newValue ? newValue : null);
     }
+
+    useEffect(() => {
+        setSelectedValue(countries.find((country) => country.iso2 === value));
+    }, [countries])
+    
 
     return (
         // <FormControl size="small" variant="outlined" fullWidth>
@@ -67,7 +72,7 @@ function CountrySelect(props) {
         onOpen={handleOpen}
         onClose={handleClose}
         onChange={(e, newValue) => handleChange(newValue)}
-        value={countries.find((country) => country.iso2 === selectedValue)}
+        value={selectedValue}
         isOptionEqualToValue={(option, val) => option.iso2 === val.iso2}
         autoHighlight
         getOptionLabel={(option) =>  {

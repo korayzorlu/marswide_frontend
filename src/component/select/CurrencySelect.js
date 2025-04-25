@@ -1,10 +1,13 @@
 import { Autocomplete, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchCurrencies } from '../../store/slices/dataSlice';
+import User from '../navbar/User';
 
 function CurrencySelect(props) {
     const {emptyValue,label,value,onChange} = props;
 
+    const {user,dark} = useSelector((store) => store.auth);
     const {currencies,currenciesLoading} = useSelector((store) => store.data);
 
     const dispatch = useDispatch();
@@ -18,13 +21,17 @@ function CurrencySelect(props) {
 
     const handleClose = () => {
         setOpen(false);
-        //dispatch(deleteCountries());
     };
 
     const handleChange = (newValue) => {
         onChange(newValue ? newValue.code : 0);
-        setSelectedValue(newValue ? newValue.code : 0);
+        setSelectedValue(newValue ? newValue : null);
     }
+
+    useEffect(() => {
+        setSelectedValue(currencies.find((currency) => currency.code === value));
+    }, [currencies])
+    
 
     return (
         <Autocomplete
@@ -37,7 +44,7 @@ function CurrencySelect(props) {
         onOpen={handleOpen}
         onClose={handleClose}
         onChange={(e, newValue) => handleChange(newValue)}
-        value={currencies.find((currency) => currency.code === selectedValue)}
+        value={selectedValue}
         isOptionEqualToValue={(option, val) => option.code === val.code}
         autoHighlight
         getOptionLabel={(option) =>  option.code}

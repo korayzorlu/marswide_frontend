@@ -10,6 +10,8 @@ import organizationReducer from './slices/organizationSlice';
 import partnerReducer from './slices/partners/partnerSlice';
 import websocketReducer from './slices/websocketSlice';
 import dataReducer from './slices/dataSlice';
+import accountReducer from './slices/accounting/accountSlice';
+import settingsReducer from './slices/settings/settingsSlice';
 
 let navigate;
 
@@ -30,6 +32,8 @@ export const store = configureStore({
         sidebar: sidebarReduce,
         //table: tableReducer,
         theme: themeReducer,
+        account: accountReducer,
+        settings: settingsReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

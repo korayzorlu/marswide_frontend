@@ -1,73 +1,41 @@
-import React, { act, useEffect, useState } from 'react';
-import BackAndHeader from '../../../component/card/BackAndHeader';
-import Card from '../../../component/card/Card';
-import CardHeader from '../../../component/card/CardHeader';
-import CardBody from '../../../component/card/CardBody';
-import Input from '../../../component/input/Input';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlert, setDialog } from '../../../store/slices/notificationSlice';
-import Col from '../../../component/grid/Col';
-import Row from '../../../component/grid/Row';
-import Form from '../../../component/form/Form';
+import { setDialog } from '../../../store/slices/notificationSlice';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Dialog from '../../../component/feedback/Dialog';
 import Lightbox from '../../../component/image/Lightbox';
 import VissuallyHiddenInput from '../../../component/input/VissuallyHiddenInput';
-import {deleteCompany, fetchCompanies, fetchUsersInCompany, setActiveCompany } from '../../../store/slices/organizationSlice';
-import { Avatar, Chip, Divider, ListItemIcon, MenuItem, Tab, Tabs, TextField, Typography } from '@mui/material';
+import {deleteCompany,fetchCompany,setActiveCompany, updateCompany } from '../../../store/slices/organizationSlice';
+import { Divider, Paper, Stack, Tab, Tabs, TextField } from '@mui/material';
 import TabPanel from '../../../component/tab/TabPanel';
-import CustomTableButton from '../../../component/table/CustomTableButton';
-import AddIcon from "@mui/icons-material/Add";
-import BasicTable from '../../../component/table/BasicTable';
-import AccountMenu from '../../../component/menu/AccountMenu';
-import MessageIcon from '@mui/icons-material/Message';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import { amber,indigo,red} from '@mui/material/colors';
-import BadgeIcon from '@mui/icons-material/Badge';
-import InviteDialog from '../components/InviteDialog';
-import CancelIcon from '@mui/icons-material/Cancel';
-import OutUserInCompanyDialog from '../components/OutUserInCompanyDialog';
 import UsersInCompany from '../components/UsersInCompany';
+import FormHeader from '../../../component/header/FormHeader';
+import Grid from '@mui/material/Grid2';
+import InfoIcon from '@mui/icons-material/Info';
+import GroupIcon from '@mui/icons-material/Group';
 
 function UpdateCompany() {
-    const {user} = useSelector((store) => store.auth);
-    const {companies,activeCompany,disabled,usersLoading,usersInCompany} = useSelector((store) => store.organization);
+    const {companies,activeCompany,disabled} = useSelector((store) => store.organization);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const location = useLocation();
+
+    const {id,companyId} = location.state || {};
 
     const [tabValue, setTabValue] = useState(0);
+    const [data, setData] = useState({id:companyId,image:null,prevImage:null,removeImage:false})
     const [image, setImage] = useState(null);
-    const [prevImage, setPrevImage] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [removeImage, setRemoveImage] = useState(false);
-    const [name, setName] = useState("-");
-    const [formalName, setFormalName] = useState("-");
-    const [data, setData] = useState({})
     const [buttonDisabled, setButtonDisabled] = useState(true);
-
-    const location = useLocation();
-    const {id,companyId} = location.state || {};
 
     const [thisCompanyId, setThisCompanyId] = useState(companyId);
 
     const fetchData = async () => {
-        try {
-            const response = await axios.get(`/companies/api/companies/${companyId}/`,
-                {headers: {"X-Requested-With": "XMLHttpRequest"}}
-            );
-            setData(response.data);
-            setImage(response.data.image);
-            setName(response.data.name);
-            setFormalName(response.data.formalName);
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        };
+        const response = await dispatch(fetchCompany({activeCompany,params:{companyId}})).unwrap();
+        setData(data => ({...data, ...response}));
+        setImage(response.image);
     };
     
     useEffect(() => {
@@ -75,67 +43,38 @@ function UpdateCompany() {
     }, [])
 
     const handleSubmit = async () => {
-        //event.preventDefault();
         setButtonDisabled(true);
-        
-        try {
-            const formData = new FormData();
-            const jsonData = JSON.stringify({ id:companyId, name, formalName, removeImage });
-            formData.append("data", jsonData);
-
-            if (selectedImage) {
-                formData.append("image", selectedImage);
-            };
-
-            const response = await axios.post(`/companies/update_company/`,
-                formData,
-                {   
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    withCredentials: true
-                },
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}));
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        } finally {
-            fetchData();
-        };
+        dispatch(updateCompany({data}));
     };
 
     const handleDelete = () => {
         setButtonDisabled(true);
-
         if (activeCompany.id === id) {
             dispatch(setActiveCompany(companies.filter(item => item.id !== activeCompany.id)[0]));
         };
-
-        dispatch(deleteCompany(id));
-
+        dispatch(deleteCompany({id}));
     };
 
     const handleChangeImage = (event) => {
         const file = event.target.files[0];
-        setSelectedImage(file);
-
+        setData(data => ({...data, image:file}));
         if(file){
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPrevImage(reader.result);
+                setData(data => ({...data, prevImage:reader.result}));
             };
             reader.readAsDataURL(file);
             setButtonDisabled(false);
         };
-        setRemoveImage(false);
+        setData(data => ({...data, removeImage:false}));
         setImage(null);
     };
 
     const handleDeleteImage = () => {
-        setRemoveImage(true);
-        setSelectedImage(null);
+        setData(data => ({...data, removeImage:true}));
+        setData(data => ({...data, image:null}));
         setImage(null);
-        setPrevImage(null);
+        setData(data => ({...data, prevImage:null}));
         setButtonDisabled(false);
     };
 
@@ -143,70 +82,105 @@ function UpdateCompany() {
         setTabValue(newTabValue);
     };
 
-
+    const handleChangeField = (field,value) => {
+        setData(data => ({...data, [field]:value}));
+        setButtonDisabled(false);
+    };
     
     //<Button type="submit" addClass="bg-mui-blue text-dark" disabled={buttonDisabled}>Save</Button>
     
     return (
-        <Card>
-            
-            <CardHeader>
-                <BackAndHeader>
-                    <IconButton type="button" aria-label="save" color="neutral" onClick={() => handleSubmit()} className="me-3 p-0" disabled={buttonDisabled}><SaveIcon /></IconButton>
-                    <IconButton type="button" aria-label="delete" color="error" onClick={() => dispatch(setDialog(true))} className="p-0"><DeleteIcon /></IconButton>
-                </BackAndHeader>
-            </CardHeader>
-            <CardBody>
-                <Tabs value={tabValue} onChange={handleChangeTabValue} aria-label="basic tabs example">
-                    <Tab label="Preferences" value={0}/>
-                    <Tab label="Users" value={1}/>
-                </Tabs>
+        <Paper elevation={0} sx={{p:2}} square>
+            <Stack spacing={2}>
+                <FormHeader
+                title="COMPANY DETAILS"
+                loadingSave={disabled}
+                disabledSave={buttonDisabled}
+                onClickSave={() => handleSubmit()}
+                onClickDelete={() => dispatch(setDialog(true))}
+                />
+                <Divider></Divider>
+                <Stack spacing={2}>
+                    <Grid
+                    container
+                    spacing={{xs:2,sm:0}}
+                    sx={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}>
+                        <Grid>
+                            <Tabs
+                            value={tabValue}
+                            variant='scrollable'
+                            scrollButtons="auto"
+                            onChange={handleChangeTabValue}
+                            >
+                                <Tab label="Information" value={0} icon={<InfoIcon/>} iconPosition="start"/>
+                                <Tab label="Users" value={1} icon={<GroupIcon/>} iconPosition="start"/>
+                            </Tabs>
+                        </Grid>
+                    </Grid>
+                </Stack>
+                <Divider></Divider>
                 <TabPanel value={tabValue} index={0}>
-                    <Form>
-                        <Row addClass="justify-content-center g-0">
-                            <Col size="4" addClass="mb-3 text-center">
-                                <Row>
-                                    <Col>
-                                        <Lightbox
-                                        src={image || prevImage || require('../../../images/icons/global/company.jpg')}
-                                        addClass="rounded-circle"
-                                        height="150"
-                                        width="150"
-                                        loading="lazy"
-                                        >
-                                        </Lightbox>
-                                    </Col>
-                                </Row>
-                                <Row addClass="justify-content-center g-0">
-                                    <Col size="1">
-                                        <IconButton component="label" role={undefined} tabIndex={-1} color="neutral">
-                                            <CameraAltIcon />
-                                            <VissuallyHiddenInput onChange={handleChangeImage} />
-                                        </IconButton>
-                                    </Col>
-                                    <Col size="1">
-                                        <IconButton component="label" role={undefined} tabIndex={-1} color="neutral" onClick={handleDeleteImage}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col size="6">
-                                <Input type="text" id="update-company-name" label={"Name"} onChange={(e) => {setName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{name}</Input>
-                            </Col>
-                            <Col size="6">
-                                <Input type="text" id="update-company-formalName" label={"Formal Name"} onChange={(e) => {setFormalName(e.target.value);setButtonDisabled(false);}} disabled={disabled}>{formalName}</Input>
-                            </Col>
-                        </Row>
-                    </Form>
+                    <Stack spacing={2}>
+                        <Grid container spacing={2} sx={{justifyContent:'center',alignItems:'center'}}>
+                            <Grid size={{xs:12,sm:4}} sx={{textAlign:'center'}}>
+                                <Lightbox
+                                src={image || data.prevImage || require('../../../images/icons/global/company.jpg')}
+                                addClass="rounded-circle"
+                                height="150"
+                                width="150"
+                                loading="lazy"
+                                >
+                                </Lightbox>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={0} sx={{justifyContent:'center',alignItems:'center'}}>
+                            <Grid size={{xs:1,sm:1}} sx={{textAlign:'center',maxWidth:60}}>
+                                <IconButton component="label" role={undefined} tabIndex={-1} color="neutral">
+                                    <CameraAltIcon />
+                                    <VissuallyHiddenInput onChange={handleChangeImage} />
+                                </IconButton>
+                            </Grid>
+                            <Grid size={{xs:1,sm:1}} sx={{textAlign:'center',maxWidth:60}}>
+                                <IconButton component="label" role={undefined} tabIndex={-1} color="neutral" onClick={handleDeleteImage}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid size={{xs:12,sm:6}}>
+                                <TextField
+                                type="text"
+                                size="small"
+                                label={"Name * "}
+                                variant='outlined'
+                                value={data.name}
+                                onChange={(e) => handleChangeField("name",e.target.value)}
+                                disabled={disabled}
+                                fullWidth
+                                />
+                            </Grid>
+                            <Grid size={{xs:12,sm:6}}>
+                                <TextField
+                                type="text"
+                                size="small"
+                                label={"Formal Name * "}
+                                variant='outlined'
+                                value={data.formalName}
+                                onChange={(e) => handleChangeField("formalName",e.target.value)}
+                                disabled={disabled}
+                                fullWidth
+                                />
+                            </Grid>
+                        </Grid>
+                    </Stack>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                    <UsersInCompany companyId={thisCompanyId} companyName={name}></UsersInCompany>
+                    <UsersInCompany companyId={thisCompanyId} companyName={data.name}></UsersInCompany>
                 </TabPanel>
-                
-            </CardBody>
+            </Stack>
             <Dialog
             title="Delete company"
             onClickText="Delete"
@@ -216,7 +190,7 @@ function UpdateCompany() {
             >
                 Are you sure you want to delete {data.name}? You cant't undo this action.
             </Dialog>
-        </Card>
+         </Paper>
     )
 }
 

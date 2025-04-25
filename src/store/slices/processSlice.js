@@ -9,7 +9,7 @@ const initialState = {
 }
 
 export const fetchImportProcess = createAsyncThunk('process/fetchImportProcess', async () => {
-    const response = await axios.get(`/common/api/import_processes`, {withCredentials: true});
+    const response = await axios.get(`/common/api/import_processes/`, {withCredentials: true});
 
     return response.data;
 });

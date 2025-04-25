@@ -18,6 +18,8 @@ import { capitalize } from 'lodash';
 import PeopleIcon from '@mui/icons-material/People';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ListTableServer from '../../../component/table/ListTableServer';
+import KeyIcon from '@mui/icons-material/Key';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 function Partners() {
     const {activeCompany} = useSelector((store) => store.organization);
@@ -87,6 +89,17 @@ function Partners() {
         };
     };
 
+    const handleTest = async () => {
+        try {
+            const response = await axios.post(`/partners/test/`,
+                { withCredentials: true},
+            );
+            //dispatch(setAlert({status:response.data.status,text:response.data.message}));
+        } catch (error) {
+            //dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        };
+    };
+
     return (
         <PanelContent>
             <ListTableServer
@@ -110,12 +123,23 @@ function Partners() {
                     disabled={partners.length > 0 ? false : true}
                     children="DELETE ALL"
                     />
+                    <CustomTableButton
+                    onClick={handleTest}
+                    icon={<KeyIcon/>}
+                    children="PERMISSONS"
+                    />
+                    <CustomTableButton
+                    onClick={() => dispatch(fetchPartners({activeCompany,params:partnersParams})).unwrap()}
+                    icon={<RefreshIcon/>}
+                    children="RELOAD"
+                    />
                 </>
             }
             onRowSelectionModelChange={(newRowSelectionModel) => {
                 setSelectedItems(newRowSelectionModel);
             }}
             rowCount={partnersCount}
+            checkboxSelection
             ></ListTableServer>
             <ImportDialog
             handleClose={() => dispatch(setImportDialog(false))}

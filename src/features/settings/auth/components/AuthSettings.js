@@ -1,21 +1,14 @@
-import { Link, Outlet } from "react-router-dom";
-import Card from "../../../../component/card/Card";
-import CardBody from "../../../../component/card/CardBody";
-import Form from "../../../../component/form/Form";
-import Input from "../../../../component/input/Input";
-import CardFooter from "../../../../component/card/CardFooter";
-import Button from "../../../../component/button/Button";
+import { Outlet } from "react-router-dom";
+import Grid from '@mui/material/Grid2';
 
 function AuthSettings(props) {
-    const {user} = props;
     
- 
     return ( 
-        <div className="row g-0">
-            <div className="col-md-12">
+        <Grid container spacing={2}>
+            <Grid size={12}>
                 <Outlet/>
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     );
 }
 
