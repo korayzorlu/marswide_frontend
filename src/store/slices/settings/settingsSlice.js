@@ -69,6 +69,55 @@ export const updatePersonal = createAsyncThunk('auth/updatePersonal', async ({da
     }
 });
 
+export const updateEmail = createAsyncThunk('auth/updateEmail', async ({data=null},{dispatch}) => {
+    dispatch(setAlert({status:"info",text:"Please wait..."}));
+    dispatch(setIsProgress(true));
+    try {
+        const response = await axios.post(`/users/email_settings/`,
+            {email:data.email},
+            { 
+                withCredentials: true
+            },
+        );
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+        return true;
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(setIsProgress(false));
+        dispatch(fetchUser());
+    }
+});
+
+export const updatePassword = createAsyncThunk('auth/updatePassword', async ({data=null},{dispatch,extra: {navigate}}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const response = await axios.post(`/users/password_settings/`,
+            data,
+            { 
+                withCredentials: true
+            },
+        );
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+        window.location.href="/auth/login"
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(fetchUser());
+        dispatch(setIsProgress(false));
+    }
+});
+
 const settingsSlice = createSlice({
     name:"settings",
     initialState,

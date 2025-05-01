@@ -6,13 +6,16 @@ import { fetchCompaniesForStart } from "./organizationSlice";
 import { fetchNotifications } from "./notificationSlice";
 import { fetchImportProcess } from "./processSlice";
 
+const rawTheme = Cookies.get("theme");
+const theme = rawTheme === "dark" || rawTheme === "light" ? rawTheme : "light";
+
 const initialState = {
     user:null,
     status:false,
     csrfToken:"",
     wrongPath:false,
     dark:false,
-    theme:Cookies.get("theme") ? Cookies.get("theme") : "light",
+    theme:theme,
     logo:require(`../../images/logo/light/marswide-logo-full.png`),
     loading:true,
     authMessage:{color:"",icon:"",text:""},
@@ -20,20 +23,29 @@ const initialState = {
     verifyPhoneNumber:""
 }
 
-export const fetchUser = createAsyncThunk('auth/fetchUser', async (_,{ dispatch }) => {
-    const sessionResponse = await axios.get(`/users/session/`, {withCredentials: true});
-    if(sessionResponse.data.authenticated){
-        const response = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
-        return response.data[0];
-    };
+export const fetchUser = createAsyncThunk('auth/fetchUser', async (_,{ rejectWithValue,dispatch }) => {
+    try {
+        const sessionResponse = await axios.get(`/users/session/`, {withCredentials: true});
+        if(sessionResponse.status === 200 && sessionResponse.data.authenticated){
+            const response = await axios.get(`/users/api/users/type_current/`, {withCredentials: true});
+            return response.data[0];
+        };
+        return null;
+    } catch (error) {
+        return rejectWithValue(null);
+    }
     
     //throw new Error('Session not authenticated');
-    return null;
 });
 
-export const fetchCSRFToken = createAsyncThunk('auth/fetchCSRFToken', async () => {
-    const response = await axios.get(`/users/csrf_token_get/`, {withCredentials: true});
-    return response.data.csrfToken;
+export const fetchCSRFToken = createAsyncThunk('auth/fetchCSRFToken', async (_,{ rejectWithValue,dispatch }) => {
+    try{
+        const response = await axios.get(`/users/csrf_token_get/`, {withCredentials: true});
+        return response.data.csrfToken;
+    }catch(error){
+        return rejectWithValue(null);
+    }
+    
 });
 
 export const changeTheme = createAsyncThunk('auth/changeTheme', async (darkTerm, {getState}) => {

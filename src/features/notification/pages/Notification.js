@@ -7,10 +7,12 @@ import BackAndHeader from '../../../component/card/BackAndHeader'
 import Row from '../../../component/grid/Row'
 import Col from '../../../component/grid/Col'
 import { useDispatch, useSelector } from 'react-redux'
-import { Avatar, Button, Divider, List, ListItem, ListItemText, Typography } from '@mui/material'
+import { Avatar, Button, Divider, List, ListItem, ListItemText, Paper, Stack, Typography } from '@mui/material'
 import { fetchNotifications } from '../../../store/slices/notificationSlice'
 import { useNavigate } from 'react-router-dom'
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Grid from '@mui/material/Grid2';
+import FormHeader from '../../../component/header/FormHeader'
 
 function Notification() {
     const {notifications} = useSelector((store) => store.notification)
@@ -26,16 +28,17 @@ function Notification() {
     };
     
   return (
-    <PanelContent>
-        <Row addClass="m-0">
-            <Col size="6" addClass="ms-auto me-auto">
-                <Card>
-                    <CardHeader>
-                        <BackAndHeader>
-                            Notifications
-                        </BackAndHeader>
-                    </CardHeader>
-                    <CardBody>
+    <Stack spacing={2}>
+        <Grid container spacing={2} sx={{justifyContent:'center',alignItems:'center'}}>
+            <Grid size={{xs:12,sm:6}}>
+                <Paper elevation={0} sx={{p:2}} square>
+                    <Stack spacing={2}>
+                        <FormHeader
+                        title="NOTIFICATIONS"
+                        />
+                    </Stack>
+                    <Divider></Divider>
+                    <Stack spacing={2}>
                         <List>
                             {   
                                 notifications.length > 0
@@ -89,11 +92,11 @@ function Notification() {
                                 </>
                             }
                         </List>
-                    </CardBody>
-                </Card>
-            </Col>
-        </Row>
-    </PanelContent>
+                    </Stack>
+                </Paper>
+            </Grid>
+        </Grid>
+    </Stack>
   )
 }
 

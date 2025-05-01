@@ -86,6 +86,7 @@ export const addCompany = createAsyncThunk('auth/addCompany', async ({data=null}
         };
         return null
     } finally {
+        dispatch(fetchCompaniesForStart());
         dispatch(setIsProgress(false));
     }
 });
@@ -206,16 +207,22 @@ const organizationSlice = createSlice({
             .addCase(fetchCompaniesForStart.fulfilled, (state,action) => {
                 state.companies = action.payload;
 
-                if (!action.payload.length > 0) {
+                if(sessionStorage.getItem('active_company') === "null" || sessionStorage.getItem('active_company') === "undefined"){
+                    state.activeCompany = null;
+                    sessionStorage.removeItem('active_company');
+                    localStorage.removeItem('active_company');
+                };
+
+                if (!action.payload.length === 0) {
                     console.log("1");
                     state.activeCompany = null;
                     sessionStorage.removeItem('active_company');
                     localStorage.removeItem('active_company');
                 } else if (!state.activeCompany) {
                     console.log("2");
-                    if (sessionStorage.getItem('active_company')) {
+                    if (sessionStorage.getItem('active_company') || localStorage.getItem('active_company')) {
                         console.log("2-1");
-                        state.activeCompany = JSON.parse(sessionStorage.getItem('active_company'));
+                        state.activeCompany = JSON.parse(sessionStorage.getItem('active_company') || localStorage.getItem('active_company'));
                         localStorage.setItem('active_company', JSON.stringify(action.payload.find(({is_active}) => is_active === true)));
                     } else {
                         console.log("2-2");

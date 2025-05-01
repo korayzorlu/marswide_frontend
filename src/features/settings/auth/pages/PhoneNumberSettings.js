@@ -5,10 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { setAlert } from '../../../../store/slices/notificationSlice';
 import { fetchUser, setVerifyPhoneNumber } from '../../../../store/slices/authSlice';
 import Form from '../../../../component/form/Form';
-import { Button, FormControl, MenuItem, Select, TextField } from '@mui/material';
+import { Button, Divider, FormControl, MenuItem, Select, Stack, TextField } from '@mui/material';
 import Row from '../../../../component/grid/Row';
 import Col from '../../../../component/grid/Col';
 import { fetchCountries } from '../../../../store/slices/dataSlice';
+import FormHeader from '../../../../component/header/FormHeader';
+import Grid from '@mui/material/Grid2';
+import CountrySelect from '../../../../component/select/CountrySelect';
 
 function PhoneNumberSettings() {
     const {user} = useSelector((store) => store.auth);
@@ -21,6 +24,7 @@ function PhoneNumberSettings() {
     const [disabled, setDisabled] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [iso2, setIso2] = useState("TR");
+    const [data, setData] = useState({})
 
     useEffect(() => {
       dispatch(fetchCountries());
@@ -55,53 +59,49 @@ function PhoneNumberSettings() {
         };
     };
 
+    const handleChangeField = (field,value) => {
+        setData(data => ({...data, [field]:value}));
+        setButtonDisabled(false);
+    };
+
     return (
-        <Form onSubmit={handleSubmit}>
-            <div className="row g-0">
-                <div className="col">
-                    <p className="text-start fw-bold">
-                        <Button type="button" color="tertary" addClass="shadow-0 p-0 fs-5" onClick={()=>navigate(-1)}><i className="fas fa-arrow-left"></i></Button>
-                    </p>
-                </div>
-                <div className="col">
-                    <p className="text-end fw-bold">Phone Number</p>
-                </div>
-            </div>
-            <Row>
-                <Col size="5" addClass="mb-3">
-                    <FormControl size="small" variant="outlined" fullWidth>
-                        <Select
-                            id="demo-simple-select"
-                            onChange={(e) => {setIso2(e.target.value);setButtonDisabled(false);}}
-                            defaultValue={user.phone_country || user.country || "TR"}
-                        >
-                            {
-                                countries.map((country,index) => {
-                                    return <MenuItem value={country.iso2} className='d-flex justify-content-start'>
-                                                {/* <img className='me-2' src={country.flag} alt="" height={16} width={24} loading='lazy'/> */}
-                                                <span>{country.emoji} ({country.dialCode}) {country.name} - {country.iso2}</span>
-                                            </MenuItem>
-                                })
-                            }
-                        </Select>
-                    </FormControl>
-                </Col>
-                <Col size="7" addClass="mb-3">
-                    <TextField
-                    type="number"
-                    id="settings-auth-phone-number"
-                    size="small"
-                    label={"Phone Number"}
-                    variant='outlined'
-                    value={phoneNumber}
-                    onChange={(e) => {setPhoneNumber(e.target.value);setButtonDisabled(false);}}
-                    disabled={disabled}
-                    fullWidth
-                    />
-                </Col>
-            </Row>
-            <Button type="submit" variant="contained" color="primary" disabled={buttonDisabled} fullWidth>Send SMS With Code</Button>
-        </Form>
+        
+        <Stack spacing={2}>
+            <FormHeader
+            title="PHONE NUMBER"
+            loadingSave={disabled}
+            disabledSave={buttonDisabled}
+            noBackButton
+            />
+            <Divider></Divider>
+            <Stack spacing={2}>
+                <Grid container spacing={2}>
+                    <Grid size={{xs:12,sm:5}}>
+                        <CountrySelect
+                        label="Phone Code"
+                        emptyValue={true}
+                        value={data.phoneCountry || user.location.country}
+                        onChange={(value) => handleChangeField("phoneCountry",value)}
+                        isPhoneCountry={true}
+                        />
+                    </Grid>
+                    <Grid size={{xs:12,sm:7}}>
+                        <TextField
+                        type="number"
+                        size="small"
+                        label={"Phone Number"}
+                        variant='outlined'
+                        value={data.phoneNumber || ""}
+                        onChange={(e) => handleChangeField("phoneNumber",e.target.value)}
+                        disabled={disabled}
+                        fullWidth
+                        />
+                    </Grid>
+                </Grid>
+            </Stack>
+            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={buttonDisabled} fullWidth>Send SMS With Code</Button>
+        </Stack>
+            
     )
 }
 

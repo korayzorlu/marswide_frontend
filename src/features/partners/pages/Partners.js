@@ -4,7 +4,7 @@ import PanelContent from '../../../component/panel/PanelContent';
 import ListTable from '../../../component/table/ListTable';
 import CustomTableButton from '../../../component/table/CustomTableButton';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPartners, setPartnersLoading } from '../../../store/slices/partners/partnerSlice';
+import { fetchPartners, setPartnersLoading, setPartnersParams } from '../../../store/slices/partners/partnerSlice';
 import { Link } from 'react-router-dom';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -20,6 +20,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ListTableServer from '../../../component/table/ListTableServer';
 import KeyIcon from '@mui/icons-material/Key';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { setPayableAccountsParams } from '../../../store/slices/accounting/accountSlice';
 
 function Partners() {
     const {activeCompany} = useSelector((store) => store.organization);
@@ -33,7 +34,7 @@ function Partners() {
 
     useEffect(() => {
         startTransition(() => {
-            dispatch(fetchPartners({activeCompany,params:partnersParams})).unwrap();
+            dispatch(fetchPartners({activeCompany,params:partnersParams}));
         });
     }, [activeCompany,partnersParams,dispatch]);
       
@@ -110,7 +111,12 @@ function Partners() {
             customButtons={
                 <>
                     <CustomTableButton onClick={() => {dispatch(setImportDialog(true));dispatch(fetchImportProcess());}} icon={<UploadFileIcon/>} children="IMPORT"/>
-                    <CustomTableButton link="/partners/add-partner" icon={<AddBoxIcon/>} children="NEW"/>
+                    <CustomTableButton
+                    link="/partners/add-partner"
+                    icon={<AddBoxIcon/>}
+                    disabled={activeCompany ? false : true}
+                    children="NEW"
+                    />
                     <CustomTableButton
                     onClick={() => dispatch(setDeleteDialog(true))}
                     icon={<DeleteIcon/>}
@@ -140,6 +146,7 @@ function Partners() {
             }}
             rowCount={partnersCount}
             checkboxSelection
+            setParams={(value) => dispatch(setPartnersParams(value))}
             ></ListTableServer>
             <ImportDialog
             handleClose={() => dispatch(setImportDialog(false))}

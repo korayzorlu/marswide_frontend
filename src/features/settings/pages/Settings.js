@@ -1,25 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-
-
-import PanelContent from "../../../component/panel/PanelContent";
-import Nav from "../../../component/tab/Nav";
-import NavItem from "../../../component/tab/NavItem";
-import TabContent from "../../../component/tab/TabContent";
-import TabPane from "../../../component/tab/TabPane";
-import SettingsContext from "../../../context/settings/settings";
 import AuthSettings from "../auth/components/AuthSettings";
 import { useSelector } from "react-redux";
-import Row from "../../../component/grid/Row";
-import Col from "../../../component/grid/Col";
 import { Divider, Paper, Stack, Tab, Tabs } from "@mui/material";
 import TabPanel from "../../../component/tab/TabPanel";
-import Card from "../../../component/card/Card";
-import CardHeader from "../../../component/card/CardHeader";
-import CardBody from "../../../component/card/CardBody";
 import Grid from '@mui/material/Grid2';
 import FormHeader from "../../../component/header/FormHeader";
-import InfoIcon from '@mui/icons-material/Info';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 

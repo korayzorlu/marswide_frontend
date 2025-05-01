@@ -44,19 +44,22 @@ function Companies(props) {
             );
 
             if (response.status === 200) {
-                await axios.put(`/companies/api/user_companies/${activeCompany.id}/`, 
-                    {
-                        id : activeCompany.id,
-                        is_active : false,
-                        is_admin : activeCompany.is_admin
-                    },
-                    {withCredentials: true},
-                );
+                if(activeCompany){
+                    await axios.put(`/companies/api/user_companies/${activeCompany.id}/`, 
+                        {
+                            id : activeCompany.id,
+                            is_active : false,
+                            is_admin : activeCompany.is_admin
+                        },
+                        {withCredentials: true},
+                    );
+                };
+                
                 dispatch(setActiveCompany(selectedCompany));
                 dispatch(setAlert({status:"success",text:"Changed successfully!"}));
             }
         } catch (error) {
-            dispatch(setAlert({status:"error",text:error.response.data.message}));
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
         } finally {
             setAnchorEl(null);
             dispatch(fetchCompaniesForStart());
@@ -74,7 +77,7 @@ function Companies(props) {
                 <CircularProgress color="inherit" />
             </Backdrop>
             {
-                companies.length > 0 && activeCompany
+                companies.length > 0
 
                 ?   
 
@@ -90,7 +93,7 @@ function Companies(props) {
                         className='me-3 pt-0 pb-0'
                         endIcon={<KeyboardArrowDownIcon />}
                         >
-                            {companies.length > 0 ? activeCompany.company.name : ""}
+                            {activeCompany ? activeCompany.company.name : "-SELECT COMPANY-"}
                         </Button>
                         <Menu
                         id="basic-menu"
@@ -106,7 +109,7 @@ function Companies(props) {
                                     return (
                                         <MenuItem key={index} onClick={() => handleChaneActiveCompany(company.id)}>
                                             {
-                                                company.id === activeCompany.id
+                                                activeCompany && company.id === activeCompany.id
                                                 ?   
                                                     <>
                                                         <ListItemIcon>

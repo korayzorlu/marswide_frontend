@@ -11,7 +11,11 @@ import partnerReducer from './slices/partners/partnerSlice';
 import websocketReducer from './slices/websocketSlice';
 import dataReducer from './slices/dataSlice';
 import accountReducer from './slices/accounting/accountSlice';
+import transactionReducer from './slices/accounting/transactionSlice';
+import invoiceReducer from './slices/accounting/invoiceSlice';
+import paymentReducer from './slices/accounting/paymentSlice';
 import settingsReducer from './slices/settings/settingsSlice';
+import commonReducer from './slices/common/commonSlice';
 
 let navigate;
 
@@ -34,6 +38,10 @@ export const store = configureStore({
         theme: themeReducer,
         account: accountReducer,
         settings: settingsReducer,
+        common: commonReducer,
+        transaction: transactionReducer,
+        invoice: invoiceReducer,
+        payment: paymentReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

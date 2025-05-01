@@ -2,6 +2,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchNotifications, send_notification, setAlert, setUnreadNotifications } from "./notificationSlice";
 import { fetchImportProcess, setImportProgress } from "./processSlice";
 import { fetchPartners } from "./partners/partnerSlice";
+import { fetchObjects } from "./common/commonSlice";
 
 const initialState = {
     
@@ -11,7 +12,7 @@ const fetchActions = {
     fetchPartners,
 };
 
-export const connectWebsocket = (dispatch) => {
+export const connectWebsocket = (dispatch,getState) => {
     const wsMain = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_URL}/socket/`);
 
     wsMain.onopen = function() {
@@ -56,12 +57,25 @@ export const connectWebsocket = (dispatch) => {
             //dispatch(setAlert({status:"success",text:"test başarılı"}));
             dispatch(fetchImportProcess());
             if(message.status === "completed" || message.status === "rejected"){
+                // dispatch(fetchObjects(
+                //     {
+                //         activeCompany:message.activeCompany,
+                //         app:"partners",
+                //         model:message.model,
+                //         params:{
+                //             start: 0 * 50,
+                //             end: (0 + 1) * 50,
+                //             format: 'datatables'
+                //         }
+                //     }
+                // ))
+
                 const actionName = `fetch${message.model}s`;
 
                 if (fetchActions[actionName]) {
                     dispatch(fetchActions[actionName](
                         {
-                            activeCompany:message.activeCompany,
+                            activeCompany:getState().organization.activeCompany,
                             params:{
                                 start: 0 * 50,
                                 end: (0 + 1) * 50,
@@ -78,8 +92,8 @@ export const connectWebsocket = (dispatch) => {
     return wsMain;
 }
 
-export const joinWebsocket = createAsyncThunk('websocket/joinWebsocket', async () => {
-    connectWebsocket();
+export const joinWebsocket = createAsyncThunk('websocket/joinWebsocket', async (_, { dispatch,getState }) => {
+    connectWebsocket(dispatch,getState);
     return true;
 });
 

@@ -28,6 +28,9 @@ function Sidenav() {
         receipt: require("../../images/icons/sidebar/light/receipt_long.svg").ReactComponent,
         account: require("../../images/icons/sidebar/light/account_balance_wallet-filled.svg").ReactComponent,
         accounting: require("../../images/icons/sidebar/light/calculate-filled.svg").ReactComponent,
+        invoice: require("../../images/icons/sidebar/light/request_page-filled.svg").ReactComponent,
+        payment: require("../../images/icons/sidebar/light/payments-filled.svg").ReactComponent,
+    
     };
 
     const DefaultIcon = require("../../images/icons/sidebar/light/dashboard-filled.svg").ReactComponent;

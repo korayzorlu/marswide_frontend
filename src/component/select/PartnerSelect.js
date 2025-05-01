@@ -17,7 +17,8 @@ function PartnerSelect(props) {
     const [selectedValue, setSelectedValue] = useState(value);
 
     useEffect(() => {
-        setSelectedValue(value || null);
+        setSelectedValue(value);
+        console.log(value)
     }, [value])
     
     
@@ -35,7 +36,8 @@ function PartnerSelect(props) {
     };
 
     const handleChange = (newValue) => {
-        onChange(newValue ? newValue.uuid : 0);
+        console.log(newValue)
+        onChange(newValue ? newValue : null);
         setSelectedValue(newValue ? newValue : null);
     }
 

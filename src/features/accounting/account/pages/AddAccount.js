@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { setIsProgress } from '../../../store/slices/processSlice';
-import { addAccount, fetchReceivableAccounts } from '../../../store/slices/accounting/accountSlice';
-import { fetchCountries, fetchCurrencies } from '../../../store/slices/dataSlice';
+import { setIsProgress } from '../../../../store/slices/processSlice';
+import { addAccount, fetchReceivableAccounts } from '../../../../store/slices/accounting/accountSlice';
+import { fetchCountries, fetchCurrencies } from '../../../../store/slices/dataSlice';
 import { Divider, Paper, Stack } from '@mui/material';
-import FormHeader from '../../../component/header/FormHeader';
+import FormHeader from '../../../../component/header/FormHeader';
 import Grid from '@mui/material/Grid2';
-import CurrencySelect from '../../../component/select/CurrencySelect';
+import CurrencySelect from '../../../../component/select/CurrencySelect';
 import { capitalize } from 'lodash';
-import PartnerSelect from '../../../component/select/PartnerSelect';
+import PartnerSelect from '../../../../component/select/PartnerSelect';
 
 function AddAccount() {
     const {user,dark} = useSelector((store) => store.auth);
@@ -59,7 +59,7 @@ function AddAccount() {
                             emptyValue={true}
                             value={data.partner}
                             types={type === "receivable" ? `{customer}` : `{supplier}`}
-                            onChange={(value) => handleChangeField("partner",value)}
+                            onChange={(value) => handleChangeField("partner",{uuid:value.uuid,name:value.name})}
                             />
                         </Grid>
                         <Grid size={{xs:12,sm:2}}>

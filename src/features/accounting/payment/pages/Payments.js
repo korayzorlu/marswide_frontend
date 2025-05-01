@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setLastTab } from '../../../store/slices/accounting/accountSlice';
+import { setLastTab } from '../../../../store/slices/accounting/invoiceSlice';
+import PanelContent from '../../../../component/panel/PanelContent';
 import { Tab, Tabs } from '@mui/material';
-import PanelContent from '../../../component/panel/PanelContent';
-import TabPanel from '../../../component/tab/TabPanel';
-import Receivable from '../components/Receivable';
-import Payable from '../components/Payable';
+import TabPanel from '../../../../component/tab/TabPanel';
+import IncomingPayments from '../components/IncomingPayments';
+import OutgoingPayments from '../components/OutgoingPayments';
 
-function Accounts() {
+function Payments() {
     const {lastTab} = useSelector((store) => store.account);
 
     const dispatch = useDispatch();
@@ -40,7 +40,7 @@ function Accounts() {
             }}
             >
                 <Tab
-                label="Receivable"
+                label="Incoming Payments"
                 value={0}
                 iconPosition="start"
                 sx={{
@@ -51,7 +51,7 @@ function Accounts() {
                 }}
                 />
                 <Tab
-                label="Payable"
+                label="Outgoing Payments"
                 value={1}
                 iconPosition="start"
                 sx={{
@@ -63,14 +63,14 @@ function Accounts() {
                 />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-                <Receivable/>
+                <IncomingPayments/>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-                <Payable/>
+                <OutgoingPayments/>
             </TabPanel>
             
         </PanelContent>
     )
 }
 
-export default Accounts
+export default Payments

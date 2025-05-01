@@ -1,65 +1,83 @@
 import { useState } from "react";
-import Form from "../../../../component/form/Form";
-import Input from "../../../../component/input/Input";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setAlert } from "../../../../store/slices/notificationSlice";
-import { fetchUser } from "../../../../store/slices/authSlice";
-import { Button } from "@mui/material";
+import { Divider, Stack, TextField } from "@mui/material";
+import FormHeader from "../../../../component/header/FormHeader";
+import Grid from '@mui/material/Grid2';
+import { updatePassword } from "../../../../store/slices/settings/settingsSlice";
 
 function PasswordReset() {
     const {user} = useSelector((store) => store.auth);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
     const [disabled, setDisabled] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [data, setData] = useState({email:user.email});
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         setDisabled(true);
-        
-        try {
-            const response = await axios.post(`/users/password_settings/`, 
-                {
-                    email : user.email,
-                    password : currentPassword,
-                    newPassword : newPassword,
-                    newPasswordConfirmation : newPasswordConfirmation
-                },
-                {withCredentials: true},
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}));
-            navigate("/auth/login");
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        } finally {
-            dispatch(fetchUser());
-            setDisabled(false);
-        };
+        setButtonDisabled(true);
+        dispatch(updatePassword({data}));
+        setDisabled(false);
+        setButtonDisabled(false);
+    };
+
+    const handleChangeField = (field,value) => {
+        setData(data => ({...data, [field]:value}));
+        setButtonDisabled(false);
     };
 
     return ( 
-        <Form onSubmit={handleSubmit}>
-            <div className="row g-0">
-                <div className="col">
-                    <p className="text-start fw-bold">
-                        <Button type="button" color="tertary" addClass="shadow-0 p-0 fs-5" onClick={()=>navigate(-1)}><i className="fas fa-arrow-left"></i></Button>
-                    </p>
-                </div>
-                <div className="col">
-                    <p className="text-end fw-bold">Password Reset</p>
-                </div>
-            </div>
-            <Input type="password" id="settings-auth-currentPassword" label={"Current Password"} onChange={(e) => setCurrentPassword(e.target.value)} disabled={disabled}></Input>
-            <Input type="password" id="settings-auth-newPassword" label={"New Password"} onChange={(e) => setNewPassword(e.target.value)} disabled={disabled}></Input>
-            <Input type="password" id="settings-auth-newPasswordConfirmation" label={"New Password Confirm"} onChange={(e) => setNewPasswordConfirmation(e.target.value)} disabled={disabled}></Input>
-            <Button type="submit" variant="contained" color="primary" addClass="btn-block" disabled={disabled} fullWidth>Save</Button>
-        </Form>
+        <Stack spacing={2}>
+            <FormHeader
+            title="PASSWORD RESET"
+            loadingSave={disabled}
+            disabledSave={buttonDisabled}
+            onClickSave={() => handleSubmit()}
+            noBackButton
+            />
+            <Divider></Divider>
+            <Stack spacing={2}>
+                <Grid container spacing={2}>
+                    <Grid size={{xs:12,sm:12}}>
+                        <TextField
+                        type="password"
+                        size="small"
+                        label={"Current Password"}
+                        variant='outlined'
+                        value={data.password}
+                        onChange={(e) => handleChangeField("password",e.target.value)}
+                        disabled={disabled}
+                        fullWidth
+                        />
+                    </Grid>
+                    <Grid size={{xs:12,sm:12}}>
+                        <TextField
+                        type="password"
+                        size="small"
+                        label={"New Password"}
+                        variant='outlined'
+                        value={data.newPassword}
+                        onChange={(e) => handleChangeField("newPassword",e.target.value)}
+                        disabled={disabled}
+                        fullWidth
+                        />
+                    </Grid>
+                    <Grid size={{xs:12,sm:12}}>
+                        <TextField
+                        type="password"
+                        size="small"
+                        label={"New Password Confirm"}
+                        variant='outlined'
+                        value={data.newPasswordConfirmation}
+                        onChange={(e) => handleChangeField("newPasswordConfirmation",e.target.value)}
+                        disabled={disabled}
+                        fullWidth
+                        />
+                    </Grid>
+                </Grid>
+            </Stack>
+        </Stack>
     );
 }
 

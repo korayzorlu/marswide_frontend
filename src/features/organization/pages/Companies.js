@@ -29,7 +29,7 @@ function Companies() {
     const dispatch = useDispatch();
 
     const [rows, setRows] = useState([]);
-    const [sessionCompany, setSessionCompany] = useState(JSON.parse(sessionStorage.getItem('active_company')));
+    //const [sessionCompany, setSessionCompany] = useState(JSON.parse(sessionStorage.getItem('active_company')));
     const [selectedUserEmail, setSelectedUserEmail] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -60,7 +60,7 @@ function Companies() {
                 params.row.is_admin
                   ?
                     <Link
-                    to={`/companies/update/${encodeURIComponent(encodeURIComponent(params.value))}/`} 
+                    to={`/companies/update/${params.row.id}/`} 
                     state={{id: params.row.id,companyId: params.row.companyId}}
                     style={{textDecoration:"underline"}}>
                       {params.value.name}
@@ -104,19 +104,19 @@ function Companies() {
         { field: 'is_active', headerName: 'Is Active', width: 150, renderCell: (params) => (
           <>
             {
-              params.row.id === activeCompany.id
-                ?
-                  <>
-                    <Chip
-                    icon={<CheckIcon/>}
-                    label="Active"
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    />
-                  </>
-                :
-                  null
+              activeCompany && params.row.id === activeCompany.id
+              ?
+                <>
+                  <Chip
+                  icon={<CheckIcon/>}
+                  label="Active"
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  />
+                </>
+              :
+                <></>
             }
           </>
         )

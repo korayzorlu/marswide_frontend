@@ -14,13 +14,13 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import EmailIcon from '@mui/icons-material/Email';
 import Grid from '@mui/material/Grid2';
 import FormHeader from "../../../../component/header/FormHeader";
+import { updateEmail } from "../../../../store/slices/settings/settingsSlice";
 
 function EmailSettings() {
     const {user} = useSelector((store) => store.auth);
 
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState(user.email);
     const [edit, setEdit] = useState(false);
     const [changed, setChanged] = useState(false);
     const [disabled, setDisabled] = useState(false);
@@ -28,27 +28,15 @@ function EmailSettings() {
     const [data, setData] = useState({email:user.email})
 
     const handleSubmit = async () => {
-        dispatch(setAlert({status:"info",text:"Please wait..."}));
         setDisabled(true);
         setButtonDisabled(true);
         setEdit(false);
-        
-        try {
-            const response = await axios.post(`/users/email_settings/`, 
-                {
-                    email : email,
-                },
-                {withCredentials: true},
-            );
-            dispatch(setAlert({status:response.data.status,text:response.data.message}));
+        const response = await dispatch(updateEmail({data})).unwrap();
+        if(response){
             setChanged(true);
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        } finally {
-            dispatch(fetchUser());
-            setDisabled(false);
-            setButtonDisabled(false);
         };
+        setDisabled(false);
+        setButtonDisabled(false);
     };
 
     const handleChangeField = (field,value) => {

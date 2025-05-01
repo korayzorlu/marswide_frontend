@@ -25,7 +25,8 @@ function ListTableServer(props) {
     apiRef,
     hideFooter,
     noOverlay,
-    density
+    density,
+    autoRowHeight
   } = props;
 
   const dispatch = useDispatch();
@@ -104,7 +105,7 @@ function ListTableServer(props) {
       <DataGrid
       slots={{
         toolbar: Toolbar,
-        noRowsOverlay: noOverlay ? undefined : NoRowsOverlay
+        ...(noOverlay ? {} : { noRowsOverlay: NoRowsOverlay })
       }}
       slotProps={{
           toolbar: {
@@ -142,7 +143,7 @@ function ListTableServer(props) {
       apiRef={apiRef}
       hideFooter={hideFooter}
       autoHeight
-      //getRowHeight={() => 'auto'}
+      getRowHeight={() => autoRowHeight ? 'auto' : 'false'}
       sx={{
           [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
             outline: 'none',

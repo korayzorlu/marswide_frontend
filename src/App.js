@@ -40,9 +40,15 @@ import UpdatePartner from './features/partners/pages/UpdatePartner.js';
 import AddPartner from './features/partners/pages/AddPartner.js';
 import { ThemeProvider } from './ThemeProvider.js';
 import Dashboard from './features/dashboard/pages/Dashboard.js';
-import Accounts from './features/accounting/pages/Accounts.js';
-import AddAccount from './features/accounting/pages/AddAccount.js';
-import UpdateAccount from './features/accounting/pages/UpdateAccount.js';
+import Accounts from './features/accounting/account/pages/Accounts.js';
+import AddAccount from './features/accounting/account/pages/AddAccount.js';
+import UpdateAccount from './features/accounting/account/pages/UpdateAccount.js';
+import Invoices from './features/accounting/invoice/pages/Invoices.js';
+import AddInvoice from './features/accounting/invoice/pages/AddInvoice.js';
+import UpdateInvoice from './features/accounting/invoice/pages/UpdateInvoice.js';
+import Payments from './features/accounting/payment/pages/Payments.js';
+import AddPayment from './features/accounting/payment/pages/AddPayment.js';
+import UpdatePayment from './features/accounting/payment/pages/UpdatePayment.js';
 
 export const NumberContext = React.createContext();
 
@@ -66,8 +72,11 @@ function App() {
   
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchUser()).unwrap();
-      await dispatch(fetchCSRFToken()).unwrap();
+      try{
+        await dispatch(fetchUser()).unwrap();
+        await dispatch(fetchCSRFToken()).unwrap();
+      }catch(error){}
+      
       dispatch(setLoading(false));
     };
     
@@ -134,6 +143,14 @@ function App() {
                   <Route path='/accounts' element={<Accounts></Accounts>}></Route>
                   <Route path='/accounts/add-account/:type' element={<AddAccount></AddAccount>}></Route>
                   <Route path='/accounts/update/:type/:uuid' element={<UpdateAccount></UpdateAccount>}></Route>
+
+                  <Route path='/invoices' element={<Invoices></Invoices>}></Route>
+                  <Route path='/invoices/add-invoice/:type' element={<AddInvoice></AddInvoice>}></Route>
+                  <Route path='/invoices/update/:type/:uuid' element={<UpdateInvoice></UpdateInvoice>}></Route>
+
+                  <Route path='/payments' element={<Payments></Payments>}></Route>
+                  <Route path='/payments/add-payment/:type' element={<AddPayment></AddPayment>}></Route>
+                  <Route path='/payments/update/:type/:uuid' element={<UpdatePayment></UpdatePayment>}></Route>
 
                   <Route path='/cari-hesap-hareketleri' element={<CariHesapHareketleri></CariHesapHareketleri>}></Route>
                   <Route path='/personeller' element={<Personeller></Personeller>}></Route>

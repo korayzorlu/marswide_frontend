@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPayableAccounts, fetchReceivableAccounts, setPayableAccountsParams } from '../../../store/slices/accounting/accountSlice';
-import { setAlert, setDeleteDialog, setImportDialog } from '../../../store/slices/notificationSlice';
+import { fetchPayableAccounts, fetchReceivableAccounts, setPayableAccountsParams } from '../../../../store/slices/accounting/accountSlice';
+import { setAlert, setDeleteDialog, setImportDialog } from '../../../../store/slices/notificationSlice';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import ListTableServer from '../../../component/table/ListTableServer';
-import CustomTableButton from '../../../component/table/CustomTableButton';
-import { fetchImportProcess } from '../../../store/slices/processSlice';
+import ListTableServer from '../../../../component/table/ListTableServer';
+import CustomTableButton from '../../../../component/table/CustomTableButton';
+import { fetchImportProcess } from '../../../../store/slices/processSlice';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DeleteIcon from '@mui/icons-material/Delete';

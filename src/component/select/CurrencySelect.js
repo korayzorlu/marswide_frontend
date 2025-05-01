@@ -1,19 +1,16 @@
 import { Autocomplete, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCurrencies } from '../../store/slices/dataSlice';
-import User from '../navbar/User';
 
 function CurrencySelect(props) {
     const {emptyValue,label,value,onChange} = props;
-
-    const {user,dark} = useSelector((store) => store.auth);
+    
     const {currencies,currenciesLoading} = useSelector((store) => store.data);
 
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(value);
+    const [selectedValue, setSelectedValue] = useState({code:value});
     
     const handleOpen = async () => {
         setOpen(true);
@@ -30,7 +27,7 @@ function CurrencySelect(props) {
 
     useEffect(() => {
         setSelectedValue(currencies.find((currency) => currency.code === value));
-    }, [currencies])
+    }, [currencies,value])
     
 
     return (

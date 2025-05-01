@@ -23,6 +23,16 @@ const initialState = {
     },
     payableAccountsLoading:false,
     //
+    //bank
+    bankAccounts:[],
+    bankAccountsCount:0,
+    bankAccountsParams:{
+        start: 0 * 50,
+        end: (0 + 1) * 50,
+        format: 'datatables'
+    },
+    bankAccountsLoading:false,
+    //
     lastTab:0
 }
 
@@ -43,6 +53,20 @@ export const fetchReceivableAccounts = createAsyncThunk('auth/fetchReceivableAcc
 export const fetchPayableAccounts = createAsyncThunk('auth/fetchPayableAccounts', async ({activeCompany,params=null}) => {
     try {
         const response = await axios.get(`/accounting/accounts/?active_company=${activeCompany.id}&type=payable`,
+            {   
+                params : params,
+                headers: {"X-Requested-With": "XMLHttpRequest"}
+            }
+        );
+        return response.data;
+    } catch (error) {
+        return [];
+    }
+});
+
+export const fetchBankAccounts = createAsyncThunk('auth/fetchBankAccounts', async ({activeCompany,params=null}) => {
+    try {
+        const response = await axios.get(`/accounting/accounts/?active_company=${activeCompany.id}&type=bank`,
             {   
                 params : params,
                 headers: {"X-Requested-With": "XMLHttpRequest"}
@@ -168,6 +192,15 @@ const accountSlice = createSlice({
                 ...action.payload
             };
         },
+        setBankAccountsLoading: (state,action) => {
+            state.bankAccountsLoading = action.payload;
+        },
+        setBankAccountsParams: (state,action) => {
+            state.bankAccountsParams = {
+                ...state.bankAccountsParams,
+                ...action.payload
+            };
+        },
         setLastTab: (state,action) => {
             state.lastTab = action.payload;
         },
@@ -196,11 +229,31 @@ const accountSlice = createSlice({
                 state.payableAccountsLoading = false
             })
             .addCase(fetchPayableAccounts.rejected, (state,action) => {
-                state.accountsLoading = false
+                state.payableAccountsLoading = false
+            })
+            // bank receivable accounts
+            .addCase(fetchBankAccounts.pending, (state) => {
+                state.bankAccountsLoading = true
+            })
+            .addCase(fetchBankAccounts.fulfilled, (state,action) => {
+                state.bankAccounts = action.payload.data || action.payload;
+                state.bankAccountsCount = action.payload.recordsTotal || 0;
+                state.bankAccountsLoading = false
+            })
+            .addCase(fetchBankAccounts.rejected, (state,action) => {
+                state.bankAccountsLoading = false
             })
     },
   
 })
 
-export const {setReceivableAccountsLoading,setReceivableAccountsParams,setPayableAccountsLoading,setPayableAccountsParams,setLastTab} = accountSlice.actions;
+export const {
+    setReceivableAccountsLoading,
+    setReceivableAccountsParams,
+    setPayableAccountsLoading,
+    setPayableAccountsParams,
+    setBankAccountsLoading,
+    setBankAccountsParams,
+    setLastTab
+} = accountSlice.actions;
 export default accountSlice.reducer;
