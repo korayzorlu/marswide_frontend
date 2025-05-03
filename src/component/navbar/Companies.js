@@ -31,7 +31,8 @@ function Companies(props) {
     const handleChaneActiveCompany = async (companyId) => {
         //dispatch(setLoading(true));
         setOpenBackdrop(true);
-        const selectedCompany = companies.find(({id}) => id === Number(companyId));
+
+        const selectedCompany = companies.find(({id}) => id === companyId);
         
         try {
             const response = await axios.put(`/companies/api/user_companies/${selectedCompany.id}/`, 
@@ -59,6 +60,7 @@ function Companies(props) {
                 dispatch(setAlert({status:"success",text:"Changed successfully!"}));
             }
         } catch (error) {
+            console.log(error)
             dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
         } finally {
             setAnchorEl(null);
