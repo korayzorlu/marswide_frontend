@@ -31,7 +31,9 @@ jobs:
             EOF
     
     - name: Install Node.js dependencies
-      run: npm install
+      run: |
+        npm install --save-dev @babel/plugin-proposal-private-property-in-object
+        npm install
     
     - name: Build frontend
       run: npm run build
