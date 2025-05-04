@@ -65,9 +65,9 @@ jobs:
         script: |
           cd /home/admin/marswide/marswide_frontend
           git pull origin master
+          export PATH=$PATH:/home/admin/.nvm/versions/node/v22.12.0/bin
           npm i
           npm run build
-          docker restart marswide_frontend
           cd /home/admin/marswide/marswide_backend
           docker restart marswide_backend
           docker restart nginx
