@@ -1,0 +1,70 @@
+name: Marswide Frontend CI/CD
+
+on:
+    push:
+      branches: [ master ]
+    pull_request:
+      branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v3
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+    
+    - name: .env dosyasını oluştur
+      run: |
+            cat > .env << 'EOF'
+            ${{ secrets.ENV_FILE }}
+            EOF
+    
+    - name: Install Node.js dependencies
+      run: npm install
+    
+    - name: Build frontend
+      run: npm run build
+    
+    - name: Docker Compose network oluştur (external network varsa)
+      run: docker network create marswide_network || true
+
+    - name: Docker Compose başlat
+      run: docker compose -f docker-compose.yml up --build -d
+
+    - name: Servisleri durdur
+      if: always()
+      run: docker compose down
+
+    
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+    - name: Connect to server with SSH and deploy it
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /home/admin/marswide/marswide_frontend
+          git pull origin master
+          npm i
+          npm run build
+          docker-compose down --remove-orphans && docker-compose -f docker-compose.yml up --build -d
+
+          
