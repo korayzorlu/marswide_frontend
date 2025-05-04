@@ -65,8 +65,7 @@ jobs:
         script: |
           cd /home/admin/marswide/marswide_frontend
           git pull origin master
-          npm i
-          npm run build
+          docker-compose down && docker-compose -f docker-compose.yml up --build -d
           cd /home/admin/marswide/marswide_backend
           docker restart marswide_backend
           docker restart nginx
