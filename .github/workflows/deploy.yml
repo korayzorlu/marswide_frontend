@@ -35,9 +35,6 @@ jobs:
         npm install --save-dev @babel/plugin-proposal-private-property-in-object
         npm install
     
-    - name: Build frontend
-      run: npm run build
-    
     - name: Docker Compose network oluştur (external network varsa)
       run: docker network create marswide_network || true
 
