@@ -30,20 +30,23 @@ jobs:
             ${{ secrets.ENV_FILE }}
             EOF
     
-    - name: Install Node.js dependencies
-      run: |
-        npm install --save-dev @babel/plugin-proposal-private-property-in-object
-        npm install
+    # - name: Install Node.js dependencies
+    #   run: |
+    #     npm install --save-dev @babel/plugin-proposal-private-property-in-object
+    #     npm install
     
-    - name: Docker Compose network oluştur (external network varsa)
-      run: docker network create marswide_network || true
+    # - name: Build frontend
+    #   run: npm run build
+    
+    # - name: Docker Compose network oluştur (external network varsa)
+    #   run: docker network create marswide_network || true
 
-    - name: Docker Compose başlat
-      run: docker compose -f docker-compose.yml up --build -d
+    # - name: Docker Compose başlat
+    #   run: docker compose -f docker-compose.yml up --build -d
 
-    - name: Servisleri durdur
-      if: always()
-      run: docker compose down
+    # - name: Servisleri durdur
+    #   if: always()
+    #   run: docker compose down
 
     
 
@@ -64,6 +67,7 @@ jobs:
           git pull origin master
           npm i
           npm run build
-          docker-compose down --remove-orphans && docker-compose -f docker-compose.yml up --build -d
+          cd /home/admin/marswide/marswide_backend
+          docker restart nginx
 
           
