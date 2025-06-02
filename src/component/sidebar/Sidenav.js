@@ -27,9 +27,12 @@ function Sidenav() {
         mail: require("../../images/icons/sidebar/light/mail-filled.svg").ReactComponent,
         receipt: require("../../images/icons/sidebar/light/receipt_long.svg").ReactComponent,
         account: require("../../images/icons/sidebar/light/account_balance_wallet-filled.svg").ReactComponent,
+        tree: require("../../images/icons/sidebar/light/account_tree-filled.svg").ReactComponent,
         accounting: require("../../images/icons/sidebar/light/calculate-filled.svg").ReactComponent,
         invoice: require("../../images/icons/sidebar/light/request_page-filled.svg").ReactComponent,
         payment: require("../../images/icons/sidebar/light/payments-filled.svg").ReactComponent,
+        box: require("../../images/icons/sidebar/light/box-filled.svg").ReactComponent,
+        inventory: require("../../images/icons/sidebar/light/inventory-filled.svg").ReactComponent,
     
     };
 
@@ -41,7 +44,7 @@ function Sidenav() {
     };
 
     var collapsed = collapse
-    var sideBarWidth = "200px";
+    var sideBarWidth = "240x";
 
     if (mobile){
         collapsed = false;

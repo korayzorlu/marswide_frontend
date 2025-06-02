@@ -26,20 +26,8 @@ function PurchaseInvoice() {
         dispatch(fetchPurchaseInvoices({activeCompany,params:purchaseInvoicesParams}))
     }, [activeCompany,purchaseInvoicesParams,dispatch]);
 
-    const handleAllDelete = async () => {
-        dispatch(setAlert({status:"info",text:"Removing items.."}));
-
-        try {
-
-            const response = await axios.post(`/partners/delete_all_partners/`,
-                { withCredentials: true},
-            );
-        } catch (error) {
-            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
-        };
-    };
-
     const columns = [
+        { field: 'date', headerName: 'Date', flex: 2 },
         { field: 'partner', headerName: 'Supplier', flex: 15, editable: true, renderCell: (params) => (
                 <Link
                 to={`/invoices/update/${params.row.type}/${params.row.uuid}/`}
@@ -50,7 +38,6 @@ function PurchaseInvoice() {
                 
             )
         },
-        { field: 'type', headerName: 'Type', flex: 2 },
         { field: 'amount', headerName: 'Amount', flex: 2, type: 'number' },
         { field: 'currency', headerName: 'Currency', flex: 1 },
     ]
@@ -63,17 +50,17 @@ function PurchaseInvoice() {
             loading={purchaseInvoicesLoading}
             customButtons={
                 <>
-                    <CustomTableButton link="/invoices/add-invoice/purchase" icon={<AddBoxIcon/>} children="NEW"/>
+                    <CustomTableButton title="New" link="/invoices/add-invoice/purchase" icon={<AddBoxIcon fontSize="small"/>}/>
                     <CustomTableButton
+                    title="Delete"
                     onClick={() => dispatch(setDeleteDialog(true))}
-                    icon={<DeleteIcon/>}
+                    icon={<DeleteIcon fontSize="small"/>}
                     disabled={purchaseInvoices.length > 0 ? false : true}
-                    children="DELETE"
                     />
                     <CustomTableButton
+                    title="Reload"
                     onClick={() => dispatch(fetchSaleInvoices({activeCompany,params:purchaseInvoicesParams}))}
-                    icon={<RefreshIcon/>}
-                    children="RELOAD"
+                    icon={<RefreshIcon fontSize="small"/>}
                     />
                 </>
             }
@@ -95,7 +82,7 @@ function PurchaseInvoice() {
             </ImportDialog>
             <DeleteDialog
             handleClose={() => dispatch(setDeleteDialog(false))}
-            deleteURL="/accounting/delete_account/"
+            deleteURL="/accounting/delete_invoice/"
             selectedItems={selectedItems}
             startEvent={() => dispatch(setSaleInvoicesLoading(true))}
             finalEvent={() => {dispatch(fetchSaleInvoices({activeCompany}));dispatch(setSaleInvoicesLoading(false));}}

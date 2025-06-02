@@ -8,7 +8,7 @@ import SaleInvoices from '../components/SaleInvoices';
 import PurchaseInvoice from '../components/PurchaseInvoice';
 
 function Invoices() {
-    const {lastTab} = useSelector((store) => store.account);
+    const {lastTab} = useSelector((store) => store.invoice);
 
     const dispatch = useDispatch();
 

@@ -8,7 +8,7 @@ import IncomingPayments from '../components/IncomingPayments';
 import OutgoingPayments from '../components/OutgoingPayments';
 
 function Payments() {
-    const {lastTab} = useSelector((store) => store.account);
+    const {lastTab} = useSelector((store) => store.payment);
 
     const dispatch = useDispatch();
 

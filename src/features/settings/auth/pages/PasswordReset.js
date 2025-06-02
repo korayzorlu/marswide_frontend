@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Divider, Stack, TextField } from "@mui/material";
 import FormHeader from "../../../../component/header/FormHeader";
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { updatePassword } from "../../../../store/slices/settings/settingsSlice";
 
 function PasswordReset() {

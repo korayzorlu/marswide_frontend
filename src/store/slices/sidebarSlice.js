@@ -5,7 +5,7 @@ const initialState = {
     mobile:"",
     collapse:Cookies.get("collapse") === "true" ? true : false,
     toggle:false,
-    contentWidth:{sidebar:"200px",page:"calc(100% - 200px)"},
+    contentWidth:{sidebar:"240px",page:"calc(100% - 240px)"},
     tabNavItems:[],
     tabNavContents:[],
 }
@@ -23,7 +23,7 @@ const sidebarSlice = createSlice({
                 ? {sidebar:"0",page:"100%"}
                 : (action.payload.collapseTerm)
                     ? {sidebar:"78px",page:"calc(100% - 78px)"}
-                    : {sidebar:"200px",page:"calc(100% - 200px)"};
+                    : {sidebar:"240px",page:"calc(100% - 240px)"};
             document.cookie = `collapse=${action.payload.collapseTerm}; path=/; ${process.env.REACT_APP_SAME_SITE}`;
         },
         checkMobile: (state,action) => {
@@ -32,14 +32,14 @@ const sidebarSlice = createSlice({
                 ? {sidebar:"0",page:"100%"}
                 : (Cookies.get("collapse") === "true")
                     ? {sidebar:"78px",page:"calc(100% - 78px)"}
-                    : {sidebar:"200px",page:"calc(100% - 200px)"};
+                    : {sidebar:"240px",page:"calc(100% - 240px)"};
 
         },
         setResize: (state,action) => {
             state.mobile = window.innerWidth <= 1024 ? true : false;
             state.contentWidth = window.innerWidth <= 1024
                 ? {sidebar:"0",page:"100%"}
-                : {sidebar:"200px",page:"calc(100% - 200px)"};
+                : {sidebar:"240px",page:"calc(100% - 240px)"};
         },
     },
   

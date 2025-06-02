@@ -8,7 +8,7 @@ import { addInvoice, fetchSaleInvoices } from '../../../../store/slices/accounti
 import { Divider, Paper, Stack, TextField } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import { capitalize } from 'lodash';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import PartnerSelect from '../../../../component/select/PartnerSelect';
 import CurrencySelect from '../../../../component/select/CurrencySelect';
 

@@ -186,6 +186,7 @@ function UsersInCompany(props) {
     return (
         <>
             <BasicTable
+            title="Users"
             rows={usersInCompany}
             columns={userColumns}
             getRowId={(row) => row.id}
@@ -193,7 +194,7 @@ function UsersInCompany(props) {
             disableRowSelectionOnClick={true}
             loading={usersLoading}
             customButtons={
-                <CustomTableButton onClick={() => setOpenInviteDialog(true)} icon={<AddBoxIcon/>} children="INVITE PERSON"/>
+                <CustomTableButton title="Invite Person" onClick={() => setOpenInviteDialog(true)} icon={<AddBoxIcon fontSize="small"/>}/>
             }
             />
             <InviteDialog

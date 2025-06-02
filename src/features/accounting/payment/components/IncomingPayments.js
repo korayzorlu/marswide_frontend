@@ -26,6 +26,7 @@ function IncomingPayments() {
     }, [activeCompany,incomingPaymentsParams,dispatch]);
 
     const columns = [
+        { field: 'date', headerName: 'Date', flex: 2 },
         { field: 'partner', headerName: 'Customer', flex: 15, editable: true, renderCell: (params) => (
                 <Link
                 to={`/payments/update/${params.row.type}/${params.row.uuid}/`}
@@ -36,7 +37,6 @@ function IncomingPayments() {
                 
             )
         },
-        { field: 'type', headerName: 'Type', flex: 2 },
         { field: 'amount', headerName: 'Amount', flex: 2, type: 'number' },
         { field: 'currency', headerName: 'Currency', flex: 1 },
     ]
@@ -50,17 +50,17 @@ function IncomingPayments() {
             loading={incomingPaymentsLoading}
             customButtons={
                 <>
-                    <CustomTableButton link="/payments/add-payment/incoming" icon={<AddBoxIcon/>} children="NEW"/>
+                    <CustomTableButton title="New" link="/payments/add-payment/incoming" icon={<AddBoxIcon fontSize="small"/>}/>
                     <CustomTableButton
+                    title="Delete"
                     onClick={() => dispatch(setDeleteDialog(true))}
-                    icon={<DeleteIcon/>}
+                    icon={<DeleteIcon fontSize="small"/>}
                     disabled={incomingPayments.length > 0 ? false : true}
-                    children="DELETE"
                     />
                     <CustomTableButton
+                    title="Reload"
                     onClick={() => dispatch(fetchincomingPayments({activeCompany,params:incomingPaymentsParams}))}
-                    icon={<RefreshIcon/>}
-                    children="RELOAD"
+                    icon={<RefreshIcon fontSize="small"/>}
                     />
                 </>
             }

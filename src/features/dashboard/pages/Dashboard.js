@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 import React from 'react'
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { ReactComponent as EagleIcon2 } from "../../../images/icons/global/eagle.svg";
 import { useSelector } from 'react-redux';
 import  ctuIcon  from "../../../images/icons/global/ctu-logo.png";

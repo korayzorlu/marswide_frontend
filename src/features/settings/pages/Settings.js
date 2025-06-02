@@ -3,19 +3,31 @@ import AuthSettings from "../auth/components/AuthSettings";
 import { useSelector } from "react-redux";
 import { Divider, Paper, Stack, Tab, Tabs } from "@mui/material";
 import TabPanel from "../../../component/tab/TabPanel";
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import FormHeader from "../../../component/header/FormHeader";
 import PersonIcon from '@mui/icons-material/Person';
 import ApartmentIcon from '@mui/icons-material/Apartment';
+import OrganizationSettings from "../organization/components/OrganizationSettings";
+import { useNavigate } from "react-router-dom";
 
 function Settings() {
     const {user} = useSelector((store) => store.auth);
+
+    const navigate = useNavigate();
 
     const [tabValue, setTabValue] = useState(0);
 
     const handleChangeTabValue = (event, newTabValue) => {
         setTabValue(newTabValue);
     };
+
+    useEffect(() => {
+        if(tabValue === 0){
+            navigate("/settings/auth");
+        }else if(tabValue === 1){
+            navigate("/settings/organization");
+        };
+    },[tabValue])
 
     useEffect(() => {
         //mdb input
@@ -103,7 +115,7 @@ function Settings() {
                                 <AuthSettings user={user}></AuthSettings>
                             </TabPanel>
                             <TabPanel value={tabValue} index={1}>
-                                Organization Settings
+                                <OrganizationSettings user={user}></OrganizationSettings>
                             </TabPanel>
                         </Stack>
                     </Paper>

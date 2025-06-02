@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TableContent from './TableContent'
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
-import Toolbar from './Toolbar';
+import MUIToolbar from './MUIToolbar';
 import { Box, Typography } from '@mui/material';
 import FolderOffIcon from '@mui/icons-material/FolderOff';
 import { useDispatch } from 'react-redux';
@@ -26,7 +26,9 @@ function ListTableServer(props) {
     hideFooter,
     noOverlay,
     density,
-    autoRowHeight
+    autoRowHeight,
+    title,
+    backButton
   } = props;
 
   const dispatch = useDispatch();
@@ -104,13 +106,16 @@ function ListTableServer(props) {
     <TableContent height={height}>
       <DataGrid
       slots={{
-        toolbar: Toolbar,
+        toolbar: MUIToolbar,
         ...(noOverlay ? {} : { noRowsOverlay: NoRowsOverlay })
       }}
+      showToolbar
       slotProps={{
           toolbar: {
               showQuickFilter: true,
-              children: customButtons
+              children: customButtons,
+              title: title,
+              backButton: backButton,
           },
           loadingOverlay: {
             variant: 'linear-progress',

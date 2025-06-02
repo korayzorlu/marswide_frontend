@@ -13,7 +13,7 @@ import { Button, Divider, IconButton, Stack } from '@mui/material';
 import VissuallyHiddenInput from '../../../../component/input/VissuallyHiddenInput';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import { updateProfile } from '../../../../store/slices/settings/settingsSlice';
 

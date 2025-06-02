@@ -4,7 +4,7 @@ import Col from '../../../component/grid/Col';
 import CountrySelect from '../../../component/select/CountrySelect';
 import CitySelect from '../../../component/select/CitySelect';
 import { Divider, Stack, TextField, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import AndroidSwitch from '../../../component/switch/AndroidSwitch';
 
 function AddressTab(props) {

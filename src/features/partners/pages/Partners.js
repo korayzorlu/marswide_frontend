@@ -13,14 +13,14 @@ import ImportDialog from '../../../component/feedback/ImportDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteDialog from '../../../component/feedback/DeleteDialog';
 import { fetchImportProcess } from '../../../store/slices/processSlice';
-import { Avatar, Button, Chip, Stack, Typography } from '@mui/material';
+import { Avatar, Button, Chip, Stack, Tooltip, Typography } from '@mui/material';
 import { capitalize } from 'lodash';
 import PeopleIcon from '@mui/icons-material/People';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ListTableServer from '../../../component/table/ListTableServer';
 import KeyIcon from '@mui/icons-material/Key';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { setPayableAccountsParams } from '../../../store/slices/accounting/accountSlice';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 
 function Partners() {
     const {activeCompany} = useSelector((store) => store.organization);
@@ -48,7 +48,11 @@ function Partners() {
                                         ?   
                                             <Chip key={index} variant='contained' color="mars" icon={<PeopleIcon />} label={capitalize(value)} size='small'/>
                                         :
+                                        value === "supplier"
+                                        ?
                                             <Chip key={index} variant='contained' color="primary" icon={<LocalShippingIcon />} label={capitalize(value)} size='small'/>
+                                        :
+                                            <Chip key={index} variant='contained' color="success" icon={<BusinessCenterIcon />} label={capitalize(value)} size='small'/>
                                 )
                         })
                     }
@@ -104,41 +108,54 @@ function Partners() {
     return (
         <PanelContent>
             <ListTableServer
+            title="Partners"
             rows={partners}
             columns={columns}
             getRowId={(row) => row.uuid}
             loading={partnersLoading}
             customButtons={
-                <>
-                    <CustomTableButton onClick={() => {dispatch(setImportDialog(true));dispatch(fetchImportProcess());}} icon={<UploadFileIcon/>} children="IMPORT"/>
+                <>  
+
                     <CustomTableButton
+                    title="Import"
+                    onClick={() => {dispatch(setImportDialog(true));dispatch(fetchImportProcess());}}
+                    icon={<UploadFileIcon fontSize="small"/>}
+                    />
+
+                    <CustomTableButton
+                    title="New"
                     link="/partners/add-partner"
-                    icon={<AddBoxIcon/>}
                     disabled={activeCompany ? false : true}
-                    children="NEW"
+                    icon={<AddBoxIcon fontSize="small"/>}
                     />
+
                     <CustomTableButton
+                    title="Delete"
                     onClick={() => dispatch(setDeleteDialog(true))}
-                    icon={<DeleteIcon/>}
                     disabled={partners.length > 0 ? false : true}
-                    children="DELETE"
+                    icon={<DeleteIcon fontSize="small"/>}
                     />
+
                     <CustomTableButton
+                    title="Delete All"
                     onClick={handleAllDelete}
-                    icon={<DeleteIcon/>}
                     disabled={partners.length > 0 ? false : true}
-                    children="DELETE ALL"
+                    icon={<DeleteIcon fontSize="small"/>}
                     />
+
                     <CustomTableButton
+                    title="Permissions"
                     onClick={handleTest}
-                    icon={<KeyIcon/>}
-                    children="PERMISSONS"
+                    icon={<KeyIcon fontSize="small"/>}
                     />
+
                     <CustomTableButton
+                    title="Reload"
                     onClick={() => dispatch(fetchPartners({activeCompany,params:partnersParams})).unwrap()}
-                    icon={<RefreshIcon/>}
-                    children="RELOAD"
+                    icon={<RefreshIcon fontSize="small"/>}
                     />
+
+                    
                 </>
             }
             onRowSelectionModelChange={(newRowSelectionModel) => {
@@ -147,7 +164,7 @@ function Partners() {
             rowCount={partnersCount}
             checkboxSelection
             setParams={(value) => dispatch(setPartnersParams(value))}
-            ></ListTableServer>
+            />
             <ImportDialog
             handleClose={() => dispatch(setImportDialog(false))}
             templateURL="/partners/partners_template"

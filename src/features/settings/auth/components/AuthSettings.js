@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 
 function AuthSettings(props) {
     

@@ -10,7 +10,7 @@ import VissuallyHiddenInput from '../../../component/input/VissuallyHiddenInput'
 import { addCompany, fetchCompanies } from '../../../store/slices/organizationSlice'
 import TabPanel from '../../../component/tab/TabPanel'
 import FormHeader from '../../../component/header/FormHeader'
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import Dialog from '../../../component/feedback/Dialog'
 
 function AddCompany() {

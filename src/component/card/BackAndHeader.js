@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../button/Button';
 import Row from '../grid/Row';
 import Col from '../grid/Col';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { IconButton } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 

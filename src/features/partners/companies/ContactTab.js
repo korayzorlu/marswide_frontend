@@ -3,7 +3,7 @@ import Row from '../../../component/grid/Row'
 import Col from '../../../component/grid/Col'
 import { Stack, TextField } from '@mui/material'
 import CountrySelect from '../../../component/select/CountrySelect';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import CurrencySelect from '../../../component/select/CurrencySelect';
 

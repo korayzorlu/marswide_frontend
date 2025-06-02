@@ -154,12 +154,13 @@ function Companies() {
     return ( 
             <PanelContent>
                 <ListTable
+                title="Companies"
                 rows={companies}
                 columns={columns}
                 getRowId={(row) => row.id}
                 loading={companiesLoading}
                 customButtons={
-                    <CustomTableButton link="/companies/add-company" icon={<AddBoxIcon/>} children="NEW"/>
+                    <CustomTableButton link="/companies/add-company" icon={<AddBoxIcon fontSize="small"/>} title="New"/>
                 }
                 ></ListTable>
             </PanelContent>

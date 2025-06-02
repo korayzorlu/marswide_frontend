@@ -8,7 +8,7 @@ import { setAlert, setDialog } from '../../../../store/slices/notificationSlice'
 import { Box, Card, Divider, Paper, Stack, Typography } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import { capitalize, toUpper } from 'lodash';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import PartnerSelect from '../../../../component/select/PartnerSelect';
 import CurrencySelect from '../../../../component/select/CurrencySelect';
 import Dialog from '../../../../component/feedback/Dialog';
@@ -82,11 +82,26 @@ function UpdateAccount() {
     },
     ]
 
+    const getTitle = (type) => {
+        switch (type) {
+            case "receivable":
+                return "ACCOUNTS RECEIVABLE (AR)"
+            case "payable":
+                return "ACCOUNTS PAYABLE (AP)"
+            case "sales":
+                return `SALES INCOME - ${data.currency}`
+            case "expense":
+                return `EXPENSE - ${data.currency}`
+            default:
+                return "ACCOUNT DETAIL"
+        }
+    };
+
     return (
         <Paper elevation={0} sx={{p:2}} square>
             <Stack spacing={2}>
                 <FormHeader
-                title={`ACCOUNTS ${toUpper(type)} (${type === "receivable" ? "AR" : "AP"})`}
+                title={getTitle(data.type)}
                 loadingSave={disabled}
                 disabledSave={buttonDisabled}
                 onClickSave={() => handleSubmit()}
@@ -96,13 +111,20 @@ function UpdateAccount() {
                 <Stack spacing={2}>
                     <Grid container spacing={2}>
                         <Grid size={{xs:12,sm:10}}>
-                            <PartnerSelect
-                            label="Partner"
-                            emptyValue={true}
-                            value={data.partner || null}
-                            types={type === "receivable" ? `{customer}` : `{supplier}`}
-                            onChange={(value) => handleChangeField("partner",{uuid:value.uuid,name:value.name})}
-                            />
+                            {
+                                data.type === "receivable" || data.type === "payable"
+                                ?
+                                    <PartnerSelect
+                                    label="Partner"
+                                    emptyValue={true}
+                                    value={data.partner || null}
+                                    types={type === "receivable" ? `{customer}` : `{supplier}`}
+                                    onChange={(value) => handleChangeField("partner",value ? {uuid:value.uuid,name:value.name} : null)}
+                                    />
+                                :
+                                    null
+                            }
+                            
                         </Grid>
                         <Grid size={{xs:12,sm:2}}>
                             <CurrencySelect

@@ -7,8 +7,9 @@ import { fetchCurrencies } from '../../../../store/slices/dataSlice';
 import { Divider, Paper, Stack, TextField } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import PartnerSelect from '../../../../component/select/PartnerSelect';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import CurrencySelect from '../../../../component/select/CurrencySelect';
+import AutocompleteMUI from '../../../../component/select/AutocompleteMUI';
 
 function AddPayment() {
     const {user,dark} = useSelector((store) => store.auth);
@@ -19,7 +20,7 @@ function AddPayment() {
 
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [disabled, setDisabled] = useState(false);
-    const [data, setData] = useState({companyId: activeCompany.companyId,type:type,currency:user.location.currency})
+    const [data, setData] = useState({companyId: activeCompany.companyId,type:type,currency:user.location.currency,receiver:"Bank"})
 
     useEffect(() => {
         dispatch(setIsProgress(true));
@@ -51,17 +52,15 @@ function AddPayment() {
                 <Divider></Divider>
                 <Stack spacing={2}>
                     <Grid container spacing={2}>
-                        <Grid size={{xs:12,sm:12}}>
+                        <Grid size={{xs:12,sm:8}}>
                             <PartnerSelect
                             label="Partner"
                             emptyValue={true}
                             value={data.partner}
-                            types={type === "incoming" ? `{customer}` : `{supplier}`}
+                            types={type === "incoming" ? `{customer,shareholder}` : `{supplier,shareholder}`}
                             onChange={(value) => handleChangeField("partner",{uuid:value.uuid,name:value.name})}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={2}>
                         <Grid size={{xs:12,sm:4}}>
                             <TextField
                             type="text"
@@ -74,8 +73,20 @@ function AddPayment() {
                             fullWidth
                             />
                         </Grid>
+                    </Grid>
+                    <Grid container spacing={2}>
                         <Grid size={{xs:12,sm:4}}>
-                        <TextField
+                            <AutocompleteMUI
+                            label="Receiver Account"
+                            placeholder="Choose a bank"
+                            emptyValue={true}
+                            value={data.receiver}
+                            options={["Bank","Cash"]}
+                            onChange={(value) => handleChangeField("receiver",value)}
+                            />
+                        </Grid>
+                        <Grid size={{xs:12,sm:4}}>
+                            <TextField
                             type="number"
                             size="small"
                             label={"Amount"}

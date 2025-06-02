@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPayableAccounts, fetchReceivableAccounts, setPayableAccountsParams } from '../../../../store/slices/accounting/accountSlice';
+import { fetchPayableAccounts, fetchReceivableAccounts, setPayableAccountsParams, setReceivableAccountsLoading } from '../../../../store/slices/accounting/accountSlice';
 import { setAlert, setDeleteDialog, setImportDialog } from '../../../../store/slices/notificationSlice';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,9 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { Paper, Stack } from '@mui/material';
+import FormHeader from '../../../../component/header/FormHeader';
+import DeleteDialog from '../../../../component/feedback/DeleteDialog';
 
 function Payable() {
     const {activeCompany} = useSelector((store) => store.organization);
@@ -56,34 +59,46 @@ function Payable() {
     ]
 
     return (
-        <ListTableServer
-        rows={payableAccounts}
-        columns={columns}
-        getRowId={(row) => row.uuid}
-        loading={payableAccountsLoading}
-        customButtons={
-            <>
-                <CustomTableButton link="/accounts/add-account/payable" icon={<AddBoxIcon/>} children="NEW"/>
-                <CustomTableButton
-                onClick={() => dispatch(setDeleteDialog(true))}
-                icon={<DeleteIcon/>}
-                disabled={payableAccounts.length > 0 ? false : true}
-                children="DELETE"
-                />
-                <CustomTableButton
-                onClick={() => dispatch(fetchPayableAccounts({activeCompany,params:payableAccountsParams}))}
-                icon={<RefreshIcon/>}
-                children="RELOAD"
-                />
-            </>
-        }
-        onRowSelectionModelChange={(newRowSelectionModel) => {
-            setSelectedItems(newRowSelectionModel);
-        }}
-        rowCount={payableAccountsCount}
-        setParams={(value) => {dispatch(setPayableAccountsParams(value));console.log(value)}}
-        checkboxSelection
-        ></ListTableServer>
+        <Stack spacing={0}>
+            <ListTableServer
+            title="Accounts Payable"
+            rows={payableAccounts}
+            columns={columns}
+            getRowId={(row) => row.uuid}
+            loading={payableAccountsLoading}
+            customButtons={
+                <>
+                    <CustomTableButton title="New" link="/accounts/add-account/payable" icon={<AddBoxIcon fontSize="small"/>}/>
+                    <CustomTableButton
+                    title="Delete"
+                    onClick={() => dispatch(setDeleteDialog(true))}
+                    icon={<DeleteIcon fontSize="small"/>}
+                    disabled={payableAccounts.length > 0 ? false : true}
+                    />
+                    <CustomTableButton
+                    title="Reload"
+                    onClick={() => dispatch(fetchPayableAccounts({activeCompany,params:payableAccountsParams}))}
+                    icon={<RefreshIcon fontSize="small"/>}
+                    />
+                </>
+            }
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+                setSelectedItems(newRowSelectionModel);
+            }}
+            rowCount={payableAccountsCount}
+            setParams={(value) => {dispatch(setPayableAccountsParams(value));console.log(value)}}
+            checkboxSelection
+            backButton
+            ></ListTableServer>
+            <DeleteDialog
+            handleClose={() => dispatch(setDeleteDialog(false))}
+            deleteURL="/accounting/delete_account/"
+            selectedItems={selectedItems}
+            startEvent={() => dispatch(setReceivableAccountsLoading(true))}
+            finalEvent={() => {dispatch(fetchReceivableAccounts({activeCompany}));dispatch(setReceivableAccountsLoading(false));}}
+            />
+        </Stack>
+        
     )
 }
 

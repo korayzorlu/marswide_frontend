@@ -177,6 +177,7 @@ function Invitations() {
     return (
         <PanelContent>
             <ListTable
+            title="Invitations"
             rows={invitations}
             columns={columns}
             getRowId={(row) => row.id}

@@ -12,7 +12,7 @@ import { fetchCompaniesForStart } from '../../../store/slices/organizationSlice'
 import { fetchNotifications } from '../../../store/slices/notificationSlice';
 import { fetchImportProcess } from '../../../store/slices/processSlice';
 import { joinWebsocket } from '../../../store/slices/websocketSlice';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { Stack } from '@mui/material';
 
 function Panel() {

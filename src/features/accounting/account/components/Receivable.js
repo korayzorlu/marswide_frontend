@@ -14,9 +14,10 @@ import { setPartnersParams } from '../../../../store/slices/partners/partnerSlic
 import ImportDialog from '../../../../component/feedback/ImportDialog';
 import DeleteDialog from '../../../../component/feedback/DeleteDialog';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import FormHeader from '../../../../component/header/FormHeader';
 
-function Receivable(props) {
+function Receivable() {
     const {activeCompany} = useSelector((store) => store.organization);
     const {receivableAccounts,receivableAccountsCount,receivableAccountsParams,receivableAccountsLoading} = useSelector((store) => store.account);
 
@@ -61,59 +62,51 @@ function Receivable(props) {
                 
         //     )
         // },
-        { field: 'type', headerName: 'Type', flex: 2 },
         { field: 'balance', headerName: 'Balance', flex: 2, type: 'number' },
         { field: 'currency', headerName: 'Currency', flex: 1 },
     ]
 
     return (
-        <>
-            <ListTableServer
-            rows={receivableAccounts}
-            columns={columns}
-            getRowId={(row) => row.uuid}
-            loading={receivableAccountsLoading}
-            customButtons={
-                <>
-                    <CustomTableButton link="/accounts/add-account/receivable" icon={<AddBoxIcon/>} children="NEW"/>
-                    <CustomTableButton
-                    onClick={() => dispatch(setDeleteDialog(true))}
-                    icon={<DeleteIcon/>}
-                    disabled={receivableAccounts.length > 0 ? false : true}
-                    children="DELETE"
-                    />
-                    <CustomTableButton
-                    onClick={() => dispatch(fetchReceivableAccounts({activeCompany,params:receivableAccountsParams}))}
-                    icon={<RefreshIcon/>}
-                    children="RELOAD"
-                    />
-                </>
-            }
-            onRowSelectionModelChange={(newRowSelectionModel) => {
-                setSelectedItems(newRowSelectionModel);
-            }}
-            rowCount={receivableAccountsCount}
-            setParams={(value) => {dispatch(setReceivableAccountsParams(value));console.log(value)}}
-            checkboxSelection
-            autoRowHeight
-            ></ListTableServer>
-            <ImportDialog
-            handleClose={() => dispatch(setImportDialog(false))}
-            templateURL="/accounting/accounts_template"
-            importURL="/accounting/import_accounts/"
-            startEvent={() => dispatch(setReceivableAccountsLoading(true))}
-            finalEvent={() => {dispatch(fetchReceivableAccounts({activeCompany}));dispatch(setReceivableAccountsLoading(false));}}
-            >
-
-            </ImportDialog>
-            <DeleteDialog
-            handleClose={() => dispatch(setDeleteDialog(false))}
-            deleteURL="/accounting/delete_account/"
-            selectedItems={selectedItems}
-            startEvent={() => dispatch(setReceivableAccountsLoading(true))}
-            finalEvent={() => {dispatch(fetchReceivableAccounts({activeCompany}));dispatch(setReceivableAccountsLoading(false));}}
-            />
-        </>
+            <Stack spacing={0}>
+                <ListTableServer
+                title="Accounts Receivable"
+                rows={receivableAccounts}
+                columns={columns}
+                getRowId={(row) => row.uuid}
+                loading={receivableAccountsLoading}
+                customButtons={
+                    <>
+                        <CustomTableButton title="New" link="/accounts/add-account/receivable" icon={<AddBoxIcon fontSize="small"/>}/>
+                        <CustomTableButton
+                        title="Delete"
+                        onClick={() => dispatch(setDeleteDialog(true))}
+                        icon={<DeleteIcon fontSize="small"/>}
+                        disabled={receivableAccounts.length > 0 ? false : true}
+                        />
+                        <CustomTableButton
+                        title="Reload"
+                        onClick={() => dispatch(fetchReceivableAccounts({activeCompany,params:receivableAccountsParams}))}
+                        icon={<RefreshIcon fontSize="small"/>}
+                        />
+                    </>
+                }
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                    setSelectedItems(newRowSelectionModel);
+                }}
+                rowCount={receivableAccountsCount}
+                setParams={(value) => {dispatch(setReceivableAccountsParams(value));console.log(value)}}
+                checkboxSelection
+                backButton
+                ></ListTableServer>
+                <DeleteDialog
+                handleClose={() => dispatch(setDeleteDialog(false))}
+                deleteURL="/accounting/delete_account/"
+                selectedItems={selectedItems}
+                startEvent={() => dispatch(setReceivableAccountsLoading(true))}
+                finalEvent={() => {dispatch(fetchReceivableAccounts({activeCompany}));dispatch(setReceivableAccountsLoading(false));}}
+                />
+            </Stack>
+            
         
     )
 }

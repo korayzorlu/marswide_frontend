@@ -3,6 +3,7 @@ import axios from "axios";
 import { setAlert, setDialog } from "../notificationSlice";
 import { setIsProgress } from "../processSlice";
 import { fetchUser } from "../authSlice";
+import { fetchCompanies, fetchCompaniesForStart } from "../organizationSlice";
 
 const initialState = {
     
@@ -114,6 +115,29 @@ export const updatePassword = createAsyncThunk('auth/updatePassword', async ({da
         return null
     } finally {
         dispatch(fetchUser());
+        dispatch(setIsProgress(false));
+    }
+});
+
+export const updateDisplayCurrency = createAsyncThunk('auth/updateDisplayCurrency', async ({data=null},{dispatch}) => {
+    dispatch(setIsProgress(true));
+    try {
+        const response = await axios.post(`/companies/display_currency_settings/`,
+            data,
+            { 
+                withCredentials: true
+            },
+        );
+        dispatch(setAlert({status:response.data.status,text:response.data.message}))
+    } catch (error) {
+        if(error.response.data){
+            dispatch(setAlert({status:error.response.data.status,text:error.response.data.message}));
+        }else{
+            dispatch(setAlert({status:"error",text:"Sorry, something went wrong!"}));
+        };
+        return null
+    } finally {
+        dispatch(fetchCompaniesForStart());
         dispatch(setIsProgress(false));
     }
 });

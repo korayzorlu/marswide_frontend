@@ -16,6 +16,8 @@ import invoiceReducer from './slices/accounting/invoiceSlice';
 import paymentReducer from './slices/accounting/paymentSlice';
 import settingsReducer from './slices/settings/settingsSlice';
 import commonReducer from './slices/common/commonSlice';
+import productReducer from './slices/products/productSlice';
+import categoryReducer from './slices/products/categorySlice';
 
 let navigate;
 
@@ -42,6 +44,8 @@ export const store = configureStore({
         transaction: transactionReducer,
         invoice: invoiceReducer,
         payment: paymentReducer,
+        product: productReducer,
+        category: categoryReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

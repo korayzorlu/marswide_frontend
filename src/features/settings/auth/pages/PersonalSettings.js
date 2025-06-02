@@ -8,7 +8,7 @@ import { setAlert, setDialog } from "../../../../store/slices/notificationSlice"
 import { fetchUser } from "../../../../store/slices/authSlice";
 import { Button, Divider,Paper, Stack, TextField } from "@mui/material";
 import FormHeader from "../../../../component/header/FormHeader";
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { updatePersonal } from "../../../../store/slices/settings/settingsSlice";
 
 function PersonalSettings() {

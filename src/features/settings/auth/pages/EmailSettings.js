@@ -12,7 +12,7 @@ import Col from "../../../../component/grid/Col";
 import VerifiedIcon from '@mui/icons-material/Verified';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import EmailIcon from '@mui/icons-material/Email';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import FormHeader from "../../../../component/header/FormHeader";
 import { updateEmail } from "../../../../store/slices/settings/settingsSlice";
 

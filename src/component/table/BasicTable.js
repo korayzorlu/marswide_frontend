@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import TableContent from './TableContent';
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
-import Toolbar from './Toolbar';
+import MUIToolbar from './MUIToolbar';
 
 function BasicTable(props) {
-    const {rows,columns,loading,customButtons,hiddenColumns,checkboxSelection,disableRowSelectionOnClick} = props;
+    const {rows,columns,loading,customButtons,hiddenColumns,checkboxSelection,disableRowSelectionOnClick,title} = props;
 
     const [paginationModel, setPaginationModel] = useState({
         pageSize: 50,
@@ -15,11 +15,13 @@ function BasicTable(props) {
     return (
         <TableContent height="auto">
             <DataGrid
-            slots={{ toolbar: Toolbar}}
+            slots={{ toolbar: MUIToolbar}}
+            showToolbar
             slotProps={{
                 toolbar: {
                     showQuickFilter: true,
-                    children: customButtons
+                    children: customButtons,
+                    title:title,
                 },
                 loadingOverlay: {
                   variant: 'linear-progress',

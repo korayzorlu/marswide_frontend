@@ -4,6 +4,12 @@ import { setAlert, setDialog } from "../notificationSlice";
 import { setIsProgress } from "../processSlice";
 
 const initialState = {
+    accountsParams:{
+        start: 0 * 50,
+        end: (0 + 1) * 50,
+        format: 'datatables'
+    },
+    accountsLoading:false,
     //receivable
     receivableAccounts:[],
     receivableAccountsCount:0,
@@ -32,6 +38,10 @@ const initialState = {
         format: 'datatables'
     },
     bankAccountsLoading:false,
+    //
+    //sales
+    salesAccounts:[],
+    salesAccountsCount:0,
     //
     lastTab:0
 }
@@ -73,6 +83,35 @@ export const fetchBankAccounts = createAsyncThunk('auth/fetchBankAccounts', asyn
             }
         );
         return response.data;
+    } catch (error) {
+        return [];
+    }
+});
+
+export const fetchSalesAccounts = createAsyncThunk('auth/fetchSalesAccounts', async ({activeCompany,params=null}) => {
+    try {
+        const response = await axios.get(`/accounting/accounts/?active_company=${activeCompany.id}&type=sales`,
+            {   
+                params : params,
+                headers: {"X-Requested-With": "XMLHttpRequest"}
+            }
+        );
+        return response.data;
+    } catch (error) {
+        return [];
+    }
+});
+
+export const fetchAccounts = createAsyncThunk('auth/fetchAccounts', async ({activeCompany,type,params=null}) => {
+    try {
+        const response = await axios.get(`/accounting/accounts/?active_company=${activeCompany.id}&type=${type}`,
+            {   
+                params : params,
+                headers: {"X-Requested-With": "XMLHttpRequest"}
+            }
+        );
+
+        return response.data.data
     } catch (error) {
         return [];
     }
@@ -174,6 +213,15 @@ const accountSlice = createSlice({
     name:"account",
     initialState,
     reducers:{
+        setAccountsLoading: (state,action) => {
+            state.accountsLoading = action.payload;
+        },
+        setAccountsParams: (state,action) => {
+            state.accountsParams = {
+                ...state.accountsParams,
+                ...action.payload
+            };
+        },
         setReceivableAccountsLoading: (state,action) => {
             state.receivableAccountsLoading = action.payload;
         },
@@ -243,11 +291,35 @@ const accountSlice = createSlice({
             .addCase(fetchBankAccounts.rejected, (state,action) => {
                 state.bankAccountsLoading = false
             })
+            // fetch sales accounts
+            .addCase(fetchSalesAccounts.pending, (state) => {
+                state.accountsLoading = true
+            })
+            .addCase(fetchSalesAccounts.fulfilled, (state,action) => {
+                state.salesAccounts = action.payload.data || action.payload;
+                state.salesAccountsCount = action.payload.recordsTotal || 0;
+                state.accountsLoading = false
+            })
+            .addCase(fetchSalesAccounts.rejected, (state,action) => {
+                state.accountsLoading = false
+            })
+            // fetch accounts
+            .addCase(fetchAccounts.pending, (state) => {
+                state.accountsLoading = true
+            })
+            .addCase(fetchAccounts.fulfilled, (state,action) => {
+                state.accountsLoading = false
+            })
+            .addCase(fetchAccounts.rejected, (state,action) => {
+                state.accountsLoading = false
+            })
     },
   
 })
 
 export const {
+    setAccountsLoading,
+    setAccountsParams,
     setReceivableAccountsLoading,
     setReceivableAccountsParams,
     setPayableAccountsLoading,

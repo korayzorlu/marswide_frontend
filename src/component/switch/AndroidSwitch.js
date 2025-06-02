@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 
 function AndroidSwitch(props) {
-    const {children,className,checked,label,onChange} = props;
+    const {children,className,checked,label,onChange,disabled} = props;
 
     const {dark} = useSelector((store) => store.auth);
 
@@ -56,6 +56,7 @@ function AndroidSwitch(props) {
             <Android12Switch
             //defaultChecked={defaultChecked}
             checked={checked} onChange={(e) => onChange(e.target.checked)}
+            disabled={disabled}
             />
         }
         label={label || ""}

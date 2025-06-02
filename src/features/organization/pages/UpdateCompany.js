@@ -13,7 +13,7 @@ import { Divider, Paper, Stack, Tab, Tabs, TextField } from '@mui/material';
 import TabPanel from '../../../component/tab/TabPanel';
 import UsersInCompany from '../components/UsersInCompany';
 import FormHeader from '../../../component/header/FormHeader';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import GroupIcon from '@mui/icons-material/Group';
 

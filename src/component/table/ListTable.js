@@ -3,7 +3,7 @@ import TableContent from './TableContent'
 import { ThemeProvider } from '@emotion/react'
 import { DataGrid, gridClasses } from '@mui/x-data-grid'
 import { useSelector } from 'react-redux';
-import Toolbar from './Toolbar';
+import MUIToolbar from './MUIToolbar';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Row from '../grid/Row';
 import Col from '../grid/Col';
@@ -23,7 +23,8 @@ function ListTable(props) {
     checkboxSelection,
     disableRowSelectionOnClick,
     pageModel,
-    onRowSelectionModelChange
+    onRowSelectionModelChange,
+    title
   } = props;
 
   const [paginationModel, setPaginationModel] = useState(
@@ -46,13 +47,15 @@ function ListTable(props) {
     <TableContent>
       <DataGrid
       slots={{
-        toolbar: Toolbar,
+        toolbar: MUIToolbar,
         noRowsOverlay: NoRowsOverlay
       }}
+      showToolbar
       slotProps={{
           toolbar: {
               showQuickFilter: true,
-              children: customButtons
+              children: customButtons,
+              title: title,
           },
           loadingOverlay: {
             variant: 'linear-progress',

@@ -7,10 +7,11 @@ import { Divider, Paper, Stack, TextField } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import { toUpper } from 'lodash';
 import { setDialog } from '../../../../store/slices/notificationSlice';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import PartnerSelect from '../../../../component/select/PartnerSelect';
 import CurrencySelect from '../../../../component/select/CurrencySelect';
 import Dialog from '../../../../component/feedback/Dialog';
+import AutocompleteMUI from '../../../../component/select/AutocompleteMUI';
 
 function UpdatePayment() {
     const {user,dark} = useSelector((store) => store.auth);
@@ -65,7 +66,7 @@ function UpdatePayment() {
                 <Divider></Divider>
                 <Stack spacing={2}>
                     <Grid container spacing={2}>
-                        <Grid size={{xs:12,sm:12}}>
+                        <Grid size={{xs:12,sm:8}}>
                             <PartnerSelect
                             label="Partner"
                             emptyValue={true}
@@ -74,8 +75,6 @@ function UpdatePayment() {
                             onChange={(value) => handleChangeField("partner",{uuid:value.uuid,name:value.name})}
                             />
                         </Grid>
-                    </Grid>
-                    <Grid container spacing={2}>
                         <Grid size={{xs:12,sm:4}}>
                             <TextField
                             type="text"
@@ -88,8 +87,20 @@ function UpdatePayment() {
                             fullWidth
                             />
                         </Grid>
+                    </Grid>
+                    <Grid container spacing={2}>
                         <Grid size={{xs:12,sm:4}}>
-                        <TextField
+                            <AutocompleteMUI
+                            label="Receiver Account"
+                            placeholder="Choose a bank"
+                            emptyValue={true}
+                            value={data.receiver}
+                            options={["Bank","Cash"]}
+                            onChange={(value) => handleChangeField("receiver",value)}
+                            />
+                        </Grid>
+                        <Grid size={{xs:12,sm:4}}>
+                            <TextField
                             type="number"
                             size="small"
                             label={"Amount"}

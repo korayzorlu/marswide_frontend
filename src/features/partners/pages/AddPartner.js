@@ -17,7 +17,7 @@ import AddressTab from '../companies/AddressTab';
 import InformationTab from '../companies/InformationTab';
 import ContactTab from '../companies/ContactTab';
 import SaveIcon from '@mui/icons-material/Save';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import AndroidSwitch from '../../../component/switch/AndroidSwitch';
 import { setIsProgress } from '../../../store/slices/processSlice';
 import FormHeader from '../../../component/header/FormHeader';
@@ -34,6 +34,7 @@ function AddPartner() {
 
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [disabled, setDisabled] = useState(false);
+    const [switchDisabled, setSwitchDisabled] = useState(false);
     const [tabValue, setTabValue] = useState(0);
     const [data, setData] = useState({companyId: activeCompany.companyId})
 
@@ -53,6 +54,12 @@ function AddPartner() {
         setDisabled(true);
         await dispatch(addPartner({data})).unwrap();
         setDisabled(false);
+    };
+
+    const handleChangeShareholder = (value) => {
+        setSwitchDisabled(value);
+        handleChangeField("customer",false);
+        handleChangeField("supplier",false);
     };
 
     const handleChangeField = (field,value) => {
@@ -91,11 +98,18 @@ function AddPartner() {
                             label="Customer"
                             checked={data.customer}
                             onChange={(value) => handleChangeField("customer",value)}
+                            disabled={switchDisabled}
                             />
                             <AndroidSwitch
                             label="Supplier"
                             checked={data.supplier}
                             onChange={(value) => handleChangeField("supplier",value)}
+                            disabled={switchDisabled}
+                            />
+                            <AndroidSwitch
+                            label="Shareholder"
+                            checked={data.shareholder}
+                            onChange={(value) => {handleChangeField("shareholder",value);handleChangeShareholder(value);}}
                             />
                         </Grid>
                     </Grid>

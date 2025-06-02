@@ -3,7 +3,7 @@ import Row from '../../../component/grid/Row';
 import Col from '../../../component/grid/Col';
 import { Stack, TextField } from '@mui/material';
 import AndroidSwitch from '../../../component/switch/AndroidSwitch';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 
 function InformationTab(props) {
     const {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useTransition } from 'react'
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { Box, Card, Divider, Stack, Typography } from '@mui/material';
 import ListTableServer from '../../../component/table/ListTableServer';
 import { useDispatch, useSelector } from 'react-redux';

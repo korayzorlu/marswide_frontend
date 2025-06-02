@@ -9,7 +9,7 @@ function SidebarProvider(props){
     const [mobile, setMobile] = useState(false);
     const [collapse, setCollapse] = useState(Cookies.get("collapse") === "true" ? true : false);
     const [toggle, setToggle] = useState(false);
-    const [contentWidth, setContentWidth] = useState({sidebar:"200px",page:"calc(100% - 200px)"});
+    const [contentWidth, setContentWidth] = useState({sidebar:"240px",page:"calc(100% - 240px)"});
     const [tabNavItems, setTabNavItems] = useState([]);
     const [tabNavContents, setTabNavContents] = useState([]);
 
@@ -35,7 +35,7 @@ function SidebarProvider(props){
             if (collapseTerm){
                 setContentWidth({sidebar:"78px",page:"calc(100% - 78px)"});
             }else{
-                setContentWidth({sidebar:"200px",page:"calc(100% - 200px)"});
+                setContentWidth({sidebar:"240px",page:"calc(100% - 240px)"});
             };
         };
     
@@ -51,7 +51,7 @@ function SidebarProvider(props){
             setContentWidth({sidebar:"0",page:"100%"});
         }else{
             setMobile(false);
-            setContentWidth(Cookies.get("collapse") === "true" ? {sidebar:"78px",page:"calc(100% - 78px)"} : {sidebar:"200px",page:"calc(100% - 200px)"});
+            setContentWidth(Cookies.get("collapse") === "true" ? {sidebar:"78px",page:"calc(100% - 78px)"} : {sidebar:"240px",page:"calc(100% - 240px)"});
         };
     };
 
@@ -65,7 +65,7 @@ function SidebarProvider(props){
             setContentWidth({sidebar:"0",page:"100%"});
         } else {
             setMobile(false);
-            setContentWidth({sidebar:"200px",page:"calc(100% - 200px)"});
+            setContentWidth({sidebar:"240px",page:"calc(100% - 240px)"});
         }
     };
 

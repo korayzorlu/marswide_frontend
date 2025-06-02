@@ -49,6 +49,19 @@ import UpdateInvoice from './features/accounting/invoice/pages/UpdateInvoice.js'
 import Payments from './features/accounting/payment/pages/Payments.js';
 import AddPayment from './features/accounting/payment/pages/AddPayment.js';
 import UpdatePayment from './features/accounting/payment/pages/UpdatePayment.js';
+import Receivable from './features/accounting/account/components/Receivable.js';
+import Payable from './features/accounting/account/components/Payable.js';
+import Sales from './features/accounting/account/components/Sales.js';
+import OrganizationSettingsLink from './features/settings/organization/pages/OrganizationSettingsLink.js';
+import CurrencySettings from './features/settings/organization/pages/CurrencySettings.js';
+import Expenses from './features/accounting/account/components/Expenses.js';
+import Expense from './features/accounting/account/components/Expense.js';
+import Bank from './features/accounting/account/components/Bank.js';
+import Cash from './features/accounting/account/components/Cash.js';
+import Capital from './features/accounting/account/components/Capital.js';
+import Categories from './features/products/category/pages/Categories.js';
+import AddCategory from './features/products/category/components/AddCategory.js';
+import UpdateCategory from './features/products/category/components/UpdateCategory.js';
 
 export const NumberContext = React.createContext();
 
@@ -128,6 +141,8 @@ function App() {
                     <Route path='auth/email' element={<EmailSettings></EmailSettings>}></Route>
                     <Route path='auth/phone-number' element={<PhoneNumberSettings></PhoneNumberSettings>}></Route>
                     <Route path='auth/password-reset' element={<PasswordReset></PasswordReset>}></Route>
+                    <Route path='organization' element={<OrganizationSettingsLink></OrganizationSettingsLink>}></Route>
+                    <Route path='organization/currency' element={<CurrencySettings></CurrencySettings>}></Route>
                   </Route>
                   <Route path='phone-number-verify' element={<PhoneNumberVerify></PhoneNumberVerify>}></Route>
 
@@ -140,7 +155,21 @@ function App() {
                   <Route path='/partners/add-partner' element={<AddPartner></AddPartner>}></Route>
                   <Route path='/partners/update/:uuid' element={<UpdatePartner></UpdatePartner>}></Route>
 
+                  <Route path='/categories' element={<Categories></Categories>}>
+                    <Route path='add-category' element={<AddCategory></AddCategory>}></Route>
+                    <Route path='update/:uuid' element={<UpdateCategory></UpdateCategory>}></Route>
+                  </Route>
+                  
+                  <Route path='/products/update/:uuid' element={<UpdateCategory></UpdateCategory>}></Route>
+
                   <Route path='/accounts' element={<Accounts></Accounts>}></Route>
+                  <Route path='/accounts/accounts-receivable' element={<Receivable></Receivable>}></Route>
+                  <Route path='/accounts/accounts-payable' element={<Payable></Payable>}></Route>
+                  <Route path='/accounts/bank' element={<Bank></Bank>}></Route>
+                  <Route path='/accounts/cash' element={<Cash></Cash>}></Route>
+                  <Route path='/accounts/sales' element={<Sales></Sales>}></Route>
+                  <Route path='/accounts/capital' element={<Capital></Capital>}></Route>
+                  <Route path='/accounts/expense' element={<Expense></Expense>}></Route>
                   <Route path='/accounts/add-account/:type' element={<AddAccount></AddAccount>}></Route>
                   <Route path='/accounts/update/:type/:uuid' element={<UpdateAccount></UpdateAccount>}></Route>
 

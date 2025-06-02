@@ -10,7 +10,7 @@ import Row from '../../../../component/grid/Row';
 import Col from '../../../../component/grid/Col';
 import { fetchCountries } from '../../../../store/slices/dataSlice';
 import FormHeader from '../../../../component/header/FormHeader';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import CountrySelect from '../../../../component/select/CountrySelect';
 
 function PhoneNumberSettings() {

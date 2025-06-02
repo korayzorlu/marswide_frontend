@@ -26,6 +26,7 @@ function OutgoingPayments() {
     }, [activeCompany,outgoingPaymentsParams,dispatch]);
 
     const columns = [
+        { field: 'date', headerName: 'Date', flex: 2 },
         { field: 'partner', headerName: 'Customer', flex: 15, editable: true, renderCell: (params) => (
                 <Link
                 to={`/payments/update/${params.row.type}/${params.row.uuid}/`}
@@ -36,7 +37,6 @@ function OutgoingPayments() {
                 
             )
         },
-        { field: 'type', headerName: 'Type', flex: 2 },
         { field: 'amount', headerName: 'Amount', flex: 2, type: 'number' },
         { field: 'currency', headerName: 'Currency', flex: 1 },
     ]

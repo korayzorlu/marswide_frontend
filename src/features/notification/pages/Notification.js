@@ -11,7 +11,7 @@ import { Avatar, Button, Divider, List, ListItem, ListItemText, Paper, Stack, Ty
 import { fetchNotifications } from '../../../store/slices/notificationSlice'
 import { useNavigate } from 'react-router-dom'
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import FormHeader from '../../../component/header/FormHeader'
 
 function Notification() {

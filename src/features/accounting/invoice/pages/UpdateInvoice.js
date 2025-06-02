@@ -9,7 +9,7 @@ import { Divider, Paper, Stack, TextField } from '@mui/material';
 import FormHeader from '../../../../component/header/FormHeader';
 import { toUpper } from 'lodash';
 import { setDialog } from '../../../../store/slices/notificationSlice';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import PartnerSelect from '../../../../component/select/PartnerSelect';
 import CurrencySelect from '../../../../component/select/CurrencySelect';
 import Dialog from '../../../../component/feedback/Dialog';

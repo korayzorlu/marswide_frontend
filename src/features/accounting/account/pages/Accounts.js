@@ -6,6 +6,11 @@ import PanelContent from '../../../../component/panel/PanelContent';
 import TabPanel from '../../../../component/tab/TabPanel';
 import Receivable from '../components/Receivable';
 import Payable from '../components/Payable';
+import Assets from '../components/Assets';
+import Liabilities from '../components/Liabilities';
+import Revenue from '../components/Revenue';
+import Expenses from '../components/Expenses';
+import Equity from '../components/Equity';
 
 function Accounts() {
     const {lastTab} = useSelector((store) => store.account);
@@ -40,7 +45,7 @@ function Accounts() {
             }}
             >
                 <Tab
-                label="Receivable"
+                label="Assets"
                 value={0}
                 iconPosition="start"
                 sx={{
@@ -51,7 +56,7 @@ function Accounts() {
                 }}
                 />
                 <Tab
-                label="Payable"
+                label="Lilabilities"
                 value={1}
                 iconPosition="start"
                 sx={{
@@ -62,8 +67,30 @@ function Accounts() {
                 }}
                 />
                 <Tab
-                label="Bank"
+                label="Equity"
                 value={2}
+                iconPosition="start"
+                sx={{
+                    '&.Mui-selected' : {
+                        backgroundColor: 'panelbox.main',
+                        color: 'opposite.main'
+                    }
+                }}
+                />
+                <Tab
+                label="Revenue"
+                value={3}
+                iconPosition="start"
+                sx={{
+                    '&.Mui-selected' : {
+                        backgroundColor: 'panelbox.main',
+                        color: 'opposite.main'
+                    }
+                }}
+                />
+                <Tab
+                label="Expenses"
+                value={4}
                 iconPosition="start"
                 sx={{
                     '&.Mui-selected' : {
@@ -74,10 +101,19 @@ function Accounts() {
                 />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-                <Receivable/>
+                <Assets/>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-                <Payable/>
+                <Liabilities/>
+            </TabPanel>
+            <TabPanel value={tabValue} index={2}>
+                <Equity/>
+            </TabPanel>
+            <TabPanel value={tabValue} index={3}>
+                <Revenue/>
+            </TabPanel>
+            <TabPanel value={tabValue} index={4}>
+                <Expenses/>
             </TabPanel>
             
         </PanelContent>

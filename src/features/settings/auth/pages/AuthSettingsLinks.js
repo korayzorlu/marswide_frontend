@@ -1,6 +1,6 @@
 import { Button, Divider, Stack } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function AuthSettingsLinks() {
